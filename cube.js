@@ -5,6 +5,6 @@ let obj = {
 }
 
 let obj2 = yzfUtils.deepCopy(obj)
-console.log(window.yzfUtils)
+// console.log(window.yzfUtils)
 
 
