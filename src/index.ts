@@ -2,6 +2,15 @@ import result from './modules/array';
 import Stack, { divideBy2, baseConverter } from './modules/stack';
 import Queue, { PriorityQueue } from './modules/queue';
 import LinkedList, { Node } from './modules/linkedList';
+import { 
+    checkType, 
+    deepClone, 
+    myCall, 
+    myApply, 
+    myBind, 
+    curry, 
+    debounce
+ } from './modules/utils';
 
 // 栈
 // const stack: Stack = new Stack();
@@ -51,13 +60,51 @@ function hotPotato(nameList: string[], num: number) {
 // let winner = hotPotato(names, 8);
 // console.log('The winner is: ' + winner);
 
-let link = new LinkedList();
-link.append(1);
-link.append(2);
-link.append(3);
-link.append(4);
-link.remove(2);
-// link.remove(0);
-const test = link.print();
+// let link = new LinkedList();
+// link.append(1);
+// link.append(2);
+// link.append(3);
+// link.append(4);
+// link.remove(2);
+// // link.remove(0);
 
-document.body.textContent = `${test}`;
+
+// 测试deepClone
+// 测试循环引用
+// const obj1 = {
+//     x: 1, 
+//     y: 2
+// };
+// obj1.z = obj1;
+
+// 测试myCall
+// const ss = {name: 'fanerge'};
+// Function.prototype.myCall = myCall;
+// function demo(a, b) {console.log(this.name); return a + b;};
+// console.log(demo.myCall(ss, [1, 2]));
+
+// 测试myApply
+// const ss = {name: 'fanerge'};
+// Function.prototype.myApply = myApply;
+// function demo(a, b, c) {console.log(this.name); return a + b + c;};
+// console.log(demo.myApply(ss, [1, 2, 6]));
+
+// 测试myApply
+// const ss = {name: 'fanerge'};
+// Function.prototype.myBind = myBind;
+// function demo(a, b, c, d) {console.log(this.name); return a + b + c + d;};
+// let bindTest = demo.myBind(ss, 1, 2, 3, 5)();
+// console.log(bindTest);
+// demo.myBind(ss, 1, 2, 3)();
+
+// test-curry
+// function sumFn(a: number, b: number, c: number) {
+//     return a + b + c;
+// }
+// var sum = curry(sumFn);
+// console.log(sum(2)(3)(5));
+
+// test-debounce
+
+
+// document.body.textContent = `${test}`;
