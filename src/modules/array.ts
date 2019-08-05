@@ -37,6 +37,7 @@ console.timeEnd('add-push');
 // 删除尾部
 // arr1[arr1.length - 1] = null; 
 // delete arr1[arr1.length - 1];
+// arr1.length = [arr1.length - 1];
 
 const result: any = arr1.toString();
 export default result;

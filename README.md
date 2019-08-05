@@ -1,6 +1,7 @@
-在JavaScript中讨论数据结构
+在JavaScript中讨论数据结构，暴扣数组、栈、队列、链表等。
 #   数组（Array）
 在JavaScript中的数组不一定是分配了连续内存，它是有条件的：数组项不许是单一类型，在非单一类型的数组中，它就不是连续内存了。
+[数组和链表的比较](./README/array_and_linkedlist.md)
 ##  首部添加
 首先我们要腾出数组里第一个元素的位置，把所有的元素向右移动一位。我们 可以循环数组中的元素，从最后一位+1(长度)开始，将其对应的前一个元素的值赋给它，依次 处理，最后把我们想要的值赋给第一个位置(-1)上。
 Array.prototype.unshift();
@@ -23,9 +24,11 @@ Array.prototype.push();
 arr1[arr1.length] = 11;
 ```
 ##  尾部移除
+Array.prototype.pop();
 ```
 arr1[arr1.length - 1] = null; 
-delete arr1.length;
+delete arr1[arr1.length - 1];
+arr1.length = [arr1.length - 1];
 ```
 #   栈（Stack）
 栈是一种遵从后进先出(LIFO)原则的有序集合。新添加的或待删除的元素都保存在栈的
