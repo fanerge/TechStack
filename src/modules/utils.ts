@@ -114,10 +114,46 @@ export function curry(fn: any, ...args: any[]) {
     : fn(...args);
 }
 
+// 节流（定时器）
+export function throttle(func: any, delay: number) {  
+    // 初次触发定时器为null，后面产生一份定时器并记下定时器id
+    let timer: any = null; 
+    // 闭包使定时器id保留在内存中          
+    return function() {                
+        let context = this;              
+        let args = arguments;  
+        // 下次触发时，定时器id还存在表示还在节流时间内不予处理              
+        if (!timer) {                    
+            timer = setTimeout(function() { 
+                func.apply(context, args); 
+                // 销毁定时器id，以便下次节流函数触发                       
+                timer = null;                    
+            }, delay);                
+        }            
+    }        
+} 
+
 // 防抖
-export function debounce(func: any, wait: number, immediate = true) {
-    
-};
+export function debounce(func: any, delay: number) {              
+    // 初次触发定时器为null，后面产生一份定时器并记下定时器id
+    let timer: any = null; 
+    // 闭包使定时器id保留在内存中          
+    return function() {                
+        let context = this;              
+        let args = arguments;  
+        // 如果已有定时器id，则需要清除，重新开始延迟执行           
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;                                   
+        }
+        
+        timer = setTimeout( () => { 
+            func.apply(this, args); 
+            // 销毁定时器id，以便下次节流函数触发                       
+            timer = null;                    
+        }, delay); 
+    }        
+}
 
 
 

@@ -9,7 +9,8 @@ import {
     myApply, 
     myBind, 
     curry, 
-    debounce
+    debounce,
+    throttle,
  } from './modules/utils';
 
 // 栈
@@ -104,7 +105,24 @@ function hotPotato(nameList: string[], num: number) {
 // var sum = curry(sumFn);
 // console.log(sum(2)(3)(5));
 
-// test-debounce
+// test-throttle
+let body = document.querySelector('body');
+let fragment = document.createDocumentFragment();
+var browsers = ['Firefox', 'Chrome', 'Opera', 
+    'Safari', 'Internet Explorer'];
 
+browsers.forEach(function(browser) {
+    var h2 = document.createElement('h2');
+    h2.textContent = browser;
+    fragment.appendChild(h2);
+});
+
+body.appendChild(fragment);
+
+function handle(e: any) {            
+    console.log(Math.random());        
+}
+
+window.addEventListener('scroll', debounce(handle, 2000));
 
 // document.body.textContent = `${test}`;
