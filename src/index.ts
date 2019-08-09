@@ -11,6 +11,8 @@ import {
     curry, 
     debounce,
     throttle,
+    fmoney,
+    rmoney,
  } from './modules/utils';
 
 // 栈
@@ -108,8 +110,7 @@ function hotPotato(nameList: string[], num: number) {
 // test-throttle
 let body = document.querySelector('body');
 let fragment = document.createDocumentFragment();
-var browsers = ['Firefox', 'Chrome', 'Opera', 
-    'Safari', 'Internet Explorer'];
+var browsers = ['Firefox', 'Chrome', 'Opera', 'Safari', 'Internet Explorer'];
 
 browsers.forEach(function(browser) {
     var h2 = document.createElement('h2');
@@ -118,11 +119,13 @@ browsers.forEach(function(browser) {
 });
 
 body.appendChild(fragment);
-
-function handle(e: any) {            
-    console.log(Math.random());        
-}
-
-window.addEventListener('scroll', debounce(handle, 2000));
+// 防抖节流
+// function handle(e: any) {            
+//     console.log(Math.random());        
+// }
+// window.addEventListener('scroll', debounce(handle, 2000));
+let test = fmoney(10000);
+// let test2 = rmoney(test);
+console.log(test);
 
 // document.body.textContent = `${test}`;

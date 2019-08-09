@@ -1,4 +1,6 @@
 在JavaScript中讨论数据结构，暴扣数组、栈、队列、链表等。
+#   工具函数
+[工具函数集合](./README/utils.md)
 #   数组（Array）
 在JavaScript中的数组不一定是分配了连续内存，它是有条件的：数组项不许是单一类型，在非单一类型的数组中，它就不是连续内存了。
 [数组和链表的比较](./README/array_and_linkedlist.md)
