@@ -21,17 +21,35 @@
 #   正则介绍
 ##  先行断言(lookahead)和后行断言(lookbehind)
 先行断言和后行断言也有类似的作用，它们只匹配某些位置，在匹配过程中，不占用字符，所以被称为“零宽”。
+Lookarounds是零宽度断言，匹配字符串而不消耗任何东西。
 ### (?=pattern) 先行肯定断言
 代表字符串中的一个位置，紧接该位置之后的字符序列能够匹配pattern。<br>
-如：'a regular expression'，要想匹配regular中的re，则re(?=gular)
+```
+const pattern = /\d+(?= dollars)/u;
+const result = pattern.exec('42 dollars');
+// → result[0] === '42'
+```
 ### (?!pattern) 先行否定断言
 代表字符串中的一个位置，紧接该位置之后的字符序列不能匹配pattern。<br>
-如：'a regular expression'，要想匹配expression中的re，则re(?!gular)
+```
+const pattern = /\d+(?! dollars)/u;
+const result = pattern.exec('42 pesos');
+// → result[0] === '42'
+```
 ### (?<=pattern) 后行肯定断言
 代表字符串中的一个位置，紧接该位置之前的字符序列能够匹配pattern。<br>
-如正则，(?<=\w)re，匹配re前面是单词字符的re。
+```
+const pattern = /(?<=\$)\d+/u;
+const result = pattern.exec('$42');
+// → result[0] === '42'
+```
 ### (?!pattern) 先行否定断言
 代表字符串中的一个位置，紧接该位置之前的字符序列不能匹配pattern。<br>
-如正则，(?<!\w)re，匹配re前面不是单词字符的re。
+```
+const pattern = /(?<!\$)\d+/u;
+const result = pattern.exec('€42');
+// → result[0] === '42'
+```
 [正则表达式的先行断言(lookahead)和后行断言(lookbehind)](https://blog.csdn.net/u012047933/article/details/38365541)
+[ECMA正则](https://mathiasbynens.be/notes/es-regexp-proposals)
 

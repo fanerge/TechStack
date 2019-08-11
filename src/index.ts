@@ -2,6 +2,11 @@ import result from './modules/array';
 import Stack, { divideBy2, baseConverter } from './modules/stack';
 import Queue, { PriorityQueue } from './modules/queue';
 import LinkedList, { Node } from './modules/linkedList';
+import Sets from './modules/Set';
+import Dictionary from './modules/dictionary';
+import HashTable from './modules/hashTable';
+import HashTable1 from './modules/hashTable1';
+import BinarySearchTree from './modules/binarySearchTree';
 import { 
     checkType, 
     deepClone, 
@@ -14,6 +19,7 @@ import {
     fmoney,
     rmoney,
  } from './modules/utils';
+import { debug } from 'webpack';
 
 // 栈
 // const stack: Stack = new Stack();
@@ -124,8 +130,55 @@ body.appendChild(fragment);
 //     console.log(Math.random());        
 // }
 // window.addEventListener('scroll', debounce(handle, 2000));
-let test = fmoney(10000);
-// let test2 = rmoney(test);
-console.log(test);
-
+// let test = fmoney(10000);
+// // let test2 = rmoney(test);
+// console.log(test);
 // document.body.textContent = `${test}`;
+
+// set-test
+// const set = new Sets();
+// set.add(1);
+// set.add(2);
+// set.add(3);
+// const set1 = new Sets();
+// set1.add(1);
+// // set1.add(3);
+// // set1.add(4);
+// let set2 = set.isSubSet(set1);
+
+// test-dictionary
+// let dict = new Dictionary();
+// dict.set('name', 'fanerge');
+// dict.set('age', '28');
+// // dict.delete(key1);
+// const test = dict.values();
+
+// test-hashTable
+// let table = new HashTable();
+// table.put('name', 'fanerge');
+// table.put('age', 123);
+// const test = table.delete('age12');
+// console.log(table.print(), test);
+
+// test-hashTable(分离链接)
+// let table = new HashTable1();
+// table.put('123', 'fan');
+// table.put('321', 'fan1');
+// table.put('213', '111');
+// table.delete('213');
+// console.log(table.get('213'));
+
+// test-BST
+const tree = new BinarySearchTree();
+tree.insert(11);
+tree.insert(10);
+tree.insert(12);
+tree.insert(6);
+tree.insert(4);
+const test = tree.delete(4);
+
+// function printNode(value: any){ //{6}
+//   console.log(value);
+// }
+// tree.postOrderTraverse(printNode);
+console.log(tree, test);
