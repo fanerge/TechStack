@@ -9,7 +9,7 @@
 - [x] curry 柯里化函数
 - [x] throttle(前置触发、后置触发)、debounce
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce版本
-<br>
+
 [工具函数集合](./src/modules/utils.ts)
 #   JSBridge封装
 [JSBridge](./README/JSBridge.md)
