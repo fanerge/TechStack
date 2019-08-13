@@ -1,0 +1,65 @@
+// H5与Native同时增加如下两个接口供对方使用：
+// ≈ function addEventListener(eventName, callback)
+function registerHandler (handlerName: string, block: any) {
+  window.handlers[handlerName] = block
+  // …
+}
+
+// Web或Native调用对方接口的方式
+// ≈ dispatchEvent(eventName, data, callback)
+function callHandler (handlerName: string, message: any, callback: any) {
+  window.handlers[handlerName](message)
+  // …
+}
+
+// 例如：扫描二维码
+// Native（注册了一个扫描二维码的方法）
+registerHanlder('scanQRCode', () => {
+
+  // Camera.open().scanQRCode()
+});
+// H5（调用扫描二维码的方法）
+callHanlder('scanQRCode', { type: 'qrcode' }, result => {
+  console.log('扫码结果：', result)
+})
+// H5（该为Promise）
+export async function scanQRCode () {
+  return new Promise((resolve, reject) => {
+      callHanlder('scanQRCode', { type: 'qrcode' }, result => {
+          console.log('扫码结果：', result)
+          resolve(result)
+      })
+  })
+}
+
+
+
+/******** 更好的方案 ********/
+// Native中有另一个神奇的API，我们暂且称它为defineFunc函数吧。
+// 它可以直接将Native的代码注入到H5的载体WebView中，并挂在WebView的window上。
+// native 需要做的
+function defineFunc (funcName: string, func: Function) {
+  // 通过一些Native的API拿到WebView的window
+  const window = webView.window;
+  // 将native的方法直接挂在h5的window上
+  window[funcName] = func; 
+}
+
+// Native
+defineFunc('callSomeNativeFunction', () => {
+  // 这些是由Native的代码翻译成javascript的伪代码
+  const file = io.readFile('/path/to/file')
+  // 做一些H5做不到的事情
+  file.write('/path/to/file', 'content')
+});
+
+// h5 中执行 native的方法，就可以使用native功能了
+callSomeNativeFunction();
+
+
+
+
+
+
+
+
