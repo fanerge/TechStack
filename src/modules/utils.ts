@@ -114,7 +114,7 @@ export function curry(fn: any, ...args: any[]) {
     : fn(...args);
 }
 
-// 节流（定时器）
+// 节流（定时器，时间段最后触发）
 export function throttle(func: any, delay: number) {  
     // 初次触发定时器为null，后面产生一份定时器并记下定时器id
     let timer: any = null; 
@@ -132,6 +132,17 @@ export function throttle(func: any, delay: number) {
         }            
     }        
 } 
+
+// 节流（时间段最先触发）
+export function throttle1(fn: any,wait: number){
+	var lastTime = Date.now();
+	return function(){
+		var curTime = Date.now();
+		if((curTime - lastTime) < wait){return;};
+		lastTime = curTime;
+		fn.apply(this, arguments);
+	}
+}
 
 // 防抖
 export function debounce(func: any, delay: number) {              

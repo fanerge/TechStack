@@ -6,7 +6,7 @@ import Sets from './modules/Set';
 import Dictionary from './modules/dictionary';
 import HashTable from './modules/hashTable';
 import HashTable1 from './modules/hashTable1';
-import BinarySearchTree from './modules/binarySearchTree';
+// import BinarySearchTree from './modules/binarySearchTree';
 import { 
     checkType, 
     deepClone, 
@@ -16,6 +16,7 @@ import {
     curry, 
     debounce,
     throttle,
+    throttle1,
     fmoney,
     rmoney,
  } from './modules/utils';
@@ -126,10 +127,11 @@ browsers.forEach(function(browser) {
 
 body.appendChild(fragment);
 // 防抖节流
-// function handle(e: any) {            
-//     console.log(Math.random());        
-// }
-// window.addEventListener('scroll', debounce(handle, 2000));
+function handle(e: any) {            
+    // console.log(Math.random());   
+    console.log(e);      
+}
+window.addEventListener('scroll', throttle1(handle, 1000));
 // let test = fmoney(10000);
 // // let test2 = rmoney(test);
 // console.log(test);
@@ -169,16 +171,16 @@ body.appendChild(fragment);
 // console.log(table.get('213'));
 
 // test-BST
-const tree = new BinarySearchTree();
-tree.insert(11);
-tree.insert(10);
-tree.insert(12);
-tree.insert(6);
-tree.insert(4);
-const test = tree.delete(4);
+// const tree = new BinarySearchTree();
+// tree.insert(11);
+// tree.insert(10);
+// tree.insert(12);
+// tree.insert(6);
+// tree.insert(4);
+// const test = tree.delete(4);
 
 // function printNode(value: any){ //{6}
 //   console.log(value);
 // }
 // tree.postOrderTraverse(printNode);
-console.log(tree, test);
+// console.log(tree, test);
