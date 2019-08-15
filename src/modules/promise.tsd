@@ -1,0 +1,68 @@
+var promise1 = Promise.reject(3);
+var promise2 = 42;
+var promise3 = new Promise(function(resolve, reject) {
+  setTimeout(resolve, 100, 'foo');
+});
+
+// Promise.all()
+// 作用：Promise.all(iterable) 方法返回一个 Promise 实例，此实例在 iterable 参数内所有的 promise 都“完成（resolved）”或参数中不包含 promise 时回调完成（resolve）；如果参数中  promise 有一个失败（rejected），此实例回调失败（reject），失败原因的是第一个失败 promise 的结果。
+// 参数：一个可迭代对象，如 Array 或 String。
+// 返回值：
+// 如果传入的参数是一个空的可迭代对象，则返回一个已完成（already resolved）状态的 Promise。
+Promise.all([]).then(value => console.log(value)).catch(e => console.log(e)); // [] resolve
+Promise.all('').then(value => console.log(value)).catch(e => console.log(e)); // [] resolve
+// 如果传入的参数不包含任何 promise，则返回一个异步完成（asynchronously resolved） Promise。
+Promise.all([1, 2, 3]).then(value => console.log(value)).catch(e => console.log(e)); // [1, 2, 3] resolve
+// 其它情况下返回一个处理中（pending）的Promise。这个返回的 promise 之后会在所有的 promise 都完成或有一个 promise 失败时异步地变为完成或失败。
+// 一个promise reject的情况
+Promise.all([promise1, promise2, promise3]).then(value => console.log(value)).catch(e => console.log(e)); // 3 reject
+// 所有promise都成功了
+Promise.all([promise2, promise3])
+  .then(value => {
+    console.log(value) // [42, 'f00']
+    console.log('----promise.all----')
+  })
+  .catch(e => { console.log(e);});
+
+var race1 = new Promise(function(resolve, reject) {
+    setTimeout(resolve, 500, 'one');
+});
+var race2 = new Promise(function(resolve, reject) {
+    setTimeout(resolve, 100, 'two');
+});
+var race3 = new Promise(function(resolve, reject) {
+  setTimeout(reject, 500, 'three');
+});
+var race4 = new Promise(function(resolve, reject) {
+  setTimeout(reject, 100, 'four');
+});
+// Promise.race()
+// Promise.race(iterable) 方法返回一个 promise，一旦迭代器中的某个promise解决或拒绝，返回的 promise就会解决或拒绝。
+// 参数：可迭代对象，类似Array。
+// resolve 
+Promise.race([race1, race2]).then(value => {
+  console.log(value); // two
+}).catch(e => console.log(e));
+// reject
+Promise.race([race3, race4]).then(value => {
+  console.log('resolve')
+  console.log(value); // two
+}).catch(e => {
+  console.log('reject');
+  console.log(e);
+  console.log('----promise.race----')
+});
+// 如果传的迭代是空的，则返回的 promise 将永远等待。
+Promise.race([]).then(value => {
+  console.log(value); // two
+}).catch(e => console.log(e));
+
+// Promise.allSettled()
+// Promise.allSettled()方法返回一个promise，该promise在所有给定的promise已被解析或被拒绝后解析，并且每个对象都描述每个promise的结果。
+// 参数：一个可迭代的对象，例如Array。
+// 返回值：一个悬而未决 Promise将被异步完成一次承诺的指定集合在每一个承诺已经完成，无论是成功的达成或通过被拒绝。那时，返回的promise的处理程序作为输入传递一个数组，该数组包含原始promises集中每个promise的结果。
+const setlled1 = Promise.resolve(3);
+const setlled2 = new Promise((resolve, reject) => setTimeout(reject, 100, 'foo'));
+
+Promise.allSettled([setlled1, setlled2, 1]).
+  then((results) => results.forEach((result) => console.log(result)));

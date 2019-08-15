@@ -10,16 +10,22 @@ import HashTable1 from './modules/hashTable1';
 import { 
     checkType, 
     deepClone, 
-    myCall, 
-    myApply, 
-    myBind, 
     curry, 
     debounce,
     throttle,
     throttle1,
     fmoney,
     rmoney,
+    toCamelCase
  } from './modules/utils';
+ import {
+  instance_of,
+  myCall, 
+  myApply, 
+  myBind, 
+  objectFactory,
+  objectCreate
+ } from './modules/theory';
 import { debug } from 'webpack';
 
 // 栈
@@ -127,11 +133,11 @@ browsers.forEach(function(browser) {
 
 body.appendChild(fragment);
 // 防抖节流
-function handle(e: any) {            
-    // console.log(Math.random());   
-    console.log(e);      
-}
-window.addEventListener('scroll', throttle1(handle, 1000));
+// function handle(e: any) {            
+//     // console.log(Math.random());   
+//     console.log(e);      
+// }
+// window.addEventListener('scroll', throttle1(handle, 1000));
 // let test = fmoney(10000);
 // // let test2 = rmoney(test);
 // console.log(test);
@@ -184,3 +190,51 @@ window.addEventListener('scroll', throttle1(handle, 1000));
 // }
 // tree.postOrderTraverse(printNode);
 // console.log(tree, test);
+
+// test-deepClone（regExp）
+// const re = new RegExp('123', 'igmuy');
+// const test = deepClone(re);
+// debugger
+// console.log(checkType(test));
+
+// test-instance_of
+// class B {}
+// const b = new B();
+// console.log(b instanceof B);
+// console.log(instance_of(b, B));
+
+// test-new objectFactory
+// function SS(){
+//   this.name = arguments[0];
+//   this.age = arguments[1];
+// }
+// SS.prototype.getName = function() { return this.name; };
+// const ss = objectFactory(SS, 'cxk', '18');
+// console.log(ss.getName());
+
+// test-Object.create
+// const b = objectCreate(null, {name: {value: '123'}});
+// console.log(b);
+// const a = Object.create(null, {name: {value: '123'}});
+// console.log(a);
+
+// test-promise
+
+// let url = 'http://www.domain.com/?user=anonymous&id=123&id=456&city=%E5%8C%97%E4%BA%AC&enabled';
+// const obj = urlParseQuery(url);
+// console.log(obj);
+/* 结果
+{ user: 'anonymous',
+  id: [ 123, 456 ], // 重复出现的 key 要组装成数组
+  city: '北京', // 中文需解码
+  enabled: true, // 未指定值得 key 约定为 true
+}
+*/
+
+// test-camelCase
+// const test = toCamelCase('wer-sdf-sdf');
+// console.log(test);
+
+// test-fmoney
+// const test = fmoney(1234123123);
+// console.log(test);

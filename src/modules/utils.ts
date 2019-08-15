@@ -54,57 +54,6 @@ export function deepClone(obj: any, hash = new WeakMap()) : any{
     return newObj;
 }
 
-// 自定义call
-export function myCall() {
-    let [thisArg, ...args] = Array.from(arguments);
-    if (!thisArg) {
-        //context 为 null 或者是 undefined
-        thisArg = typeof window === 'undefined' ? global : window;
-    }
-    // this 的指向的是当前函数 func (func.call)
-    // 为thisArg对象添加func方法，func方法又指向myCall，所以在func中this指向thisArg
-    thisArg.func = this;
-    debugger
-    // 执行函数
-    let result = thisArg.func(...args);
-    // thisArg 上并没有 func 属性，因此需要移除
-    delete thisArg.func; 
-    return result;
-}
-
-// 自定义apply
-export function myApply() {
-    let [thisArg, args] = Array.from(arguments);
-    if (!thisArg) {
-        //context 为 null 或者是 undefined
-        thisArg = typeof window === 'undefined' ? global : window;
-    }
-    // this 的指向的是当前函数 func (func.call)
-    thisArg.func = this;
-    // 执行函数
-    let result = thisArg.func(...args);
-    // thisArg 上并没有 func 属性，因此需要移除
-    delete thisArg.func; 
-    return result;
-}
-
-// 自定义bind
-export function myBind() {
-    let [thisArg, ...args] = Array.from(arguments);
-    if (!thisArg) {
-        //context 为 null 或者是 undefined
-        thisArg = typeof window === 'undefined' ? global : window;
-    }
-    thisArg.func = this;
-
-    return function() {
-        let result = thisArg.func(...args);
-        // thisArg原本没有func方法
-        delete thisArg.func;
-        return result;
-    }
-}
-
 // 柯里化函数实现curry
 export function curry(fn: any, ...args: any[]) {
     args.length < fn.length
@@ -170,8 +119,10 @@ export function debounce(func: any, delay: number) {
 export function fmoney(num: number){
     /* 正则实现 */
     // 参考：https://www.cnblogs.com/lvmylife/p/8287247.html
-    let regExp = /\d{1,3}(?=(\d{3})+\.*)/g;
-    return String(num).replace(regExp, "$&,");
+    let [integer, decimal] = String(num).split('.');
+    let regExp = /\d{1,3}(?=(\d{3})+$)/g;
+    integer = integer.replace(regExp, '$&,');
+    return `${integer}${decimal === undefined ? '': '.'+decimal}`;
     // 正则解释
     // 正则表达式 \d{1,3}(?=(\d{3})+$)  表示前面有1~3个数字，后面的至少由一组3个数字结尾
     // 先行肯定断言(?=)会作为匹配校验，但不会出现在匹配结果字符串里面
@@ -200,7 +151,33 @@ export function rmoney(num: any){
     return String(num).replace(/,/g, ""); 
 }
 
-// 随机数
+// 解析URL query
+// export function urlParseQuery(url: string){
+//   const reg = /.+\?(.+)$/;
+//   const queryAry = reg.exec(url)[1].split('&');
+//   return queryAry.reduce((acc, item) => {
+//     let [key, value] = item.split('=');
+//     if(value) {
+//       value = decodeURIComponent(value);
+//       if(acc.hasOwnProperty(key)) {
+//         const oldValue = Array.isArray(acc[key]) ? acc[key] : [acc[key]];
+//         acc[key] = [...oldValue, value];
+//       }else{
+//         acc[key] = value;
+//       }
+//     }else{
+//       acc[key] = true;
+//     }
+//     return acc;
+//   }, {});
+// }
+
+// 转camel
+export function toCamelCase(str: string) {
+  return str.replace(/-\w/g, function(x){
+    return x.slice(1).toUpperCase();
+  });;
+}
 
 
 
