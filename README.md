@@ -18,7 +18,9 @@
 
 [theory.ts](./src/modules/theory.ts)
 # V8探索
-- [x] V8中对象表示（Hideen Class）
+- [x] V8工作原理（Hideen Class）
+- [x] V8如何优化对象存取（Hideen Class && Inline Cache） 
+- [x] V8如何优化数组（动态使用不同存储模式：Fast Elements、Fast Holey Elements、Dictionary Elements ） 
 
 [V8.md](./src/README/v8.md)
 #   JSBridge封装
