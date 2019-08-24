@@ -17,6 +17,10 @@
 - [x] objectCreate 模拟 Object.create(proto, PropertyDescriptorMap)
 
 [theory.ts](./src/modules/theory.ts)
+# V8探索
+- [x] V8中对象表示（Hideen Class）
+
+[V8.md](./src/README/v8.md)
 #   JSBridge封装
 [JSBridge](./README/JSBridge.md)
 #   数组（Array）
