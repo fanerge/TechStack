@@ -20,7 +20,10 @@
 
 [theory.ts](./src/modules/theory.ts)
 # JavaScript引擎探索（主要V8）
-- [x] 执行上下文EC、GO、VO、AO等
+- [x] 执行上下文EC、执行上下文堆栈ECS
+- [x] 全局对象GO、变量对象VO、活动对象AO等
+- [x] 函数的[[scope]]属性 
+- [x] 作用域链 Scope chain
 - [x] V8工作原理
 - [x] V8如何优化对象存取（Hideen Class && Inline Cache） 
 - [x] V8如何优化数组（动态使用不同存储模式：Fast Elements、Fast Holey Elements、Dictionary Elements ） 
