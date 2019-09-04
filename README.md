@@ -1,12 +1,6 @@
-# 数据结构
-在JavaScript中讨论数据结构。<br>
-顺序数据结构：数组（列表）、栈、队列和链表。<br>
-非顺序数据结构：散列表、字典、树、图。<br>
-存储唯一值的数据结构：集合、字典、散列表<br>
-[详细](./README/dataStructure.md)
 #   工具函数
 - [x] checkType 类型检查包含String、Boolean、Number、Undefined、Null、Symbol、BigInt、Map、HTMLBodyElement、HTML*Element等
-- [x] deepClone 深拷贝（包含重复引用）
+- [x] deepClone 深拷贝（包含循环引用、递归注意栈溢出）
 - [x] curry 柯里化函数
 - [x] throttle(前置触发、后置触发)、debounce
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce版本
@@ -29,11 +23,34 @@
 - [x] V8如何优化数组（动态使用不同存储模式：Fast Elements、Fast Holey Elements、Dictionary Elements ） 
 
 [V8.md](./README/v8.md)
-#   JSBridge封装
+# JSBridge封装
 [JSBridge](./README/JSBridge.md)
 
+# 工程化（Webapck）
+- [x] 热更新原理
+[webpack](./README/webpack.md)
+# Node.js
+- [x] 高并发解决方案（负载均衡）
 
+# WEB安全
+- [x] XSS（Cascading Style Sheets）攻击全称跨站脚本攻击
+- [x] CSRF（Cross-site request forgery）跨站请求伪造
+- [x] 点击穿透
+- [x] click jacking点击劫持
+- [x] 控制台注入代码
+- [x] 目录遍历漏洞（Directory traversal），也称之为路径遍历漏洞（Path traversal）[Web 安全漏洞之目录遍历](https://mp.weixin.qq.com/s/crceZP9TKOIwkjmlCEeIAw)
+- [x] SQL注入
+- [x] DDoS（Distributed Denial of Service）分布式拒绝服务攻击
 
+# HTTP
+- [x] [HTTP Security Headers](./README/HTTPSecurityHeaders.md)
+
+# 数据结构
+在JavaScript中讨论数据结构。<br>
+顺序数据结构：数组（列表）、栈、队列和链表。<br>
+非顺序数据结构：散列表、字典、树、图。<br>
+存储唯一值的数据结构：集合、字典、散列表<br>
+[详细](./README/dataStructure.md)
 
 
 

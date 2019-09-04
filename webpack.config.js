@@ -15,7 +15,8 @@ module.exports = {
     devtool: 'inline-source-map',
     devServer: {
         contentBase: './dist',
-        hot: true
+        hot: true,
+        // hotOnly: true
     },
     resolve: {
         extensions: [ '.tsx', '.ts', '.js' ]

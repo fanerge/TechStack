@@ -8,6 +8,8 @@ import HashTable from './modules/hashTable';
 import HashTable1 from './modules/hashTable1';
 // import BinarySearchTree from './modules/binarySearchTree';
 import Graph from './modules/graph';
+// import { cloneLoop } from './utils/deepClone';
+import { cloneOther } from './utils/other'; 
 import { 
     checkType, 
     deepClone, 
@@ -264,5 +266,33 @@ body.appendChild(fragment);
 // const test = graph.DFS();
 // console.log(test);
 
+// test-deepClone 堆栈溢出
+//cloneLoop
+// let obj1 = {
+//   a: 12,
+//   aa: {name: 'yu', age: '28'},
+//   aaa: {name: 'yua', age: '28a'}
+// };
+// let objClone = cloneLoop(obj1);
+// console.log(obj1, objClone, obj1.aa === objClone.aa);
+
+// js热更新配置
+// module.hot.accept();
+
+// bigInt 9007199254740991n BigInt(9007199254740991)
+let symbol1 = Symbol(123);
+let reg1 = new RegExp('1234', 'igmuys');
+let date1 = new Date();
+let map1 = new Map();
+let obj: any = {
+  bigInt: BigInt(9007199254740991),
+  ary: [{name: 'yzf'}, {age: 123}],
+  [symbol1]: 'symbol',
+  reg1,
+  date1,
+  map1
+}
 
 
+const obj1: any = cloneOther(obj);
+console.log(obj1);
