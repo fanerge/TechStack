@@ -41,9 +41,8 @@
 - [x] 目录遍历漏洞（Directory traversal），也称之为路径遍历漏洞（Path traversal）[Web 安全漏洞之目录遍历](https://mp.weixin.qq.com/s/crceZP9TKOIwkjmlCEeIAw)
 - [x] SQL注入
 - [x] DDoS（Distributed Denial of Service）分布式拒绝服务攻击
-
-# HTTP
 - [x] [HTTP Security Headers](./README/HTTPSecurityHeaders.md)
+- [x] [JWT/深度理解token](https://segmentfault.com/a/1190000020143933)
 
 # 数据结构
 在JavaScript中讨论数据结构。<br>

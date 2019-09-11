@@ -14,6 +14,8 @@ import {
     checkType, 
     deepClone, 
     curry, 
+    compose,
+    pipe,
     debounce,
     throttle,
     throttle1,
@@ -30,6 +32,7 @@ import {
   objectCreate
  } from './modules/theory';
 require('./modules/sort');
+require('./modules/fp');
 
 // 栈
 // const stack: Stack = new Stack();
@@ -123,6 +126,15 @@ function hotPotato(nameList: string[], num: number) {
 // var sum = curry(sumFn);
 // console.log(sum(2)(3)(5));
 
+// test-compose/pipe
+// var greet = function (name: string) { return 'hi:' + name }
+// var exclaim = function (statement: any) { return statement.toUpperCase() + '!' }
+// var transform = function (str: any) { return str.replace(/[dD]/, 'DDDDD') }
+// var welcome1 = compose(greet, exclaim, transform);
+// var welcome2 = pipe(greet, exclaim, transform);
+// console.log(welcome1('dot'))//hi:DDDDDOT!
+// console.log(welcome2('dolb'))//HI:DDDDDOLB!
+
 // test-throttle
 let body = document.querySelector('body');
 let fragment = document.createDocumentFragment();
@@ -207,13 +219,21 @@ body.appendChild(fragment);
 // console.log(instance_of(b, B));
 
 // test-new objectFactory
-// function SS(){
-//   this.name = arguments[0];
-//   this.age = arguments[1];
+// function SS(...args: any[]){
+//   this.name = args[0];
+//   this.age = args[1];
 // }
 // SS.prototype.getName = function() { return this.name; };
 // const ss = objectFactory(SS, 'cxk', '18');
-// console.log(ss.getName());
+// console.log(ss);
+
+// function SS(...args: any[]){
+//   this.name = args[0];
+//   this.age = args[1];
+// }
+// SS.prototype.getName = function() { return this.name; };
+// var test = new SS('yzf', 123);
+// console.log(test);
 
 // test-Object.create
 // const b = objectCreate(null, {name: {value: '123'}});
@@ -280,19 +300,18 @@ body.appendChild(fragment);
 // module.hot.accept();
 
 // bigInt 9007199254740991n BigInt(9007199254740991)
-let symbol1 = Symbol(123);
-let reg1 = new RegExp('1234', 'igmuys');
-let date1 = new Date();
-let map1 = new Map();
-let obj: any = {
-  bigInt: BigInt(9007199254740991),
-  ary: [{name: 'yzf'}, {age: 123}],
-  [symbol1]: 'symbol',
-  reg1,
-  date1,
-  map1
-}
+// let symbol1 = Symbol(123);
+// let reg1 = new RegExp('1234', 'igmuys');
+// let date1 = new Date();
+// let map1 = new Map();
+// let obj: any = {
+//   bigInt: BigInt(9007199254740991),
+//   ary: [{name: 'yzf'}, {age: 123}],
+//   [symbol1]: 'symbol',
+//   reg1,
+//   date1,
+//   map1
+// }
 
-
-const obj1: any = cloneOther(obj);
-console.log(obj1);
+// const obj1: any = cloneOther(obj);
+// console.log(obj1);

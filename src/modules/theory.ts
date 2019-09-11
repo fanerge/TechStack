@@ -66,7 +66,9 @@ export function myBind() {
   }
 }
 
-// 模拟 new
+// 模拟 new（new 的作用，1.实例化对象2.实现继承）
+// 如果构造函数return为object，则返回该object
+// 如果构造函数return 基本类型 包括 null，则返回this对象
 /**
  * 1.它创建一个空对象
  * 2.它会被指向[[prototype]]链接
@@ -74,13 +76,20 @@ export function myBind() {
  * 4.通过new创建的每个对象将[[prototype]]连接到函数的protorype对象上
  * 5.返回对象（如果没有显示返回，则返回this所指的对象）
  */
-export function objectFactory() {
-  const obj = new Object();
-  const [functionName, ...rest] = arguments;
-  const Constructor = functionName;
-  Object.setPrototypeOf(obj, Constructor.prototype);
-  const ret = Constructor.apply(obj, rest);
-  return typeof ret === 'object' ? ret : obj;
+export function objectFactory(...args: any[]) {
+  const [functionName, ...rest] = args;
+  // 继承原型属性(obj为对象)
+  const obj = Object.create(functionName.prototype);
+  // 继承构造属性
+  const ret = functionName.apply(obj, rest);
+  // 对构造函数返回值兼容处理
+  return typeof ret === 'object' && ret !== null ? ret : obj;
+  // const obj = new Object();
+  // const [functionName, ...rest] = arguments;
+  // const Constructor = functionName;
+  // Object.setPrototypeOf(obj, Constructor.prototype);
+  // const ret = Constructor.apply(obj, rest);
+  // return typeof ret === 'object' ? ret : obj;
 }
 
 // 模拟 Object.create

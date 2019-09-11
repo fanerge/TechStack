@@ -54,13 +54,41 @@ export function deepClone(obj: any, hash = new WeakMap()) : any{
     return newObj;
 }
 
-// 柯里化函数实现curry
+// FP中柯里化函数实现curry
 export function curry(fn: any, ...args: any[]) {
     args.length < fn.length
     // 参数长度不足时，重新柯里化该函数，等待接受新参数
     ? (...rest: any[]) => curry(fn, ...args, ...rest)
     // 参数长度满足时，执行函数
     : fn(...args);
+}
+
+// FP中compose（从右往左执行）
+export function compose(...args: any[]) {
+  return (subArgs: any) => {
+    let res = subArgs;
+    // for(let i = args.length - 1; i >= 0; i--) {
+    //   res = args[i](res);
+    // }
+    args.reverse().reduce((acc, func,index) => {
+      return res = func(acc);
+    }, res);
+    return res;
+  }
+}
+
+// FP中pipe（从左往右执行）
+export function pipe(...args: any[]) {
+  return (subArgs: any) => {
+    let res = subArgs;
+    // for(let i =0; i < args.length; i++) {
+    //   res = args[i](res);
+    // }
+    args.reduce((acc, func,index) => {
+      return res = func(acc);
+    }, res);
+    return res;
+  }
 }
 
 // 节流（定时器，时间段最后触发）

@@ -1,12 +1,21 @@
 # 浏览器环境
-1.  同步代执行
-2.  遇到微任务和宏任务则分别放在queue中
-3.  执行完同步代码开始看微任务queue中是否有任务执行，否则看宏任务queue是否有任务执行
-4.  在执行中遇到新的微任务或宏任务，则继续放入对应的queue中（微任务中放微任务1，微任务1会比先进的红任务先执行）如此形成了时间循环。
-   
-Macrotask：setTimeout、setInterval、setImmediate
-Microtask：Promise.then、MutaionObserver（监听DOM变动的构造函数）、process.nextTick
+栈中放主代码，事件队列中放任务（宏任务和为任务）
+##  概述
+JS 分为同步任务和异步任务<br>
+同步任务都在JS引擎线程上执行，形成一个执行栈<br>
+事件触发线程管理一个任务队列，异步任务触发条件达成（比如setTimeout达到设定的时间），将回调事件放到任务队列中<br>
+执行栈中所有同步任务执行完毕，此时JS引擎线程空闲，系统会读取任务队列，将可运行的异步任务回调事件添加到执行栈中，开始执行<br>
+##  具体流程（以下必须在16.7ms完成，否则就会丢帧、卡顿）
+1.  执行一个宏任务（栈中没有就从事件队列中获取）
+2.  执行过程中如果遇到微任务，就将它添加到微任务的任务队列中
+3.  宏任务执行完毕后，立即执行当前微任务队列中的所有微任务（依次执行）
+4.  当前宏任务执行完毕，开始检查渲染，然后GUI线程接管渲染
+5.  渲染完毕后，JS线程继续接管，开始下一个宏任务（从事件队列中获取）
 
+   
+Macrotask：主代码块（同步代码）、setTimeout、setInterval、setImmediate
+Microtask：Promise.then、MutaionObserver（监听DOM变动的构造函数）、process.nextTick、Object.observe（已废弃）
+[Event Loop](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-10)
 # Node.js
 在一个 I/O 循环内：setImmediate 总是优先于 setTimeout(callback ,0)<br>
 主模块：setImmediate 和 setTimeout(callback ,0) 顺序就不一定了。
