@@ -207,6 +207,13 @@ export function toCamelCase(str: string) {
   });;
 }
 
+// frameWork模版
+// ;(function(global, func, name) {
+//   global[name] = func.call(global);
+// })(this, function(){
+//   // 具体实现
+// }, 'frameWorkName');
+
 
 
 

@@ -44,6 +44,23 @@ Either.of = function (left, right) {
   return new Either(left, right);
 };
 
+// ap 是 applicative（应用）的缩写。凡是部署了ap方法的函子，就是 ap 函子。
+class Ap extends Functor {
+  ap(F) {
+    return Ap.of(this.val(F.val));
+  }
+}
+
+// Monad 函子的作用是，总是返回一个单层的函子。它有一个flatMap方法，与map方法作用相同，唯一的区别是如果生成了一个嵌套函子，它会取出后者内部的值，保证返回的永远是一个单层的容器，不会出现嵌套的情况。
+// monad 是可以变扁（flatten）的 pointed functor。
+class Monad extends Maybe {
+  join() {
+    return this.val;
+  }
+  flatMap(f) {
+    return this.map(f).join();
+  }
+}
 
 // IO 把非纯执行动作（impure action）捕获到包裹函数里，目的是延迟执行这个非纯动作。
 export class IO {
@@ -60,3 +77,9 @@ IO.of = function (f) {
       return f;
     });
 };
+
+
+
+
+
+
