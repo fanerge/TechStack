@@ -88,4 +88,4 @@ ary.insert(7);
 ary.insert(6);
 
 
-console.log(ary.insertionSort());
+// console.log(ary.insertionSort());

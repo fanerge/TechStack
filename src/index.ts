@@ -33,6 +33,8 @@ import {
  } from './modules/theory';
 require('./modules/sort');
 require('./modules/fp');
+// 剑指offer刷题
+require('./utils/offer');
 
 // 栈
 // const stack: Stack = new Stack();
