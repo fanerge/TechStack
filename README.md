@@ -6,6 +6,7 @@
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce版本
 
 [工具函数集合](./src/modules/utils.ts)
+
 #   JS原生api模拟
 - [x] myCall、myApply、myBind 自定义call、apply、bind函数
 - [x] instance_of(L, A) 模拟 L instanceof A
@@ -13,22 +14,30 @@
 - [x] objectCreate 模拟 Object.create(proto, PropertyDescriptorMap)
 
 [theory.ts](./src/modules/theory.ts)
-# JavaScript引擎探索（主要V8）
+
+# JavaScript 核心概念
 - [x] 执行上下文EC、执行上下文堆栈ECS
 - [x] 全局对象GO、变量对象VO、活动对象AO等
 - [x] 函数的[[scope]]属性 
 - [x] 作用域链 Scope chain
+
+[jsCore.md](./src/README/jsCore.md)
+
+# JavaScript引擎探索（主要V8）
 - [x] V8工作原理
 - [x] V8如何优化对象存取（Hideen Class && Inline Cache） 
 - [x] V8如何优化数组（动态使用不同存储模式：Fast Elements、Fast Holey Elements、Dictionary Elements ） 
 
 [V8.md](./README/v8.md)
+
 # JSBridge封装
 [JSBridge](./README/JSBridge.md)
 
 # 工程化（Webapck）
 - [x] 热更新原理
+
 [webpack](./README/webpack.md)
+
 # Node.js
 - [x] 高并发解决方案（负载均衡）
 
