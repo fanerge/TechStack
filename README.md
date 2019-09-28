@@ -25,8 +25,13 @@
 
 # JavaScript引擎探索（主要V8）
 - [x] V8工作原理
-- [x] V8如何优化对象存取（Hideen Class && Inline Cache） 
+- [x] 逃逸分析(Escape Analysis）
+- [x] V8如何优化对象（Hideen Class && Inline Cache） 
 - [x] V8如何优化数组（动态使用不同存储模式：Fast Elements、Fast Holey Elements、Dictionary Elements ） 
+- [x] V8如何优化数字（SMI、HeapNumber、MutableHeapNumber）
+- [x] V8如何优化字符串（v8中字符串5种表达模式）
+- [x] JIT和AOT
+- [x] 垃圾回收（新生代和老生代内存回收方式）
 
 [V8.md](./README/v8.md)
 
