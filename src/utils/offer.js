@@ -108,29 +108,116 @@ function reConstructBinaryTree (pre, vin) {
 //   }
 //   return outStack.pop();
 // }
-const outStack = [],
-  inStack = [];
-function push(node) {
-  // write code here
-  inStack.push(node);
-}
-function pop() {
-  // 每次都要outStack取完了再往里添加
-  if (!outStack.length) {
-    while (inStack.length) {
-      outStack.push(inStack.pop());
-    }
+// const outStack = [],
+//   inStack = [];
+// function push(node) {
+//   // write code here
+//   inStack.push(node);
+// }
+// function pop() {
+//   // 每次都要outStack取完了再往里添加
+//   if (!outStack.length) {
+//     while (inStack.length) {
+//       outStack.push(inStack.pop());
+//     }
+//   }
+//   return outStack.pop();
+// }
+// push(1)
+// push(2)
+// push(4)
+// console.log(pop());
+// console.log(pop());
+// push(5);
+// push(6);
+// console.log(pop());
+// console.log(pop());
+// console.log(pop());
+// console.log(pop());
+
+
+// offer 6
+
+// offer 7 斐波那契数列 1 1 2 3 5 8 13 21
+// 递归方案
+// function offer7 (n) {
+//   if (n === 1 || n === 2) {
+//     return 1;
+//   }
+
+//   return offer7(n-1) + offer7(n-2);
+// }
+// console.log(offer7(6));
+// 动态规划
+// 动态规划的特点是：最优子结构、无后效性、子问题重叠。
+// 确定边界：F[1] = 1; F[2] = 1;
+// 状态转移：F[i] = F[i - 1] + F[i - 2]; 
+// function offer7 (n) {
+//   let n1 = 1;
+//   let n2 = 1;
+//   let n3 = 1;
+
+//   for (var i = 3; i <= n; i++) {
+//     n3 = n1 + n2;
+//     n1 = n2;
+//     n2 = n3;
+//   }
+
+//   return n3;
+// }
+// console.log(offer7(8))
+
+// 剑指offer（8）跳台阶
+// 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+// a.假定第一次跳的是一阶，那么剩下的是n-1个台阶，跳法是f(n-1);
+// b.假定第一次跳的是2阶，那么剩下的是n-2个台阶，跳法是f(n-2)
+// c.由a\b假设可以得出总跳法为: f(n) = f(n-1) + f(n-2) 
+// d.然后通过实际的情况可以得出：只有一阶的时候 f(1) = 1 ,只有两阶的时候可以有 f(2) = 2
+function offer8(n){
+  let n1 = 1;
+  let n2 = 2;
+  let n3 = n === n1 ? n1 : n2;
+
+  for (let i = 3; i <= n; i++) {
+    n3 = n2 + n1;
+    n1 = n2;
+    n2 = n3;
   }
-  return outStack.pop();
+
+  return n3;
 }
-push(1)
-push(2)
-push(4)
-console.log(pop());
-console.log(pop());
-push(5);
-push(6);
-console.log(pop());
-console.log(pop());
-console.log(pop());
-console.log(pop());
+// console.log(offer8(5));
+
+// 剑指offer（9）变态跳台阶,一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+// f(n) = 2f(n-1)
+// f(1) = 1;
+// f(2) = 2;
+// f(3) = 4;
+function offer9(n) {
+  if (n === 1) {
+    return 1;
+  }
+  let n1 = 1;
+  let temp;
+  for (let i = 2; i <= n; i++) {
+    temp = 2 * n1;
+    n1 = 2 * n1;
+  }
+
+  return temp;
+}
+// console.log(offer9(4));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
