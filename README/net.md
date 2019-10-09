@@ -30,6 +30,8 @@ TCP:Transmission Control Protocol（传输控制协议），是一种面向连�
 协议有：ICMP IGMP IP（IPV4 IPV6）、ARP、RARP
 ```
 IPv6:Internet Protocol Version 6（互联网协议第6版）。
+ICMP:Internet Control Message Protocol（Internet控制报文协议），控制消息是指网络通不通、主机是否可达、路由是否可用等网络本身的消息。
+IGMP:Internet Group Management Protocol（Internet 组管理协议），该协议运行在主机和组播路由器之间。
 ARP:Address Resolution Protocol（地址解析协议），是根据IP地址获取物理地址的一个TCP/IP协议。
 RARP:Reverse Address Resolution Protocol（反向地址转换协议），允许局域网的物理机器从网关服务器的 ARP 表或者缓存上请求其 IP 地址。
 ```
@@ -44,3 +46,6 @@ RARP:Reverse Address Resolution Protocol（反向地址转换协议），允许�
 ##  传输层
 ##  网络层
 ##  链路层（物理层、数据链路层）
+
+# 其他
+DHCP:Dynamic Host Configuration Protocol（动态主机配置协议），用于内部网或网络服务供应商自动分配IP地址；给用户用于内部网管理员作为对所有计算机作中央管理的手段。
