@@ -48,4 +48,26 @@ RARP:Reverse Address Resolution Protocol（反向地址转换协议），允许�
 ##  链路层（物理层、数据链路层）
 
 # 其他
-DHCP:Dynamic Host Configuration Protocol（动态主机配置协议），用于内部网或网络服务供应商自动分配IP地址；给用户用于内部网管理员作为对所有计算机作中央管理的手段。
+DHCP:Dynamic Host Configuration Protocol（动态主机配置协议），用于内部网或网络服务供应商自动分配IP地址；给用户用于内部网管理员作为对所有计算机作中央管理的手段。<br>
+##  TCP
+TCP的特点：慢启动、拥塞避免、快速重传、快速恢复
+### TCP/三次握手建立连接
+1.  客户端发送SYN（SEQ=x）报文给服务器端，进入SYN_SEND状态。
+2.  服务器端收到SYN报文，回应一个SYN （SEQ=y）ACK（ack=x+1）报文，进入SYN_RECV状态。
+3.  客户端收到服务器端的SYN报文，回应一个ACK（ack=y+1）报文，进入连接建立状态。
+
+三次握手完成，TCP客户端和服务器端成功地建立连接，可以开始传输数据了。
+
+### TCP/四次握手终止连接
+（1） 客户机某个应用进程首先调用close，称该端执行“主动关闭”（active close）。该端的TCP于是发送一个FIN分节，表示数据发送完毕。
+（2） 接收到这个FIN的对端执行 “被动关闭”（passive close），这个FIN由TCP确认，发送ACK。
+（3） 一段时间后，接收到这个文件结束符的应用进程将调用close关闭它的套接字。这导致它的TCP也发送一个FIN。
+（4） 接收这个最终FIN的原发送端TCP（即执行主动关闭的那一端）确认这个FIN，发送ACK。
+
+既然每个方向都需要一个FIN和一个ACK，因此进行了4次握手。
+```
+SYN:同步序列编号（Synchronize Sequence Numbers）
+ACK:确认字符 (Acknowledge character)
+SEQ:序列号（sequance）
+FIN:结束标志（Finally）
+```
