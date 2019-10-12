@@ -5,7 +5,7 @@
 - [x] 作用域链 Scope chain
 - [x] 全等运算符（===）和相等运算符（==）
 
-[jsCore.md](./src/README/jsCore.md)
+[jsCore.md](./README/jsCore.md)
 
 # JavaScript引擎探索（主要V8）
 - [x] V8工作原理
