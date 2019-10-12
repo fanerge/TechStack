@@ -178,3 +178,77 @@ barContext.[[scope]] = [barContext.AO, fooContext.AO, globalContext.VO];
 
 [javascript 执行环境，变量对象，作用域链](https://segmentfault.com/a/1190000000533094)
 [JS 执行环境、作用域链、活动对象](https://segmentfault.com/a/1190000015782315)
+
+# 装箱和拆箱
+装箱转换：把基本类型转换为对应的包装类型。
+拆箱操作：把对应的包装类型转换为基本类型。
+```
+var s1 = "some text";
+var s2 = s1.substring(2);
+// 拆分为下列步骤
+（1）操作之前创建String类型的一个实例；（装箱）
+（2）操作时在实例上调用指定的方法（可从原型链上拿到对应的方法和属性）；
+（3）操作结束后销毁这个实例；（拆箱）
+// 手动拆箱
+通过包装类型的valueOf()或者toString()
+var numberObj = new Number(1);
+typeof numberObj // object
+typeof numberObj.valueOf() // number
+typeof numberObj.toString() // string
+```
+
+# 相等和全等操作符
+##  全等运算符===（IEA规则）
+1.  如果两个操作数有不同的类型，它们不是严格相等的
+2.  如果两个操作数都为 null，则它们是严格相等的
+3.  如果两个操作数都为 undefined，它们是严格相等的
+4.  如果一个或两个操作数都是 NaN，它们就不是严格相等的
+5.  如果两个操作数都为 true 或都为 false，它们是严格相等的
+6.  如果两个操作数都是 number 类型并且具有相同的值，则它们是严格相等的
+7.  如果两个操作数都是 string 类型并且具有相同的值，则它们是严格相等的
+8.  如果两个操作数都引用相同的对象或函数，则它们是严格相等的
+9.  以上所有其他情况下操作数都不是严格相等的。
+
+## 对象转换为原始值的规则
+### 对象到布尔值
+所有的对象（包括数字和函数包装类型对象）都转换为 true。<br>
+### 对象到字符串（ OPCA 算法）
+1.  如果方法 valueOf() 存在，则调用它。如果 valueOf() 返回一个原始值，JS 将这个值转换为字符串（如果本身不是字符串的话），并返回这个字符串结果。
+2.  如果方法 toString() 存在，则调用它。如果 toString() 返回一个原始值，JS 将这个值转换为字符串（如果本身不是字符串的话），并返回这个字符串结果。需要注意，原始值到字符串的转换。
+3.  否则，JS 无法从 toString() 或 valueOf() 获得一个原始值,它将抛出一个 TypeError:不能将对象转换为原始值 异常
+PS:Undefined、Null、Boolean、Number、String、Symbol、BigInt
+各种对象转换规则
+```
+// 通过valueof方法不能得到原始值，则再调用toString方法
+String({}) // "[object Object]"
+String(['s','d']) // "s,d" 以逗号分割的字符串
+
+// 通过valueof方法直接得到原始值
+var strObj = new String('sdf'); 
+strObj.valueOf() // 'sdf'
+var numObj = new Number(123); 
+numObj.valueOf() // 123
+var bolObj = new Boolean(false); 
+bolObj.valueOf() // false
+```
+### 相等运算符算法(EEA规则)
+1.  如果操作数具有相同的类型，请使用上面的 IEA 测试它们是否严格相等。 如果它们不严格相等，则它们不相等，否则相等。
+2.  如果操作数有不同的类型：
+  2.1） 如果一个操作数为 null 而另一个 undefined，则它们相等
+  2.2） 如果一个值是数字，另一个是字符串，先将字符串转换为数字，然后使用转换后的值比较
+  2.3） 如果一个操作数是布尔值，则将 true 转换为 1，将 false 转换为 0，然后使用转换后的值比较
+  2.4） 如果一个操作数是一个对象，而另一个操作数是一个数字或字符串，则使用OPCA将该对象转换为原始值，再使用转换后的值比较
+3.  在以上的其他情况下，操作数都不相等
+
+PS:EEA为全等运算符（===）的规则
+其他特例
+```
+[] == ![] // true
+[''] == '' // true
+'' == 0 // true
+
+({}) == true // false
+NaN === NaN // false
+```
+[JS 中相等和全等操作符](https://juejin.im/post/5d9fc461f265da5b5f757830)
+[你真的掌握变量和类型了吗](https://mp.weixin.qq.com/s/uuqYAgn6-dZWPQahnZXJkA)
