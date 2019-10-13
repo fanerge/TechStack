@@ -31,6 +31,7 @@ Microtask：process.nextTick、Promise.then、MutaionObserver（监听DOM变动�
 5.  check 由setImmediate()设置的回调函数。
 6.  close callbacks 一些关闭回调，例如socket.on('close', ...)
 ```
+microtask会在事件循环的各个阶段之间执行
 [Node.js 指南（Node.js事件循环、定时器和process.nextTick()）](https://segmentfault.com/a/1190000017017364)
 ##  process.nextTick() vs setImmediate()
 process.nextTick()在同一个阶段执行<br>
@@ -41,7 +42,7 @@ process.nextTick 总是在剩余代码执行之后事件循环继续之前执行
 <br>
 process.nextTick 总是在剩余代码执行之后事件循环继续之前执行回调函数<br>
 ##  异步任务分两种
-本轮循环：promise.nextTick、promise的回调函数<br>
+本轮循环：promise.nextTick、promise.then的回调函数<br>
 次轮循环：setTimeout、setInteval、setImmediate的回调函数<br>
 
 [Node.js中的事件循环](https://www.jianshu.com/p/8cab6821bab7)
@@ -50,8 +51,9 @@ process.nextTick 总是在剩余代码执行之后事件循环继续之前执行
 浏览器环境下，microtask的任务队列是每个macrotask执行完之后执行。而在Node.js中，microtask会在事件循环的各个阶段之间执行，也就是一个阶段执行完毕，就会去执行microtask队列的任务。
 ![总结](https://mmbiz.qpic.cn/mmbiz_png/udZl15qqib0NPJYm99fCKh9SUq52nkiaF0dJGpnkpzqNaXj4krqPUGvYkNprEJbBiaeh9kfibQZApez565l1gocXPA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 ##  node.js中
-在主模块和同一个I/O循环，process.nextTick 优先于 promise.then。<br>
-在主模块中 setImmediate 和 setTimeout(fn, 0) 顺序不定，由线程决定，在同一个I/O循环，setImmediate 优先于 setTimeout。
+在同一个I/O循环优先级如下：process.nextTick > promise.then > setImmediate > setTimeout(callback, 0)<br>
+在主模块中 process.nextTick 仍人优先于 promise.then。<br>
+在主模块中 setImmediate 和 setTimeout(fn, 0) 顺序不定，由线程决定。
 
 
 
