@@ -13,8 +13,8 @@ JS 分为同步任务和异步任务<br>
 5.  渲染完毕后，JS线程继续接管，开始下一个宏任务（从事件队列中获取）
 
    
-Macrotask：主代码块（同步代码）、setTimeout、setInterval、setImmediate
-Microtask：Promise.then、MutaionObserver（监听DOM变动的构造函数）、process.nextTick、Object.observe（已废弃）
+Macrotask：主代码块（同步代码）、setTimeout、setInterval、setImmediate、I/O、UI rendering
+Microtask：process.nextTick、Promise.then、MutaionObserver（监听DOM变动的构造函数）、Object.observe（已废弃）
 [Event Loop](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-10)
 # Node.js
 在一个 I/O 循环内：setImmediate 总是优先于 setTimeout(callback ,0)<br>
@@ -24,12 +24,12 @@ Microtask：Promise.then、MutaionObserver（监听DOM变动的构造函数）�
 // 每个事件循环都有6个阶段，每个阶段都会维持一个先进先出的可执行回调函数队列。
 // 然后执行这个阶段队列中的回调函数直到队列为空，或者回调函数调用次数达到上限，事件循环会进入下一个阶段。
 // 在事件循环的每次运行之间，Node.js检查它是否在等待任何异步I/O或定时器，如果没有，则彻底关闭。
-1.  timers 此阶段执行由setTimeout()和setInterval()调度的回调。
-2.  pending callbacks 执行延迟到下一个循环迭代的I/O回调。
+1.  timers 执行setTimeout() 和 setInterval()中到期的callback
+2.  pending callbacks 执行上一轮循环被延迟的I/O回调
 3.  idle，prepare（libuv内部使用）
-4.  poll 检索新的I/O事件；执行与I/O相关的回调（几乎所有，除了close callbacks、由定时器调度的一些和setImmediate()）；node将在适当的时候在这里阻塞。
+4.  poll 最为重要的阶段，执行I/O callback，在适当的条件下会阻塞在这个阶段
 5.  check 由setImmediate()设置的回调函数。
-6.  close callbacks 一些关闭回调，例如socket.on('close', ...)。
+6.  close callbacks 一些关闭回调，例如socket.on('close', ...)
 ```
 [Node.js 指南（Node.js事件循环、定时器和process.nextTick()）](https://segmentfault.com/a/1190000017017364)
 ##  process.nextTick() vs setImmediate()
@@ -38,7 +38,7 @@ setImmediate()在事件循环的下一个阶段或者'tick'中执行<br>
 process.nextTick 总是在剩余代码执行之后事件循环继续之前执行回调函数<br>
 
 同一次事件循环执行顺序<br>
-promise.then > process.nextTick<br>
+<br>
 process.nextTick 总是在剩余代码执行之后事件循环继续之前执行回调函数<br>
 ##  异步任务分两种
 本轮循环：promise.nextTick、promise的回调函数<br>
@@ -46,6 +46,12 @@ process.nextTick 总是在剩余代码执行之后事件循环继续之前执行
 
 [Node.js中的事件循环](https://www.jianshu.com/p/8cab6821bab7)
 
+# 总结
+浏览器环境下，microtask的任务队列是每个macrotask执行完之后执行。而在Node.js中，microtask会在事件循环的各个阶段之间执行，也就是一个阶段执行完毕，就会去执行microtask队列的任务。
+![总结](https://mmbiz.qpic.cn/mmbiz_png/udZl15qqib0NPJYm99fCKh9SUq52nkiaF0dJGpnkpzqNaXj4krqPUGvYkNprEJbBiaeh9kfibQZApez565l1gocXPA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+##  node.js中
+在主模块和同一个I/O循环，process.nextTick 优先于 promise.then。<br>
+在主模块中 setImmediate 和 setTimeout(fn, 0) 顺序不定，由线程决定，在同一个I/O循环，setImmediate 优先于 setTimeout。
 
 
 

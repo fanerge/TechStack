@@ -3,6 +3,7 @@
 - [x] 全局对象GO、变量对象VO、活动对象AO等
 - [x] 函数的[[scope]]属性 
 - [x] 作用域链 Scope chain
+- [x] 装箱和拆箱
 - [x] 全等运算符（===）和相等运算符（==）
 
 [jsCore.md](./README/jsCore.md)
