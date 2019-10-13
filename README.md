@@ -47,6 +47,8 @@
 
 # Node.js
 - [x] 高并发解决方案（负载均衡）
+- [x] Event Loop
+![事件循环](https://mmbiz.qpic.cn/mmbiz_png/udZl15qqib0NPJYm99fCKh9SUq52nkiaF0dJGpnkpzqNaXj4krqPUGvYkNprEJbBiaeh9kfibQZApez565l1gocXPA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1) 
 
 # WEB安全
 - [x] XSS（Cascading Style Sheets）攻击全称跨站脚本攻击
