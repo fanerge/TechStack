@@ -12,9 +12,8 @@ JS 分为同步任务和异步任务<br>
 4.  当前宏任务执行完毕，开始检查渲染，然后GUI线程接管渲染
 5.  渲染完毕后，JS线程继续接管，开始下一个宏任务（从事件队列中获取）
 
-   
-Macrotask：主代码块（同步代码）、setTimeout、setInterval、setImmediate、I/O、UI rendering
-Microtask：process.nextTick、Promise.then、MutaionObserver（监听DOM变动的构造函数）、Object.observe（已废弃）
+Macrotask：主代码块（同步代码）、setTimeout、setInterval、setImmediate、I/O、UI rendering<br>
+Microtask：process.nextTick、Promise.then、MutaionObserver（监听DOM变动的构造函数）、Object.observe（已废弃）<br>
 [Event Loop](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-10)
 # Node.js
 在一个 I/O 循环内：setImmediate 总是优先于 setTimeout(callback ,0)<br>
@@ -52,7 +51,7 @@ process.nextTick 总是在剩余代码执行之后事件循环继续之前执行
 ![总结](https://mmbiz.qpic.cn/mmbiz_png/udZl15qqib0NPJYm99fCKh9SUq52nkiaF0dJGpnkpzqNaXj4krqPUGvYkNprEJbBiaeh9kfibQZApez565l1gocXPA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 ##  node.js中
 在同一个I/O循环优先级如下：process.nextTick > promise.then > setImmediate > setTimeout(callback, 0)<br>
-在主模块中 process.nextTick 仍人优先于 promise.then。<br>
+在主模块中 process.nextTick 仍优先于 promise.then。<br>
 在主模块中 setImmediate 和 setTimeout(fn, 0) 顺序不定，由线程决定。
 
 

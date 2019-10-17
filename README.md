@@ -5,6 +5,7 @@
 - [x] 作用域链 Scope chain
 - [x] 装箱和拆箱
 - [x] 全等运算符（===）和相等运算符（==）
+- [x] 元编程（metaprogramming）
 
 [jsCore.md](./README/jsCore.md)
 
@@ -66,6 +67,12 @@
 - [x] [HTTP Security Headers](./README/HTTPSecurityHeaders.md)
 - [x] [JWT/深度理解token](https://segmentfault.com/a/1190000020143933)
 
+# WEB体验提升
+- [x] 滚动穿透/控制浏览器过度滚动时的表现css属性overscroll-behavior
+- [x] 元素focus页面不滚动不定位的JS处理 button.focus({ preventScroll: true })
+- [x] [Preload，Prefetch，Preconnect和Prerendering](./README/preload.md)
+- [x] [SEO](./README/seo.md) 
+
 # 算法
 ##  排序算法
 ### 内排序算法
@@ -84,7 +91,7 @@
 
 稳定算法的有：冒泡排序、插入排序、归并排序、计数排序、桶排序、基数排序
 ![](https://images2015.cnblogs.com/blog/1089184/201701/1089184-20170118180823468-388996114.png)
-[图片来源](https://www.cnblogs.com/beli/p/6297741.html)
+[图片来源](https://www.cnblogs.com/beli/p/6297741.html)<br>
 [之前的博客](https://fanerge.github.io/2017/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95-%E6%80%BB%E7%BB%93%E6%80%A7%E6%96%87%E7%AB%A0.html)
 
 # 数据结构

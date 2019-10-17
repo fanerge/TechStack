@@ -255,3 +255,11 @@ NaN === NaN // false
 ```
 [JS 中相等和全等操作符](https://juejin.im/post/5d9fc461f265da5b5f757830)
 [你真的掌握变量和类型了吗](https://mp.weixin.qq.com/s/uuqYAgn6-dZWPQahnZXJkA)
+
+#   元编程（metaprogramming）
+##  定义
+元编程的目的是操作其他的程序（或自身）作为它自身的数据，或者在运行时完成它本应该在编译时应该完成的任务。<br>
+反射：一门语言同时也是自身的元语言的能力称之为反射。
+##  JS中的元编程
+Proxy 和 Reflect 和 eval 和 new Function() 具备元编程能力。<br>
+JavaScript 获得了 Proxy 和 Reflect 对象的支持，允许你拦截并定义基本语言操作的自定义行为（例如，属性查找，赋值，枚举，函数调用等）。借助这两个对象，你可以在 JavaScript 元级别进行编程。
