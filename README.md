@@ -25,7 +25,8 @@
 
 #   工具函数
 - [x] checkType 类型检查包含String、Boolean、Number、Undefined、Null、Symbol、BigInt、Map、HTMLBodyElement、HTML*Element等
-- [x] deepClone 深拷贝（包含循环引用、递归注意栈溢出）
+- [x] deepClone 深拷贝（包含循环引用）
+- [x] 深拷贝（处理递归爆栈）[](递归注意栈溢出)
 - [x] curry 柯里化函数
 - [x] throttle(前置触发、后置触发)、debounce
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce版本
@@ -51,6 +52,7 @@
 - [x] 高并发解决方案（负载均衡）
 - [x] Event Loop
 ![事件循环](https://mmbiz.qpic.cn/mmbiz_png/udZl15qqib0NPJYm99fCKh9SUq52nkiaF0dJGpnkpzqNaXj4krqPUGvYkNprEJbBiaeh9kfibQZApez565l1gocXPA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1) 
+[JSBridge](./README/eventLoop.md)
 
 # WEB安全
 - [x] XSS（Cascading Style Sheets）攻击全称跨站脚本攻击

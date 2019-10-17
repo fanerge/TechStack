@@ -5,7 +5,7 @@ output 属性告诉 webpack 在哪里输出它所创建的 bundles，以及如�
 #  loader
 loader 让 webpack 能够去处理那些非 JavaScript 文件（webpack 自身只理解 JavaScript）。loader 可以将所有类型的文件转换为 webpack 能够处理的有效模块，然后你就可以利用 webpack 的打包能力，对它们进行处理。<br>
 loader 的本质其实就是一个方法，接收到的字符串，对字符串进行操作后输出字符串。<br>
-同类型的文件（后缀名区分）通过 use 配置的 loader 处理顺序为从后向前。<br>
+同类型的文件（后缀名区分）通过 use 配置的 loader 处理<span style="color: red">顺序为从后向前</span>。<br>
 ```
 // loader的大体结构，其实就是对特殊文件的一个预处理函数
 module.exports = function (code) {
@@ -15,7 +15,7 @@ module.exports = function (code) {
     // 输出处理后的值
     return result;
     
-    // loader只自带的返回函数
+    // loader自带的返回函数
     this.callback(err, result, SourceMap);
     
     // 同步loader

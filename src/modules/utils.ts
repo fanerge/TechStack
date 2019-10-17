@@ -10,7 +10,12 @@ export function checkType(obj: any): string {
 // 深拷贝（hash = new WeakMap()考虑循环引用的问题）
 export function deepClone(obj: any, hash = new WeakMap()) : any{
     if(checkType(obj) === 'RegExp') {
-        return new RegExp(obj);
+      // regExp.source 正则对象的源模式文本;
+      // regExp.flags 正则表达式对象的标志字符串;
+      // regExp.lastIndex 下次匹配开始的字符串索引位置
+      let temp =  new RegExp(obj.source, obj.flags);
+      temp.lastIndex = obj.lastIndex;
+      return temp;
     }
     if(checkType(obj) === 'Date') {
         return new Date(obj);
@@ -43,6 +48,7 @@ export function deepClone(obj: any, hash = new WeakMap()) : any{
 
     let newObj = new obj.constructor();
     hash.set(obj, newObj);
+    // Reflect.ownKeys(obj) 是不是更合适呢？
     Object.keys(obj).forEach(function(key) {
         if(typeof obj[key] === 'object' && obj[key] !== null) {
             newObj[key] = deepClone(obj[key], hash);
