@@ -34,7 +34,7 @@
 
 #   JS原生api模拟
 - [x] myCall、myApply、myBind 自定义call、apply、bind函数
-- [x] instance_of(L, A) 模拟 L instanceof A
+- [x] instance_of(L, A) 模拟 L instanceof A注意：Symbol.hasInstance 可自定义 instanceof 在某个类或构造函数的行为
 - [x] objectFactory 模拟 new 运算
 - [x] objectCreate 模拟 Object.create(proto, PropertyDescriptorMap)
 
@@ -61,6 +61,27 @@
 - [x] DDoS（Distributed Denial of Service）分布式拒绝服务攻击
 - [x] [HTTP Security Headers](./README/HTTPSecurityHeaders.md)
 - [x] [JWT/深度理解token](https://segmentfault.com/a/1190000020143933)
+
+# 算法
+##  排序算法
+### 内排序算法
+- [x] 冒泡排序
+- [x] 选择排序
+- [x] 插入排序
+- [x] 希尔增量排序
+- [x] 快速排序
+- [x] 堆排序
+
+### 外排序算法
+- [x] 归并排序
+- [x] 计数排序
+- [x] 桶排序
+- [x] 基数排序
+
+稳定算法的有：冒泡排序、插入排序、归并排序、计数排序、桶排序、基数排序
+![](https://images2015.cnblogs.com/blog/1089184/201701/1089184-20170118180823468-388996114.png)
+[图片来源](https://www.cnblogs.com/beli/p/6297741.html)
+[之前的博客](https://fanerge.github.io/2017/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95-%E6%80%BB%E7%BB%93%E6%80%A7%E6%96%87%E7%AB%A0.html)
 
 # 数据结构
 在JavaScript中讨论数据结构。<br>
