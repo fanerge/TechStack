@@ -73,7 +73,15 @@
 - [x] [Preload，Prefetch，Preconnect和Prerendering](./README/preload.md)
 - [x] [SEO](./README/seo.md) 
 
+# Other
+- [x] [堆叠上下文](./README/css_stack_context.md)
+- [x] [BFC](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
+- [x] [Containing Block/包含块](https://developer.mozilla.org/zh-CN/docs/Web/CSS/All_About_The_Containing_Block)
+- [x] 盒模型、reflow/repaint等
+
 # 算法
+如果要刷下算法的话，这里推荐大家去[牛客网](https://www.nowcoder.com/)和[leetcode](https://leetcode-cn.com/)。
+这里暂暂时整理常用的排序算法
 ##  排序算法
 ### 内排序算法
 - [x] 冒泡排序
@@ -95,7 +103,7 @@
 [之前的博客](https://fanerge.github.io/2017/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95-%E6%80%BB%E7%BB%93%E6%80%A7%E6%96%87%E7%AB%A0.html)
 
 # 数据结构
-在JavaScript中讨论数据结构。<br>
+用JavaScript来实现以下数据结构。<br>
 线性结构：线性表，栈( Stack)，队列(Queue)。<br>
 非线性结构：数组(Array)，广义表，树( Tree)，堆(Heap)，图(Graph)。<br>
 存储唯一值的数据结构：集合、字典、散列表。<br>
@@ -104,6 +112,8 @@
 线性表包括顺序表（用于需要频繁查找，很少进行插入和删除操作时）和链表（频繁插入和删除）。
 ##  广义表
 广义表是线性表的推广，线性表中的元素都是原子的单元素，而广义表中的元素可以是原子的单元素，也可以是一个子广义表。
+##  数组、栈、队列、链表、字典、散列表、树、图
+[详细介绍请异步](./README/dataStructure.md)
 ##  🌲相关的结构
 ### 二叉树
 每个节点最多含有两个子树的树称为二叉树。
