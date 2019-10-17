@@ -42,6 +42,8 @@
 
 # 工程化（Webapck）
 - [x] 热更新原理
+- [x] 自定义Loader原理探索
+- [x] 自定义Plugins原理探索
 
 [webpack](./README/webpack.md)
 

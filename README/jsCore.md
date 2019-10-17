@@ -52,7 +52,7 @@ var a = function() {}
 [深入理解JavaScript系列（12）：变量对象（Variable Object）](https://www.cnblogs.com/TomXu/archive/2012/01/16/2309728.html)
 ## AO对象加载顺序（函数预编译 Activation Object）
 活动对象是在进入函数上下文时刻被创建的，它通过函数的arguments属性初始化。<br>
-1.  函数声明时创建一个AO对象，默认放入arguments对象和this对象（此时均为 undefined）
+1.  函数声明时创建一个AO对象，默认放入arguments对象（此时为 undefined）
 2.  将函数声明的形参和变量声明放入AO对象，其值为 undefined（参数相当于局部变量）
 3.  将形参和实参进行统一
 4.  将所有的函数声明放入AO对象，其值为函数体
@@ -219,11 +219,11 @@ typeof numberObj.toString() // string
 PS:Undefined、Null、Boolean、Number、String、Symbol、BigInt
 各种对象转换规则
 ```
-// 通过valueof方法不能得到原始值，则再调用toString方法
+// 通过valueOf方法不能得到原始值，则再调用toString方法
 String({}) // "[object Object]"
 String(['s','d']) // "s,d" 以逗号分割的字符串
 
-// 通过valueof方法直接得到原始值
+// 通过valueOf方法直接得到原始值
 var strObj = new String('sdf'); 
 strObj.valueOf() // 'sdf'
 var numObj = new Number(123); 
@@ -234,19 +234,22 @@ bolObj.valueOf() // false
 ### 相等运算符算法(EEA规则)
 1.  如果操作数具有相同的类型，请使用上面的 IEA 测试它们是否严格相等。 如果它们不严格相等，则它们不相等，否则相等。
 2.  如果操作数有不同的类型：
+  ```
   2.1） 如果一个操作数为 null 而另一个 undefined，则它们相等
   2.2） 如果一个值是数字，另一个是字符串，先将字符串转换为数字，然后使用转换后的值比较
   2.3） 如果一个操作数是布尔值，则将 true 转换为 1，将 false 转换为 0，然后使用转换后的值比较
   2.4） 如果一个操作数是一个对象，而另一个操作数是一个数字或字符串，则使用OPCA将该对象转换为原始值，再使用转换后的值比较
+  ```
 3.  在以上的其他情况下，操作数都不相等
 
-PS:EEA为全等运算符（===）的规则
-其他特例
+试一下，可能够理解
 ```
-[] == ![] // true
+[] == ![] // true，提示!的优先级高于==，![]首先会被转换为false
 [''] == '' // true
 '' == 0 // true
 
+[] === [] // false
+[] == [] // false
 ({}) == true // false
 NaN === NaN // false
 ```
