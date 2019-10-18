@@ -1,5 +1,5 @@
 #   为啥 constructor(){ this.target = this.func.bind(this); },JSX里onChange={this.target}的写法要比要比非bind的func = () => {}的写法效率高？
-1.  bind之后锁定了上下文，不用向上查找（免去了向上查找执行上下文的过程）。
+1.  bind之后锁定了上下文，不用向上查找（免去了向上查找执行上下文的过程，不一定正确，待验证查明）。
 
 #   setState 什么时候是同步的，什么时候是异步（批量处理）的？
 异步：生命周期钩子函数和合成事件方法（比如通过onClick、onCaptureClick）。<br>
@@ -9,7 +9,7 @@
 1.  React的 setState 函数实现中，有一个 isBatchingUpdates 变量用来确定是否批量更新。
 2.  isBatchingUpdates 默认是 false。
 3.  有一个函数 batchedUpdates 会将 isBatchingUpdates 修改为 true。
-4.  如果是React的事务流会先调用 batchedUpdates 函数，然后将要更新的state存入_pendingStateQueue，将要更新的组件存入 dirtyComponent。
+4.  如果组件在事务流会先调用 batchedUpdates 函数，然后将要更新的state存入_pendingStateQueue，将要更新的组件存入 dirtyComponent。
 5.  当上一次更新机制执行完毕，最顶层组件 didmount 后会将批处理标志设置为 false。这时将取出 dirtyComponent中的组件以及 _pendingStateQueue中的 state进行更新。
 ```
 [setState](https://juejin.im/post/5c92f499f265da612647b754#3)
@@ -43,7 +43,7 @@ e.nativeEvent
 原生的onchange事件需要在失去焦点的时候才能触发这个事件。
 ##  事件都冒泡到了document，触发事件时如何匹配对应节点。
 事件触发的时候去根据当前的 事件类型 和 组件id 查找到对应的事件fn。<br>
-listenerBank对象的解构大致如下：
+listenerBank对象的结构大致如下：
 ```
 {
     // key为事件类型
