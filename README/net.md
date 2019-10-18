@@ -101,14 +101,22 @@ SSL(Secure Sockets Layer 安全套接层),及其继任者传输层安全（Trans
 
 [从Https协议谈对称加密和非对称加密](https://blog.csdn.net/u013061497/article/details/81639134)
 
-##  HTTP2
+##  HTTP2（SPDY）
 HTTP/2 （原名HTTP/2.0）即超文本传输协议 2.0。
-主要是一些新特性。
-1.  压缩HTTP头
-2.  多路复用请求
-3.  对请求划分优先级
-4.  服务器推送流（即Server Push技术）
-  
+1.  二进制传输（之前是纯文本形式）
+2.  Header 压缩（HPACK算法）哈夫曼编码来压缩
+3.  多路复用（解决了浏览器限制同一个域名下的请求数量）
+4.  Server Push（服务器推送）
+5.  提高安全性（TLS，之前是明文）
+
+[解读HTTP/2与HTTP/3 的新特性](https://mp.weixin.qq.com/s/n8HBG9LuzQjOT__M4pxKwA)
+##  HTTP3
+HTTP3 是基于 UDP 协议的“QUIC”协议。<br>
+解决HTTP2的缺点：
+TCP 以及 TCP+TLS建立连接的延时（握手过程）
+TCP的队头阻塞并没有彻底解决（多个请求是跑在一个TCP管道，丢包会重传会阻塞所有请求）
+
+![](https://mmbiz.qpic.cn/mmbiz_png/zewrLkrYfsPJcceCMInZpsVErpdiaXm87wR2CP66VEj2naiaeTG1glYCJIa7S74tWhjkzAL65FiaYeJHeC9vggkNw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
 
 

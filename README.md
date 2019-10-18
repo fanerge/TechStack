@@ -86,7 +86,6 @@
 - [x] [HTTP访问控制（CORS）](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS) 
 - [x] [php相关](./README/php.md) 
 - [x] [docker相关](./README/docker.md) 
-- [x] [docker相关](./README/docker.md) 
 - [x] [linux && shell手册](./README/linux.md) 
 
 [服务端相关](./README/net.md)
