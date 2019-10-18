@@ -76,20 +76,42 @@
 # 前端框架
 - [x] [React相关](./README/react.md)
 
-# Other
-- [x] [堆叠上下文](./README/css_stack_context.md)
-- [x] [BFC](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
-- [x] [Containing Block/包含块](https://developer.mozilla.org/zh-CN/docs/Web/CSS/All_About_The_Containing_Block)
-- [x] 盒模型、reflow/repaint等
-
-# 网络相关
+# 服务端相关
 - [x] ISO 七层模型
 - [x] TCP三次握手建立连接和四次握手终止连接
 - [x] HTTPS工作原理
 - [x] HTTP2特性
 - [x] [HTTP Security Headers](./README/HTTPSecurityHeaders.md)  
+- [x] [HTTP缓存头部](./README/HTTPcache.md)
+- [x] [HTTP访问控制（CORS）](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS) 
+- [x] [php相关](./README/php.md) 
+- [x] [docker相关](./README/docker.md) 
+- [x] [docker相关](./README/docker.md) 
+- [x] [linux && shell手册](./README/linux.md) 
 
-[网络相关](./README/net.md)
+[服务端相关](./README/net.md)
+
+# nginx完成常见需求
+- [x] 端口转发
+- [x] 实现负载均衡
+- [x] 特殊文件下载
+- [x] 网站基础认证
+- [x] 实现ip访问限制
+- [x] 实现前端跨域
+- [x] 配置CORS
+- [x] 适配PC与移动环境
+- [x] 合并资源
+- [x] 图片处理
+- [x] 实现防盗链
+
+[网络相关](./README/nginx.md)
+
+# Other
+- [x] [堆叠上下文](./README/css_stack_context.md)
+- [x] [BFC](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
+- [x] [Containing Block/包含块](https://developer.mozilla.org/zh-CN/docs/Web/CSS/All_About_The_Containing_Block)
+- [x] 盒模型、reflow/repaint等
+- [x] [Grid布局手册](./README/css_grid.md)
 
 # 算法
 如果要刷下算法的话，这里推荐大家去[牛客网](https://www.nowcoder.com/)和[leetcode](https://leetcode-cn.com/)。

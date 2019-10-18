@@ -41,11 +41,17 @@ RARP:Reverse Address Resolution Protocol（反向地址转换协议），允许�
 ##  物理层
 建立、维护、断开物理连接。（由底层网络定义协议）
 
-# TCP/IP协议
-##  应用层（会话层、表示层、应用层）
-##  传输层
-##  网络层
-##  链路层（物理层、数据链路层）
+ #  网络模型
+ ## OSI七层网络模型&&TCP/IP四层概念模型
+ OSI七层网络模型 | TCP/IP四层概念模型 |  对应网络协议
+-|-|-
+应用层（Application） | 应用层 | HTTP、HFTP、FTP、NFS、WAIS、SMTP |
+表示层（Presentation） |  | Telnet、Rlogin、SNMP、Gopher |
+会话层（Session） |  | SMTP、DNS |
+传输层（Transport） | 传输层 | TCP、UDP |
+网络层（Network） | 网络成 | IP、ICMP、ARP、RARP、AKP、UUCP |
+数据链路层（Data Link） | 数据链路层 | FDDI、Ethernet、Arpanet、PDN、SLIP |
+物理层（Physical） |  | IEEE 802.1A IEEE 802.2到IEEE 802.11 |
 
 # 其他
 DHCP:Dynamic Host Configuration Protocol（动态主机配置协议），用于内部网或网络服务供应商自动分配IP地址；给用户用于内部网管理员作为对所有计算机作中央管理的手段。<br>
