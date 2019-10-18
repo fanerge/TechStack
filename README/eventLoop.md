@@ -12,7 +12,7 @@ JS 分为同步任务和异步任务<br>
 4.  当前宏任务执行完毕，开始检查渲染，然后GUI线程接管渲染
 5.  渲染完毕后，JS线程继续接管，开始下一个宏任务（从事件队列中获取）
 
-Macrotask：主代码块（同步代码）、setTimeout、setInterval、setImmediate、I/O、UI rendering<br>
+Macrotask：主代码块（同步代码）、MessageChannel、postMessage、setTimeout、setInterval、setImmediate、I/O、UI rendering<br>
 Microtask：process.nextTick、Promise.then、MutaionObserver（监听DOM变动的构造函数）、Object.observe（已废弃）<br>
 [Event Loop](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-10)
 # Node.js
@@ -26,11 +26,16 @@ Microtask：process.nextTick、Promise.then、MutaionObserver（监听DOM变动�
 1.  timers 执行setTimeout() 和 setInterval()中到期的callback
 2.  pending callbacks 执行上一轮循环被延迟的I/O回调
 3.  idle，prepare（libuv内部使用）
-4.  poll 最为重要的阶段，执行I/O callback，在适当的条件下会阻塞在这个阶段
+4.  poll (轮询阶段)最为重要的阶段，执行I/O callback，在适当的条件下会阻塞在这个阶段
+    如果轮询队列不是空的 ，则执行它们。
+    如果轮询队列为空，则进行下列操作。
+      有到达时间阈值的 setTimeout，则回到 timers阶段。
+      如有 setImmediate 则进入 check 阶段。
 5.  check 由setImmediate()设置的回调函数。
 6.  close callbacks 一些关闭回调，例如socket.on('close', ...)
 ```
-microtask会在事件循环的各个阶段之间执行
+[event-loop-timers-and-nexttick](https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/)<br>
+microtask会在事件循环的各个阶段之间执行<br>
 [Node.js 指南（Node.js事件循环、定时器和process.nextTick()）](https://segmentfault.com/a/1190000017017364)
 ##  process.nextTick() vs setImmediate()
 process.nextTick()在同一个阶段执行<br>
