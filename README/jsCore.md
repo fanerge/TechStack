@@ -242,7 +242,16 @@ bolObj.valueOf() // false
   ```
 3.  在以上的其他情况下，操作数都不相等
 
-试一下，可能够理解
+### 常用判定规则（==）
+1.  有!运算符时，只有当0, ‘’, false, NaN, null, undefined为Falsy，其余全为truthy（由于!运算优先级高于 == ）
+2.  再进行EEA规则判定
+
+### 例如，new Map() == true 分享过程
+1. 左边分析：由于Map非原始类型， map.valueOf() 不能得到原始值，map.toString() // 自身没有该方法，从Object上继承，左边为'[object Map]'
+2. 右边分析：true转换为Number即为1，一边为数字则另一边也应该转化为数字（左边转化为 NaN）
+3. NaN == 1，所以返回false
+
+试一试
 ```
 [] == ![] // true，提示!的优先级高于==，![]首先会被转换为false
 [''] == '' // true
@@ -250,9 +259,14 @@ bolObj.valueOf() // false
 
 [] === [] // false
 [] == [] // false
-({}) == true // false
+true == {} // false
+true == !{} // false
+'[object Object]' == {} // true
 NaN === NaN // false
+new Map() == true // false
 ```
+
+[彻底终结 Javascript 背后的隐式类型转换](https://github.com/chunpu/blog/issues/104)
 [JS 中相等和全等操作符](https://juejin.im/post/5d9fc461f265da5b5f757830)
 [你真的掌握变量和类型了吗](https://mp.weixin.qq.com/s/uuqYAgn6-dZWPQahnZXJkA)
 

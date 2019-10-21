@@ -55,6 +55,7 @@ RARP:Reverse Address Resolution Protocol（反向地址转换协议），允许�
 
 # 其他
 DHCP:Dynamic Host Configuration Protocol（动态主机配置协议），用于内部网或网络服务供应商自动分配IP地址；给用户用于内部网管理员作为对所有计算机作中央管理的手段。<br>
+BGP：Border Gateway Protocol 边界网关协议（BGP）是运行于 TCP 上的一种自治系统的路由协议，默认端口 179。
 ##  TCP
 TCP的特点：慢启动、拥塞避免、快速重传、快速恢复
 ### TCP/三次握手建立连接
