@@ -2,62 +2,52 @@
 // [参考](https://mp.weixin.qq.com/s/FHiSjn2Ooj7ZNqp9IfJ8mA)
 // 检查数据类型
 export function checkType(obj: any): string {
-    const type = Object.prototype.toString.call(obj);
 
-    return type.slice(8, -1);
+  const type = Object.prototype.toString.call(obj);
+  return type.slice(8, -1);
 }
 
 // 深拷贝（hash = new WeakMap()考虑循环引用的问题）
 export function deepClone(obj: any, hash = new WeakMap()) : any{
-    if(checkType(obj) === 'RegExp') {
-      // regExp.source 正则对象的源模式文本;
-      // regExp.flags 正则表达式对象的标志字符串;
-      // regExp.lastIndex 下次匹配开始的字符串索引位置
-      let temp =  new RegExp(obj.source, obj.flags);
-      temp.lastIndex = obj.lastIndex;
-      return temp;
-    }
-    if(checkType(obj) === 'Date') {
-        return new Date(obj);
-    }
-    // 非复杂类型(null、undefined、string、number、symbol、boolean、function)
-    if(obj === null || typeof obj !== 'object') {
-        return obj;
-    }
-    if(hash.has(obj)) {
-        return hash.get(obj);
-    }
+  if(checkType(obj) === 'RegExp') {
+    // regExp.source 正则对象的源模式文本;
+    // regExp.flags 正则表达式对象的标志字符串;
+    // regExp.lastIndex 下次匹配开始的字符串索引位置
+    let temp =  new RegExp(obj.source, obj.flags);
+    temp.lastIndex = obj.lastIndex;
+    return temp;
+  }
+  if(checkType(obj) === 'Date') {
+      return new Date(obj);
+  }
+  // 非复杂类型(null、undefined、string、number、symbol、boolean、function)
+  if(obj === null || typeof obj !== 'object') {
+      return obj;
+  }
+  // 还可以扩展其他类型。。。
+  // 与后面hash.set()防止循环引用
+  if(hash.has(obj)) {
 
-    // 处理Object和Array
-    // let newObj = checkType(obj) === 'Array' ? [] : {};
-    /**
-     * 如果 obj 是数组，那么 obj.constructor 是 [Function: Array]
-     * 如果 obj 是对象，那么 obj.constructor 是 [Function: Object]
-     */
-    // let newObj = new obj.constructor();
-    // for(let key in obj) {
-    //     if(obj.hasOwnProperty(key)) {
-    //         // newObj[key] = deepClone(key);
-    //         if (typeof obj[key] === 'object' && obj[key]!==null) {
-    //             newObj[key] = deepClone(obj[key]);   //递归复制
-    //         } else {
-    //             newObj[key] = obj[key];
-    //         }
-    //     }   
-    // }
+      return hash.get(obj);
 
-    let newObj = new obj.constructor();
-    hash.set(obj, newObj);
-    // Reflect.ownKeys(obj) 是不是更合适呢？
-    Object.keys(obj).forEach(function(key) {
-        if(typeof obj[key] === 'object' && obj[key] !== null) {
-            newObj[key] = deepClone(obj[key], hash);
-        }else{
-            newObj[key] = obj[key];
-        }
-    });
+  }
 
-    return newObj;
+  let newObj = new obj.constructor();
+  hash.set(obj, newObj);
+  // Object.keys(obj)类型于 for in 和 obj.hasOwnProperty
+  // 是否应该拷贝自身属性（可枚举的和不可枚举的以及symbol）
+  Reflect.ownKeys(obj).forEach(function(key) {
+      if(typeof obj[key] === 'object' && obj[key] !== null) {
+          newObj[key] = deepClone(obj[key], hash);
+      }else{
+          // 直接赋值
+          // newObj[key] = obj[key];
+          // 是否应该保留属性描述符
+          Object.defineProperty(newObj, key, Object.getOwnPropertyDescriptor(obj, key));
+      }
+  });
+
+  return newObj;
 }
 
 // FP中柯里化函数实现curry

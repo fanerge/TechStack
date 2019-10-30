@@ -277,3 +277,20 @@ new Map() == true // false
 ##  JS中的元编程
 Proxy 和 Reflect 和 eval 和 new Function() 具备元编程能力。<br>
 JavaScript 获得了 Proxy 和 Reflect 对象的支持，允许你拦截并定义基本语言操作的自定义行为（例如，属性查找，赋值，枚举，函数调用等）。借助这两个对象，你可以在 JavaScript 元级别进行编程。
+
+# 闭包
+##  定义
+函数与对其状态即词法环境（lexical environment）的引用共同构成闭包（closure）。也就是说，闭包可以让你从内部函数访问外部函数作用域。在JavaScript，函数在每次创建时生成闭包。
+##  原理
+```
+function A() {
+  let aVar = 1;
+  return function B() {
+    ++aVar;
+    console.log(aVar); // 2
+  }
+}
+A()(); // console.log(2);
+```
+以上面例子来说，为什么函数 A 已经弹出调用栈了，为什么函数 B 还能引用到函数 A 中的变量。因为函数 A 中的变量这时候是存储在<span style="color: red;">堆</span>上的。<span style="color: red;">现在的 JS 引擎可以通过逃逸分析辨别出哪些变量需要存储在堆上，哪些需要存储在栈上(普通函数变量存在栈中，同函数调用栈存亡)。</span>
+
