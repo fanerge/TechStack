@@ -27,7 +27,6 @@ export function deepClone(obj: any, hash = new WeakMap()) : any{
   // 还可以扩展其他类型。。。
   // 与后面hash.set()防止循环引用
   if(hash.has(obj)) {
-
       return hash.get(obj);
 
   }
@@ -51,12 +50,12 @@ export function deepClone(obj: any, hash = new WeakMap()) : any{
 }
 
 // FP中柯里化函数实现curry
-export function curry(fn: any, ...args: any[]) {
-    args.length < fn.length
-    // 参数长度不足时，重新柯里化该函数，等待接受新参数
-    ? (...rest: any[]) => curry(fn, ...args, ...rest)
-    // 参数长度满足时，执行函数
-    : fn(...args);
+function curry(fn: any) {
+  return function judgeCurry(...args: any) {
+      return fn.length > args.length ? 
+          (...args1: any) => judgeCurry(...args,...args1):
+          fn(...args);
+  }
 }
 
 // FP中compose（从右往左执行）
@@ -121,7 +120,7 @@ export function throttle1(fn: any,wait: number){
 export function debounce(func: any, delay: number) {              
     // 初次触发定时器为null，后面产生一份定时器并记下定时器id
     let timer: any = null; 
-    // 闭包使定时器id保留在内存中          
+    // 闭包使定时器id逃逸   
     return function() {                
         let context = this;              
         let args = arguments;  
