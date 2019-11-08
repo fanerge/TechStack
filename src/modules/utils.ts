@@ -61,28 +61,24 @@ function curry(fn: any) {
 // FP中compose（从右往左执行）
 export function compose(...args: any[]) {
   return (subArgs: any) => {
-    let res = subArgs;
     // for(let i = args.length - 1; i >= 0; i--) {
     //   res = args[i](res);
     // }
-    args.reverse().reduce((acc, func,index) => {
-      return res = func(acc);
-    }, res);
-    return res;
+    return args.reverse().reduce((acc, func,index) => {
+      return func(acc);
+    }, subArgs);
   }
 }
 
 // FP中pipe（从左往右执行）
 export function pipe(...args: any[]) {
   return (subArgs: any) => {
-    let res = subArgs;
-    // for(let i =0; i < args.length; i++) {
+    // for(let i = args.length - 1; i >= 0; i--) {
     //   res = args[i](res);
     // }
-    args.reduce((acc, func,index) => {
-      return res = func(acc);
-    }, res);
-    return res;
+    return args.reduce((acc, func,index) => {
+      return func(acc);
+    }, subArgs);
   }
 }
 

@@ -27,7 +27,7 @@ Array.prototype.pop();
 ```
 arr1[arr1.length - 1] = null; 
 delete arr1[arr1.length - 1];
-arr1.length = [arr1.length - 1];
+arr1.length = arr1.length - 1;
 ```
 #   栈（Stack）
 栈是一种遵从后进先出(LIFO)原则的有序集合。新添加的或待删除的元素都保存在栈的
