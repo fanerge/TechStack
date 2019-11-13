@@ -208,11 +208,45 @@ function offer9(n) {
 }
 // console.log(offer9(4));
 
-// 剑指offer（10）矩形覆盖
+// 二分查找（非递归版本）
+function binarySearch(ary, target) {
+  let low = 0;
+  let high = ary.length - 1;
+  while(low <= high) {
+      let mid = parseInt((low + high) / 2, 10);
+      if (target === ary[mid]) {
+          return mid;
+      }else if(target < ary[mid]) {
+          high = mid - 1;
+      }else if(target > ary[mid]) {
+          low = mid + 1;
+      }else{
+          return -1;
+      }
+  }
+}
 
+// 二分查找（递归版本）
+function binarySearch1(ary, low, high, target) {
+  if (low > high) {
+    return -1;
+  }
+  let mid = parseInt((low + high) / 2, 10);
+  if(ary[mid] === target){
+    return mid;
+  }else if(ary[mid] > target){
+    high = mid - 1;
+    return binarySearch1(ary, low, high, target);
+  }else if(ary[mid] < target){
+    low = mid + 1;
+    return binarySearch1(ary, low, high, target);
+  }else{
+    return -1;
+  }
+}
 
-
-
+var demo = binarySearch1([1, 2, 3, 5], 0, 4, 8);
+console.log(demo);
 
 
 

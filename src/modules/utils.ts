@@ -50,7 +50,7 @@ export function deepClone(obj: any, hash = new WeakMap()) : any{
 }
 
 // FP中柯里化函数实现curry
-function curry(fn: any) {
+export function curry(fn: any) {
   return function judgeCurry(...args: any) {
       return fn.length > args.length ? 
           (...args1: any) => judgeCurry(...args,...args1):

@@ -78,6 +78,12 @@ ACK:确认字符 (Acknowledge character)
 SEQ:序列号（sequance）
 FIN:结束标志（Finally）
 ```
+
+### TCP第四次挥手为什么要等待 2倍的MSL
+客户端在发送最后一个ACK之后会立即启动时间等待计时器，MSL：最长报文段寿命。
+1.  为了保证客户端发送的最后一个ACK报文段能够到达服务器（因为ACK页可能丢包，需要重传）。
+2.  等待最大的2msl可以让本次连接的所有的网络包在链路上消失，以防造成不必要的干扰。
+
 ## HTTPS
 Hypertext Transfer Protocol Secure，超文本传输安全协议，看作 HTTP + TLS
 ### SSL&&TLS
