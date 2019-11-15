@@ -6,7 +6,8 @@
 - [x] 装箱和拆箱
 - [x] 全等运算符（===）和相等运算符（==）
 - [x] 元编程（metaprogramming）
-- [x] 闭包原理（引擎通过逃逸分析将其提升到堆中存储，不同函数变量存储到栈中）
+- [x] 闭包原理
+- [x] [IntersectionObserver的应用](https://mp.weixin.qq.com/s/uRMYrxaduPaMkc97Upjkqg)
 
 [jsCore.md](./README/jsCore.md)
 
