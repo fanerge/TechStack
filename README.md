@@ -8,7 +8,13 @@
 - [x] 元编程（metaprogramming）
 - [x] 闭包原理
 - [x] [IntersectionObserver的应用](https://mp.weixin.qq.com/s/uRMYrxaduPaMkc97Upjkqg)
+- [x] [ES5继承的六种方式](./README/es5extends.md)
+- [x] css的下载解析js的下载解析与html解析的关系（阻塞）
+- [x] [浏览器解析HTML和CSS与JS加载、解析的关系](./README/render.md)
 
+![webkitflow.png](./img/webkitflow.png)
+![js加载执行与HTML解析关系](./img/js加载执行与HTML解析关系.jpeg)
+[图片来源](https://www.cnblogs.com/bibiafa/p/9364986.html)
 [jsCore.md](./README/jsCore.md)
 
 # JavaScript引擎探索（主要V8）
@@ -68,6 +74,7 @@
 - [x] SQL注入
 - [x] DDoS（Distributed Denial of Service）分布式拒绝服务攻击
 - [x] [JWT/深度理解token](https://segmentfault.com/a/1190000020143933)
+- [x] [Web中的密码学（加密、哈希、编码、混淆）](./README/web_secret.md)
 
 # WEB体验提升
 - [x] 元素focus页面不滚动不定位的JS处理 button.focus({ preventScroll: true })
