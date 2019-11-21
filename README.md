@@ -35,9 +35,9 @@
 #   工具函数
 - [x] checkType 类型检查包含String、Boolean、Number、Undefined、Null、Symbol、BigInt、Map、HTMLBodyElement、HTML*Element等
 - [x] deepClone 深拷贝（包含循环引用）
-- [x] 深拷贝（处理递归爆栈）[](递归注意栈溢出)
+- [x] 深拷贝（处理递归爆栈）
 - [x] curry 柯里化函数
-- [x] throttle(前置触发、后置触发)、debounce
+- [x] throttle、debounce
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce版本
 
 [工具函数集合](./src/modules/utils.ts)

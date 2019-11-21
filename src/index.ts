@@ -18,7 +18,6 @@ import {
     pipe,
     debounce,
     throttle,
-    throttle1,
     fmoney,
     rmoney,
     toCamelCase
@@ -150,11 +149,11 @@ browsers.forEach(function(browser) {
 
 body.appendChild(fragment);
 // 防抖节流
-// function handle(e: any) {            
-//     // console.log(Math.random());   
-//     console.log(e);      
-// }
-// window.addEventListener('scroll', throttle1(handle, 1000));
+function handle(e: any) {            
+    // console.log(Math.random());   
+    console.log(e);      
+}
+window.addEventListener('scroll', throttle(handle, 3000));
 // let test = fmoney(10000);
 // // let test2 = rmoney(test);
 // console.log(test);

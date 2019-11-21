@@ -82,34 +82,23 @@ export function pipe(...args: any[]) {
   }
 }
 
-// 节流（定时器，时间段最后触发）
-export function throttle(func: any, delay: number) {  
-    // 初次触发定时器为null，后面产生一份定时器并记下定时器id
-    let timer: any = null; 
-    // 闭包使定时器id保留在内存中          
-    return function() {                
-        let context = this;              
-        let args = arguments;  
-        // 下次触发时，定时器id还存在表示还在节流时间内不予处理              
-        if (!timer) {                    
-            timer = setTimeout(function() { 
-                func.apply(context, args); 
-                // 销毁定时器id，以便下次节流函数触发                       
-                timer = null;                    
-            }, delay);                
-        }            
-    }        
-} 
-
-// 节流（时间段最先触发）
-export function throttle1(fn: any,wait: number){
-	var lastTime = Date.now();
-	return function(){
-		var curTime = Date.now();
-		if((curTime - lastTime) < wait){return;};
-		lastTime = curTime;
-		fn.apply(this, arguments);
-	}
+// 节流
+export function throttle(fn: any, wait: number){
+  let last: any;
+  return function() {
+    let now: any = Date.now();
+    // 初次执行
+    if (!last) {
+      fn.apply(this, arguments);
+      last = now;
+      return;
+    }
+    // 以后触发，需要判断是否到延迟
+    if(now - last >= wait) {
+      fn.apply(this, arguments);
+      last = now;
+    }
+  }
 }
 
 // 防抖
@@ -117,8 +106,7 @@ export function debounce(func: any, delay: number) {
     // 初次触发定时器为null，后面产生一份定时器并记下定时器id
     let timer: any = null; 
     // 闭包使定时器id逃逸   
-    return function() {                
-        let context = this;              
+    return function() {                             
         let args = arguments;  
         // 如果已有定时器id，则需要清除，重新开始延迟执行           
         if (timer) {
