@@ -82,7 +82,15 @@
 - [x] [SEO](./README/seo.md) 
 
 # 前端框架
+##  React
+### 16以前生命周期
+![](./img/react15.png)
+### 16以后生命周期
+![](./img/react16.jpg)
 - [x] [React相关](./README/react.md)
+
+##  VUE
+![](./img/vuelifecycle.png)
 
 # 服务端相关
 - [x] ISO 七层模型
