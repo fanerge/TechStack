@@ -182,9 +182,13 @@ barContext.[[scope]] = [barContext.AO, fooContext.AO, globalContext.VO];
 # 原型链
 
 ##  一张图
-![](./img/jsproto)
+![](./../img/jsproto.png)
+图中p指prototype属性<br>
+图中c指constructor属性(没画出来)<br>
+图中[p]，即__proto__，指对象的原型<br>
 ##  总结
-实例的（__proto__属性或内部[[Prototype]]属性） === 构造函数的prototype
+实例的（__proto__属性或内部[[Prototype]]属性） === 构造函数的prototype<br>
+实例的constructor属性 === 构造函数
 ```
 function Animal () {}
 var cat = new Animal();
@@ -318,5 +322,5 @@ function A() {
 }
 A()(); // console.log(2);
 ```
-以上面例子来说，为什么函数 A 已经弹出调用栈了，为什么函数 B 还能引用到函数 A 中的变量。因为内部函数 B 存在对 外部函数 A 中内部变量的应用，使得该变量 aVar 发生逃逸（即不跟随 A 函数的出栈而销毁）。</b>
+以上面例子来说，为什么函数 A 已经弹出调用栈了，为什么函数 B 还能引用到函数 A 中的变量。因为内部函数 B 存在对 外部函数 A 中内部变量的应用，使得该变量 aVar 发生逃逸（即不跟随 A 函数的出栈而销毁）。</br>
 

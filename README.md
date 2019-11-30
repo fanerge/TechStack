@@ -85,9 +85,9 @@
 # 前端框架
 ##  React
 ### 16以前生命周期
-![](./img/react15.png)
+![](./img/react15lifecycle.png)
 ### 16以后生命周期
-![](./img/react16.jpg)
+![](./img/react16lifecycle.jpg)
 - [x] [React相关](./README/react.md)
 
 [React v16.3之后的组件生命周期函数](https://zhuanlan.zhihu.com/p/38030418)
