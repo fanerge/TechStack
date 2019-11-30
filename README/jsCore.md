@@ -179,6 +179,32 @@ barContext.[[scope]] = [barContext.AO, fooContext.AO, globalContext.VO];
 [javascript 执行环境，变量对象，作用域链](https://segmentfault.com/a/1190000000533094)
 [JS 执行环境、作用域链、活动对象](https://segmentfault.com/a/1190000015782315)
 
+# 原型链
+
+##  一张图
+![](./img/jsproto)
+##  总结
+实例的（__proto__属性或内部[[Prototype]]属性） === 构造函数的prototype
+```
+function Animal () {}
+var cat = new Animal();
+cat.__proto__ === Animal.prototype // true
+Animal.__proto__ === Function.prototype // true 所有函数都是Function的实例
+Object.prototype.__proto__ === null; // 原型链的终点
+```
+##  相关API
+```
+a instanceof A // 实例a的原型链（__proto__）是否存在构造函数A的prototype属性
+cat instanceof Animal // true
+Animal instanceof Function // true
+
+Reflect.setPrototypeOf(obj, prototype) or Object.setPrototypeOf(obj, prototype) // 设置一个指定的对象的原型 ( 即, 内部[[Prototype]]属性）到另一个对象或  null。
+
+Reflect.getPrototypeOf(object) or Object.getPrototypeOf(object) // 返回指定对象的原型（内部[[Prototype]]属性的值）。
+
+Object.create(proto[, propertiesObject]) // 创建一个新对象，使用现有的对象来提供新创建的对象的__proto__。
+```
+
 # 装箱和拆箱
 装箱转换：把基本类型转换为对应的包装类型。
 拆箱操作：把对应的包装类型转换为基本类型。
