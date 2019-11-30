@@ -14,7 +14,7 @@
 
 ![webkitflow.png](./img/webkitflow.png)
 ![js加载执行与HTML解析关系](./img/js加载执行与HTML解析关系.jpeg)
-[图片来源](https://www.cnblogs.com/bibiafa/p/9364986.html)
+[图片来源](https://www.cnblogs.com/bibiafa/p/9364986.html)<br>
 [jsCore.md](./README/jsCore.md)
 
 # JavaScript引擎探索（主要V8）
@@ -88,6 +88,8 @@
 ### 16以后生命周期
 ![](./img/react16.jpg)
 - [x] [React相关](./README/react.md)
+
+[React v16.3之后的组件生命周期函数](https://zhuanlan.zhihu.com/p/38030418)
 
 ##  VUE
 ![](./img/vuelifecycle.png)
