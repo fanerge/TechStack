@@ -21,7 +21,7 @@ import {
     fmoney,
     rmoney,
     toCamelCase
- } from './modules/utils';
+ } from './modules/utils.ts';
  import {
   instance_of,
   myCall, 
@@ -34,6 +34,7 @@ require('./modules/sort');
 require('./modules/fp');
 // 剑指offer刷题
 require('./utils/offer');
+require('./modules/utils.js');
 
 // 栈
 // const stack: Stack = new Stack();

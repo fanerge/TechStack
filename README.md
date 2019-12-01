@@ -1,4 +1,5 @@
-# JavaScript 核心概念
+# JavaScript 相关
+##  核心概念
 - [x] 执行上下文EC、执行上下文堆栈ECS
 - [x] 全局对象GO、变量对象VO、活动对象AO等
 - [x] 函数的[[scope]]属性 
@@ -18,7 +19,7 @@
 [图片来源](https://www.cnblogs.com/bibiafa/p/9364986.html)<br>
 [jsCore.md](./README/jsCore.md)
 
-# JavaScript引擎探索（主要V8）
+## JavaScript引擎探索（主要V8）
 - [x] V8工作原理
 - [x] 逃逸分析(Escape Analysis）
 - [x] V8如何优化对象（Hideen Class && Inline Cache） 
@@ -29,21 +30,20 @@
 - [x] 垃圾回收（新生代和老生代内存回收方式）
 
 [V8.md](./README/v8.md)
-
-# JSBridge封装
+##  JSBridge封装
 [JSBridge](./README/JSBridge.md)
 
-#   工具函数
+##  JS工具函数
 - [x] checkType 类型检查包含String、Boolean、Number、Undefined、Null、Symbol、BigInt、Map、HTMLBodyElement、HTML*Element等
 - [x] deepClone 深拷贝（包含循环引用）
 - [x] 深拷贝（处理递归爆栈）
 - [x] curry 柯里化函数
 - [x] throttle、debounce
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce版本
+- [x] [Promise并行和串行执行方式](./src/modules/utils.js)
 
 [工具函数集合](./src/modules/utils.ts)
-
-#   JS原生api模拟
+##  JS原生api模拟
 - [x] myCall、myApply、myBind 自定义call、apply、bind函数
 - [x] instance_of(L, A) 模拟 L instanceof A注意：Symbol.hasInstance 可自定义 instanceof 在某个类或构造函数的行为
 - [x] objectFactory 模拟 new 运算
