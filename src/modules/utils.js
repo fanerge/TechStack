@@ -1,9 +1,9 @@
 // 测试代码
 var p1 = function(){
-  return new Promise((resolve, reject) => {setTimeout(function(){resolve(1)}, 1000)})
+  return new Promise((resolve, reject) => {setTimeout(function(){resolve('error')}, 1000)})
 };
 var p2 = function(){
-  return new Promise((resolve, reject) => {setTimeout(function(){resolve(2)}, 1000)})
+  return new Promise((resolve, reject) => {setTimeout(function(){resolve(2)}, 2000)})
 };
 var p3 = function(){
   return new Promise((resolve, reject) => {setTimeout(function(){resolve(3)}, 1000)})
@@ -19,6 +19,31 @@ Promise.all(promises)
   console.log('error')
 })
 */
+
+function promiseAll(tasks) {
+  let ary = new Array(tasks.length).fill(1).map(item => {return {val: undefined, success: false}});
+  return new Promise((resolve, reject) => {
+    for(let i = 0; i < tasks.length; i++) {
+      tasks[i]().then(res => {
+        ary[i].val = res;
+        ary[i].success = true;
+        if(ary.every(item => item.success === true)){
+          resolve(ary.map(item => item.val))
+        }
+      }).catch(err => {
+        reject(err);
+      });
+    }
+  });
+}
+
+// test
+/*
+promiseAll([p1, p2, p3]).then(res => console.log(res)).catch(err => {
+  console.log(err);
+});
+*/
+
 
 // 多个Promise串行
 function parallelPromises(tasks){

@@ -30,8 +30,10 @@
 - [x] 垃圾回收（新生代和老生代内存回收方式）
 
 [V8.md](./README/v8.md)
-##  JSBridge封装
-[JSBridge](./README/JSBridge.md)
+##  Hybrid APP
+- [x] h5唤起APP方式
+- [x] JSBridge
+[Hybrid APP](./README/hybrid.md)
 
 ##  JS工具函数
 - [x] checkType 类型检查包含String、Boolean、Number、Undefined、Null、Symbol、BigInt、Map、HTMLBodyElement、HTML*Element等
