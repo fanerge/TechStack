@@ -25,7 +25,6 @@ export function myCall() {
   // this 的指向的是当前函数 func (func.call)
   // 为thisArg对象添加func方法，func方法又指向myCall，所以在func中this指向thisArg
   thisArg.func = this;
-  debugger
   // 执行函数
   let result = thisArg.func(...args);
   // thisArg 上并没有 func 属性，因此需要移除
@@ -35,6 +34,7 @@ export function myCall() {
 
 // 自定义apply
 export function myApply() {
+  // 第一个参数为this对象，第二个参数为数组（与myCall唯一的区别就在第二个参数是数组）
   let [thisArg, args] = Array.from(arguments);
   if (!thisArg) {
       //context 为 null 或者是 undefined
@@ -51,14 +51,18 @@ export function myApply() {
 
 // 自定义bind
 export function myBind() {
-  let [thisArg, ...args] = Array.from(arguments);
+  let [thisArg, ...args] = [...arguments];
   if (!thisArg) {
       //context 为 null 或者是 undefined
       thisArg = typeof window === 'undefined' ? global : window;
   }
-  thisArg.func = this;
+  let that = this;
 
   return function() {
+      // 防止第二次调用 func 是，该func已经被delete了，需要重新赋值 
+      if(!thisArg.func) {
+        thisArg.func = that;
+      }
       let result = thisArg.func(...args);
       // thisArg原本没有func方法
       delete thisArg.func;
