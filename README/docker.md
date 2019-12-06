@@ -1,3 +1,20 @@
+#   工作原理
+Docker 的底层核心原理是利用了 Linux 内核的 namespace 以及 cgroup 特性，其中 namespace 进行资源隔离，cgroup 进行资源配额。
+##  namespace
+其中 Linux 内核中一共有 6 种 namespace。
+```
+Namespace	系统调用函数	隔离内容
+UTS	CLONE_NEWUTS	主机与域名
+IPC	CLONE_NEWIPC	信号量、消息队列和共享内存
+PID	CLONE_NEWPID	进程编号
+Network	CLONE_NEWNET	网络设备、网络栈、端口等
+Mount	CLONE_NEWNS	挂载点(文件系统)
+User	CLONE_NEWUSER	用户和用户组
+```
+##  cgroup
+cgroups 是Linux内核提供的一种可以限制单个进程或者多个进程所使用资源的机制，可以对 cpu，内存等资源实现精细化的控制，目前越来越火的轻量级容器 Docker 就使用了 cgroups 提供的资源限制能力来完成cpu，内存等部分的资源控制。
+
+
 #   Docker架构
 ##   Client
 我们通过docker命令与Docker deamon来进行交互。<br>

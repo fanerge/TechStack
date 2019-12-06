@@ -1,3 +1,13 @@
+# nodejs清除require缓存
+通过 require 加载的文件只有首次加载才会执行，并缓存到 require.cache 对象上，此时我们需要清除对应缓存再重新加载一遍即可。
+```
+// 如更改配置希望不手动重启生效
+// require.resolve 为把相对路径转化成绝对路径
+delete require.cache[require.resolve('./server.js')]; // 清除对应模块缓存，key为文件路径
+app = require('./server.js'); // 重新加载即可
+```
+
+
 # 高并发
 ##  垂直扩展
 提升单机配置（CPU、内存、网卡、硬盘）<br>
