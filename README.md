@@ -43,6 +43,7 @@
 - [x] throttle、debounce
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce版本
 - [x] [Promise并行和串行执行方式](./src/modules/utils.js)
+- [x] [你不知道的 JSON.stringify()](https://juejin.im/post/5decf09de51d45584d238319)
 
 [工具函数集合](./src/modules/utils.ts)
 ##  JS原生api模拟

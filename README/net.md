@@ -112,9 +112,11 @@ SSL(Secure Sockets Layer 安全套接层),及其继任者传输层安全（Trans
 HTTP/2 （原名HTTP/2.0）即超文本传输协议 2.0。
 1.  二进制传输（之前是纯文本形式）
 2.  Header 压缩（HPACK算法）哈夫曼编码来压缩
-3.  多路复用（解决了浏览器限制同一个域名下的请求数量）
-4.  Server Push（服务器推送）
-5.  提高安全性（TLS，之前是明文）
+3.  多路复用（解决头部阻塞--乱序传递，但不能解决丢包重传)
+4.  流的优先级
+5.  Server Push（服务器推送）
+6.  提高安全性（TLS，之前是明文）
+7.  添加二进制帧
 
 [解读HTTP/2与HTTP/3 的新特性](https://mp.weixin.qq.com/s/n8HBG9LuzQjOT__M4pxKwA)
 ##  HTTP3

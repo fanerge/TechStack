@@ -82,5 +82,11 @@ async function sequential(tasks) {
 // var demo = sequential([p1, p2, p3]);
 // console.log(demo);
 
-
-
+// [{id: 0, pid: -1}, {id: 1, pid: 0}, {id: 2, pid: 0}, {id: 3, pid: 1}]
+// 转化为tree（约定pid为-1是根节点） {id: 0, children: [{id: 1, children: [{id: 3, children: []}]}, {id: 2, children: []}]}
+var testTreeData = [{id: 0, pid: -1}, {id: 1, pid: 0}, {id: 2, pid: 0}, {id: 3, pid: 1}];
+function dataChangeTree(data) {
+  debugger;
+  return 123;
+}
+console.log(dataChangeTree(testTreeData));

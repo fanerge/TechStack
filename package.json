@@ -22,7 +22,7 @@
     "typescript": "^3.5.3",
     "webpack": "^4.39.1",
     "webpack-cli": "^3.3.6",
-    "webpack-dev-server": "^3.7.2"
+    "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
     "ramda": "^0.26.1"
