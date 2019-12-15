@@ -55,7 +55,7 @@
 [theory.ts](./src/modules/theory.ts)
 
 # 工程化（Webapck）
-- [x] [热更新原理](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack#how-does-it-work)
+- [x] [热更新原理](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack#how-does-it-work)&&[webpack 热加载原理探索](http://shepherdwind.com/2017/02/07/webpack-hmr-principle/)
 - [x] 自定义Loader原理探索
 - [x] 自定义Plugins原理探索
 
