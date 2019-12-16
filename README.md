@@ -54,13 +54,15 @@
 
 [theory.ts](./src/modules/theory.ts)
 
-# 工程化（Webapck）
+# 工程化（Webapck）&& 基础建设
 - [x] [热更新原理](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack#how-does-it-work)&&[webpack 热加载原理探索](http://shepherdwind.com/2017/02/07/webpack-hmr-principle/)
 - [x] 自定义Loader原理探索
 - [x] 自定义Plugins原理探索
+- [x] SSH key
+- [x] .npmrc
 
 [webpack](./README/webpack.md)
-
+[基础建设](./README/basic.md)
 # Node.js
 - [x] nodejs清除require缓存
 - [x] 高并发解决方案（负载均衡）
