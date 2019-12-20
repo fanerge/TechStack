@@ -1,4 +1,14 @@
 # 强缓存
+##  Expires（响应头）
+响应头包含日期/时间， 即在此时候之后，响应过期。<br>
+如果在Cache-Control响应头设置了 "max-age" 或者 "s-max-age" 指令，那么 Expires 头会被忽略。<br>
+```
+# 设置资源的到期时间
+Expires: <http-date> // 一个 HTTP-日期 时间戳
+```
+>   存在缺陷：
+服务器的时间和浏览器的时间可能并不一致，那服务器返回的这个过期时间可能就是不准确的。<br>
+时间精确值为秒<br>
 ##  Cache-Control（请求头和响应头）
 通过它提供的不同的值来定义缓存策略。
 ```
@@ -17,13 +27,8 @@ Cache-Control: must-revalidate
 # private
 表明响应只能被单个用户缓存，不能作为共享缓存（即代理服务器不能缓存它）
 ```
-##  Expires（响应头）
-响应头包含日期/时间， 即在此时候之后，响应过期。<br>
-如果在Cache-Control响应头设置了 "max-age" 或者 "s-max-age" 指令，那么 Expires 头会被忽略。<br>
-```
-# 设置资源的到期时间
-Expires: <http-date> // 一个 HTTP-日期 时间戳
-```
+>   存在缺陷：
+时间精确值为秒<br>
 # 协商缓存（验证资源的新鲜度）
 ##  If-Modified-Since/Last-Modified
 Last-Modified  是一个响应首部，其中包含源头服务器认定的资源做出修改的日期及时间。
