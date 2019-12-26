@@ -89,6 +89,9 @@
 - [x] [Preload，Prefetch，Preconnect和Prerendering](./README/preload.md)
 - [x] [SEO](./README/seo.md) 
 
+# 数据可视化探索
+- [x][如何为Canvas中各个部分添加事件](https://segmentfault.com/a/1190000019239594)
+
 # 前端框架
 ##  React
 ### 16以前生命周期
