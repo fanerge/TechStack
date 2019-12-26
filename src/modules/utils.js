@@ -81,6 +81,16 @@ async function sequential(tasks) {
   return ary;
 }
 
+// 多个Promise串行
+async function sequential2 (tasks) {
+  let res = [];
+  for await (let item of tasks) {
+    res.push(item);
+  }
+  return res;
+}
+// 参见，https://mp.weixin.qq.com/s/vcM82FcmYImlm8-yPBtROg
+
 // var demo = sequential([p1, p2, p3]);
 // console.log(demo);
 
