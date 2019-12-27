@@ -39,7 +39,6 @@
 - [x] h5唤起APP方式
 - [x] JSBridge
 
-<<<<<<< HEAD
 [Hybrid APP](./README/hybrid.md)
 *****
 - [x] checkType 类型检查包含String、Boolean、Number、Undefined、Null、Symbol、BigInt、Map、HTMLBodyElement、HTML*Element等
@@ -222,7 +221,3 @@
 堆通常是一个可以被看做一棵完全二叉树的数组对象。<br>
 将根节点最大的堆叫做最大堆或大根堆，根节点最小的堆叫做最小堆或小根堆。
 </details>
-=======
-##  JS工具函数 && JS原生api模拟
-- [x] checkType 类型检查包含String、Boolean、Number、Undefined、Null、Symbol、BigInt、Map
->>>>>>> 5da545ec5e32b92fd2f0f80bdae6607e01783143
