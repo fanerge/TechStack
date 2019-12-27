@@ -1,5 +1,6 @@
 # JavaScript 相关
-##  核心概念
+<details>
+    <summary>核心概念 && 引擎V8</summary>
 - [x] 执行上下文EC、执行上下文堆栈ECS
 - [x] 全局对象GO、变量对象VO、活动对象AO等
 - [x] 函数的[[scope]]属性 
@@ -18,8 +19,7 @@
 ![js加载执行与HTML解析关系](./img/js加载执行与HTML解析关系.jpeg)
 [图片来源](https://www.cnblogs.com/bibiafa/p/9364986.html)<br>
 [jsCore.md](./README/jsCore.md)
-
-## JavaScript引擎探索（主要V8）
+*****
 - [x] V8工作原理
 - [x] 逃逸分析(Escape Analysis）
 - [x] V8如何优化对象（Hideen Class && Inline Cache） 
@@ -30,12 +30,14 @@
 - [x] 垃圾回收（新生代和老生代内存回收方式）
 
 [V8.md](./README/v8.md)
+</details>
+
 ##  Hybrid APP
 - [x] h5唤起APP方式
 - [x] JSBridge
 [Hybrid APP](./README/hybrid.md)
 
-##  JS工具函数
+##  JS工具函数 && JS原生api模拟
 - [x] checkType 类型检查包含String、Boolean、Number、Undefined、Null、Symbol、BigInt、Map、HTMLBodyElement、HTML*Element等
 - [x] deepClone 深拷贝（包含循环引用）
 - [x] 深拷贝（处理递归爆栈）
@@ -44,26 +46,20 @@
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce版本
 - [x] [Promise并行和串行执行方式](./src/modules/utils.js)
 - [x] [你不知道的 JSON.stringify()](https://juejin.im/post/5decf09de51d45584d238319)
-
-[工具函数集合](./src/modules/utils.ts)
-##  JS原生api模拟
 - [x] myCall、myApply、myBind 自定义call、apply、bind函数
 - [x] instance_of(L, A) 模拟 L instanceof A注意：Symbol.hasInstance 可自定义 instanceof 在某个类或构造函数的行为
 - [x] objectFactory 模拟 new 运算
 - [x] objectCreate 模拟 Object.create(proto, PropertyDescriptorMap)
 
+[工具函数集合](./src/modules/utils.ts)
 [theory.ts](./src/modules/theory.ts)
 
-# 工程化（Webapck）&& 基础建设
+# Node.js && 工程化（Webapck）&& 基础建设
 - [x] [热更新原理](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack#how-does-it-work)&&[webpack 热加载原理探索](http://shepherdwind.com/2017/02/07/webpack-hmr-principle/)
 - [x] 自定义Loader原理探索
 - [x] 自定义Plugins原理探索
 - [x] SSH key
 - [x] .npmrc
-
-[webpack](./README/webpack.md)
-[基础建设](./README/basic.md)
-# Node.js
 - [x] nodejs清除require缓存
 - [x] 高并发解决方案（负载均衡）
 - [x] Event Loop
@@ -71,6 +67,8 @@
 [Event Loop](./README/eventLoop.md)
 [Node.js 事件循环](https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/)
 [node相关](./README/NodeJs.md)
+[webpack](./README/webpack.md)
+[基础建设](./README/basic.md)
 
 # WEB安全
 - [x] XSS（Cascading Style Sheets）攻击全称跨站脚本攻击
