@@ -1,6 +1,7 @@
 # JavaScript 相关
 <details>
     <summary>核心概念 && 引擎V8</summary>
+*****
 - [x] 执行上下文EC、执行上下文堆栈ECS
 - [x] 全局对象GO、变量对象VO、活动对象AO等
 - [x] 函数的[[scope]]属性 
