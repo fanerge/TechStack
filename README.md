@@ -1,7 +1,7 @@
 # JavaScript 相关
 <details>
     <summary>JS核心概念 && 引擎V8</summary>
-*****
+
 - [x] 执行上下文EC、执行上下文堆栈ECS
 - [x] 全局对象GO、变量对象VO、活动对象AO等
 - [x] 函数的[[scope]]属性 
@@ -33,12 +33,14 @@
 [V8.md](./README/v8.md)
 </details>
 
-##  Hybrid APP
+<details>
+    <summary>Hybrid APP && JS工具函数 && JS原生api模拟</summary>
+
 - [x] h5唤起APP方式
 - [x] JSBridge
-[Hybrid APP](./README/hybrid.md)
 
-##  JS工具函数 && JS原生api模拟
+[Hybrid APP](./README/hybrid.md)
+*****
 - [x] checkType 类型检查包含String、Boolean、Number、Undefined、Null、Symbol、BigInt、Map、HTMLBodyElement、HTML*Element等
 - [x] deepClone 深拷贝（包含循环引用）
 - [x] 深拷贝（处理递归爆栈）
@@ -47,31 +49,44 @@
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce版本
 - [x] [Promise并行和串行执行方式](./src/modules/utils.js)
 - [x] [你不知道的 JSON.stringify()](https://juejin.im/post/5decf09de51d45584d238319)
+
+[工具函数集合](./src/modules/utils.ts)
+*****
 - [x] myCall、myApply、myBind 自定义call、apply、bind函数
 - [x] instance_of(L, A) 模拟 L instanceof A注意：Symbol.hasInstance 可自定义 instanceof 在某个类或构造函数的行为
 - [x] objectFactory 模拟 new 运算
 - [x] objectCreate 模拟 Object.create(proto, PropertyDescriptorMap)
 
-[工具函数集合](./src/modules/utils.ts)
 [theory.ts](./src/modules/theory.ts)
+</details>
 
-# Node.js && 工程化（Webapck）&& 基础建设
-- [x] [热更新原理](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack#how-does-it-work)&&[webpack 热加载原理探索](http://shepherdwind.com/2017/02/07/webpack-hmr-principle/)
-- [x] 自定义Loader原理探索
-- [x] 自定义Plugins原理探索
-- [x] SSH key
-- [x] .npmrc
+<details>
+    <summary>Node.js && 工程化（Webapck）&& 基础建设</summary>
+
 - [x] nodejs清除require缓存
 - [x] 高并发解决方案（负载均衡）
 - [x] Event Loop
+
 ![事件循环](https://mmbiz.qpic.cn/mmbiz_png/udZl15qqib0NPJYm99fCKh9SUq52nkiaF0dJGpnkpzqNaXj4krqPUGvYkNprEJbBiaeh9kfibQZApez565l1gocXPA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1) 
 [Event Loop](./README/eventLoop.md)
 [Node.js 事件循环](https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/)
 [node相关](./README/NodeJs.md)
-[webpack](./README/webpack.md)
-[基础建设](./README/basic.md)
+*****
+- [x] [热更新原理](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack#how-does-it-work)&&[webpack 热加载原理探索](http://shepherdwind.com/2017/02/07/webpack-hmr-principle/)
+- [x] 自定义Loader原理探索
+- [x] 自定义Plugins原理探索
 
-# WEB安全
+[webpack](./README/webpack.md)
+*****
+- [x] SSH key
+- [x] .npmrc
+
+[基础建设](./README/basic.md)
+</details>
+
+<details>
+    <summary>WEB性能（监控） && 安全</summary>
+
 - [x] XSS（Cascading Style Sheets）攻击全称跨站脚本攻击
 - [x] CSRF（Cross-site request forgery）跨站请求伪造
 - [x] 点击穿透
@@ -82,17 +97,21 @@
 - [x] DDoS（Distributed Denial of Service）分布式拒绝服务攻击
 - [x] [JWT/深度理解token](https://segmentfault.com/a/1190000020143933)
 - [x] [Web中的密码学（加密、哈希、编码、混淆）](./README/web_secret.md)
+</details>
 
-# WEB体验提升
+<details>
+    <summary>WEB体验 && 数据可视化探索</summary>
+
 - [x] 元素focus页面不滚动不定位的JS处理 button.focus({ preventScroll: true })
 - [x] [Preload，Prefetch，Preconnect和Prerendering](./README/preload.md)
 - [x] [SEO](./README/seo.md) 
+*****
+- [x][Canvas添加事件/isPointinPath](https://segmentfault.com/a/1190000019239594)
+</details>
 
-# 数据可视化探索
-- [x][如何为Canvas中各个部分添加事件](https://segmentfault.com/a/1190000019239594)
+<details>
+    <summary>React && VUE</summary>
 
-# 前端框架
-##  React
 ### 16以前生命周期
 ![](./img/react15lifecycle.png)
 ### 16以后生命周期
@@ -100,11 +119,29 @@
 - [x] [React相关](./README/react.md)
 
 [React v16.3之后的组件生命周期函数](https://zhuanlan.zhihu.com/p/38030418)
-
-##  VUE
+*****
+### VUE生命周期
 ![](./img/vuelifecycle.png)
+</details>
+
+<details>
+    <summary>CSS</summary>
+
+- [x] 滚动穿透/控制浏览器过度滚动时的表现css属性overscroll-behavior
+- [x] [你知道我们平时在CSS中写的%都是相对于谁吗？](./README/css.md)
+- [x] [堆叠上下文](./README/css_stack_context.md)
+- [x] [BFC](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
+- [x] [Containing Block/包含块](https://developer.mozilla.org/zh-CN/docs/Web/CSS/All_About_The_Containing_Block)
+- [x] 盒模型、reflow/repaint等
+- [x] [Grid布局手册](./README/css_grid.md)
+</details>
+
 
 # 服务端相关
+
+<details>
+    <summary>网络相关</summary>
+
 - [x] ISO 七层模型
 - [x] TCP三次握手建立连接和四次握手终止连接
 - [x] HTTPS工作原理
@@ -117,8 +154,11 @@
 - [x] [linux && shell手册](./README/linux.md) 
 
 [服务端相关](./README/net.md)
+</details>
 
-# nginx完成常见需求
+<details>
+    <summary>nginx</summary>
+
 - [x] 端口转发
 - [x] 实现负载均衡
 - [x] 特殊文件下载
@@ -132,40 +172,16 @@
 - [x] 实现防盗链
 
 [网络相关](./README/nginx.md)
+</details>
 
-# CSS篇
-- [x] 滚动穿透/控制浏览器过度滚动时的表现css属性overscroll-behavior
-- [x] [你知道我们平时在CSS中写的%都是相对于谁吗？](./README/css.md)
-- [x] [堆叠上下文](./README/css_stack_context.md)
-- [x] [BFC](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
-- [x] [Containing Block/包含块](https://developer.mozilla.org/zh-CN/docs/Web/CSS/All_About_The_Containing_Block)
-- [x] 盒模型、reflow/repaint等
-- [x] [Grid布局手册](./README/css_grid.md)
+# 算法和数据结构
 
-# 算法
+<details>
+    <summary>nginx</summary>
+
 如果要刷下算法的话，这里推荐大家去[牛客网](https://www.nowcoder.com/)和[leetcode](https://leetcode-cn.com/)。
-这里暂暂时整理常用的排序算法
-##  排序算法
-### 内排序算法
-- [x] 冒泡排序
-- [x] 选择排序
-- [x] 插入排序
-- [x] 希尔增量排序
-- [x] 快速排序
-- [x] 堆排序
-
-### 外排序算法
-- [x] 归并排序
-- [x] 计数排序
-- [x] 桶排序
-- [x] 基数排序
-
-稳定算法的有：冒泡排序、插入排序、归并排序、计数排序、桶排序、基数排序
-![](https://images2015.cnblogs.com/blog/1089184/201701/1089184-20170118180823468-388996114.png)
-[图片来源](https://www.cnblogs.com/beli/p/6297741.html)<br>
-[之前的博客](https://fanerge.github.io/2017/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95-%E6%80%BB%E7%BB%93%E6%80%A7%E6%96%87%E7%AB%A0.html)
-
-# 数据结构
+*****
+下面只是给出常用数据结构定义，对应数据结构知识点请移步[详细介绍请异步](./README/dataStructure.md)。
 用JavaScript来实现以下数据结构。<br>
 线性结构：线性表，栈( Stack)，队列(Queue)。<br>
 非线性结构：数组(Array)，广义表，树( Tree)，堆(Heap)，图(Graph)。<br>
@@ -204,10 +220,4 @@
 ### 堆（Heap）
 堆通常是一个可以被看做一棵完全二叉树的数组对象。<br>
 将根节点最大的堆叫做最大堆或大根堆，根节点最小的堆叫做最小堆或小根堆。
-
-
-
-
-
-
-
+</details>
