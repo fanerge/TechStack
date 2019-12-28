@@ -179,7 +179,7 @@
 # 算法和数据结构
 
 <details>
-    <summary>nginx</summary>
+    <summary>算法 && 数据结构</summary>
 
 如果要刷下算法的话，这里推荐大家去[牛客网](https://www.nowcoder.com/)和[leetcode](https://leetcode-cn.com/)。
 *****
