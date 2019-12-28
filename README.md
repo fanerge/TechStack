@@ -1,4 +1,4 @@
-# JavaScript 相关
+# 前段相关
 <details>
     <summary>JS核心概念 && 引擎V8</summary>
 
@@ -87,6 +87,8 @@
 <details>
     <summary>WEB性能（监控） && 安全</summary>
 
+- [x] [Navigation Timing API](https://developer.mozilla.org/zh-CN/docs/Web/API/Navigation_timing_API) && navigator.sendBeacon() 实现收集和上报
+*****
 - [x] XSS（Cascading Style Sheets）攻击全称跨站脚本攻击
 - [x] CSRF（Cross-site request forgery）跨站请求伪造
 - [x] 点击穿透
@@ -106,7 +108,7 @@
 - [x] [Preload，Prefetch，Preconnect和Prerendering](./README/preload.md)
 - [x] [SEO](./README/seo.md) 
 *****
-- [x][Canvas添加事件/isPointinPath](https://segmentfault.com/a/1190000019239594)
+- [x] [Canvas添加事件/isPointinPath](https://segmentfault.com/a/1190000019239594)
 </details>
 
 <details>
