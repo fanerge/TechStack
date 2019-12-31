@@ -183,7 +183,7 @@
 - [x] OSI七层模型
 - [x] TCP/IP五层模型
 ![OSI模型和TCP模型](./img/internet1.jpg)
-[TCP](./README/internet.md) 
+[TCP](./README/internet.md)
 </details>
 
 # 算法和数据结构
