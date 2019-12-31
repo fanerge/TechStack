@@ -31,7 +31,7 @@ Host coding
     IdentityFile ~/.ssh/id_rsa
 ```
 [配置](https://blog.csdn.net/hao495430759/article/details/80673568)
-[多ssh key配置](https://www.cnblogs.com/williamjie/p/9145570.html)
+[为不同git网站配置不同ssh key](https://www.cnblogs.com/purehol/p/11734017.html)
 #   .npmrc文件
 npm gets its config settings from the command line, environment variables, and npmrc files.
 ```
