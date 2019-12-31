@@ -180,7 +180,7 @@
 <details>
     <summary>OSI七层模型 && TCP/IP五层模型 的理解</summary>
 
-- [x] OSI七层模型
+- [x] OSI七层模型 
 - [x] TCP/IP五层模型
 ![OSI模型和TCP模型](./img/internet1.jpg)
 [TCP](./README/internet.md)
