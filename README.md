@@ -15,6 +15,7 @@
 - [x] [ES5继承的六种方式](./README/es5extends.md)
 - [x] css的下载解析js的下载解析与html解析的关系（阻塞）
 - [x] [浏览器解析HTML和CSS与JS加载、解析的关系](./README/render.md)
+- [x] [CustomEvent的应用](./README/js_customEvent.md)
 
 ![webkitflow.png](./img/webkitflow.png)
 ![js加载执行与HTML解析关系](./img/js加载执行与HTML解析关系.jpeg)
@@ -174,6 +175,13 @@
 - [x] 实现防盗链
 
 [网络相关](./README/nginx.md)
+</details>
+
+<details>
+    <summary>场景需求（SSO、秒杀）</summary>
+
+- [x] [SSO 相同域及不同域](./README/nginx.md)
+
 </details>
 
 # 计算机 && 网络
