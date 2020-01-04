@@ -180,7 +180,7 @@
 <details>
     <summary>场景需求（SSO、秒杀）</summary>
 
-- [x] [SSO 相同域及不同域](./README/nginx.md)
+- [x] [SSO 相同域及不同域](./README/backend_sso.md)
 
 </details>
 

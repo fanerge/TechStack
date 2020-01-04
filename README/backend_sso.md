@@ -23,6 +23,12 @@ SSO：（Single Sign On）在多个应用系统中，只需要登录一次，就
 子系统域名2：www.bbb.com
 子系统域名3：www.ccc.com
 ```
+登录流程
+![登录流程](../img/sso_login.png)
+登出流程
+![登出流程](../img/sso_logout.png)
+[sso简单原理及实现](https://www.cnblogs.com/zh94/p/8352943.html)<br>
+
 [多域名同步登录,单点登录SSO](https://blog.csdn.net/webnoties/article/details/77651669)
 [分布式多系统SSO单点登录](https://blog.csdn.net/weixin_38312502/article/details/81180260)
 ##  前段跨域实现cookie“共享”
