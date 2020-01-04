@@ -24,7 +24,7 @@ SSO：（Single Sign On）在多个应用系统中，只需要登录一次，就
 子系统域名3：www.ccc.com
 ```
 登录流程<br>
-![登录流程](../img/sso_login.png)
+![登录流程](../img/sso_login.png)<br>
 登出流程<br>
 ![登出流程](../img/sso_logout.png)<br>
 [sso简单原理及实现](https://www.cnblogs.com/zh94/p/8352943.html)<br>
