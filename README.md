@@ -190,7 +190,7 @@
 
 - [x] OSI七层模型 
 - [x] TCP/IP五层模型
-![OSI模型和TCP模型](./img/internet1.jpg)
+![OSI模型和TCP模型](./img/internet1.jpg)<br>
 [TCP](./README/internet.md) 
 </details>
 
