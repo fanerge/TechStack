@@ -94,6 +94,7 @@
 - [x] SSH key
 - [x] .npmrc
 - [x] [npm 命令手册](./README/npm.md)
+- [x] [yarn 命令手册](./README/yarn.md)
       [基础建设](./README/basic.md)
 
 </details>
