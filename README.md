@@ -205,10 +205,11 @@
 </details>
 
 <details>
-    <summary>场景需求（SSO、秒杀）</summary>
+    <summary>场景需求（SSO、oAuth、秒杀）</summary>
 
 - [x] [SSO 相同域及不同域](./README/backend_sso.md)
 - [x] [oAuth2.0 工作原理](./README/oAuth.md)
+- [x] [秒杀](./README/商品秒杀.md)
 
 </details>
 
