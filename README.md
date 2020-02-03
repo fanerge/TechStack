@@ -95,6 +95,8 @@
 - [x] .npmrc
 - [x] [npm 命令手册](./README/npm.md)
 - [x] [yarn 命令手册](./README/yarn.md)
+- [x] [brew 手册](./README/macOS.md)
+- [x] [macOS 备忘录](./README/macOS.md)
       [基础建设](./README/basic.md)
 
 </details>
