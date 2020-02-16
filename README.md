@@ -125,6 +125,7 @@
 
 - [x] 元素 focus 页面不滚动不定位的 JS 处理 button.focus({ preventScroll: true })
 - [x] [Preload，Prefetch，Preconnect 和 Prerendering](./README/preload.md)
+- [x] 表单的 [inputmode](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Global_attributes/inputmode) 属性可调用不同输入面板，[autocomplete](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Attributes/%E8%87%AA%E5%8A%A8%E5%AE%8C%E6%88%90%E5%B1%9E%E6%80%A7) 属性值为 one-time-cod 可从短信获取验证码等
 - [x] [SEO](./README/seo.md)
 
 ---
