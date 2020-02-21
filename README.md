@@ -159,7 +159,7 @@
 <details>
     <summary>CSS</summary>
 
-- [x] 滚动穿透/控制浏览器过度滚动时的表现 css 属性 overscroll-behavior
+- [x] 滚动穿透/控制浏览器过度滚动时的表现 CSS 属性 overscroll-behavior
 - [x] [你知道我们平时在 CSS 中写的%都是相对于谁吗？](./README/css.md)
 - [x] [堆叠上下文](./README/css_stack_context.md)
 - [x] [BFC](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
@@ -167,6 +167,7 @@
 - [x] 盒模型、reflow/repaint 等
 - [x] [Grid 布局手册](./README/css_grid.md)
 - [x] transform 失效（块级元素 和 原子行内级盒子元素起作用）
+- [x] [CSS给JS传参](https://www.zhangxinxu.com/wordpress/2020/02/css-params-to-js/)
   </details>
 
 # 服务端相关
