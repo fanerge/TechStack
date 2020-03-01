@@ -126,7 +126,6 @@ function dataToTree(data) {
 
   return result;
 }
-console.log(dataToTree(testTreeData));
 
 // 递归过滤不显示的节点（常见菜单需求）
 const testFilterMenuData = [
@@ -272,8 +271,6 @@ function setNodetoMap(node, ancestor, map){
   });
 }
 // test
-// console.log(filterMenuData(testFilterMenuData));
-// console.log(sd(filterMenuData(testFilterMenuData)).entries());
 
 
 
