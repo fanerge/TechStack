@@ -214,6 +214,7 @@
 
 - [x] [SSO 相同域及不同域](./README/backend_sso.md)
 - [x] [oAuth2.0 工作原理](./README/oAuth.md)
+- [x] [跨域身份验证解决方案](https://mp.weixin.qq.com/s/_f5MZa30VhmaqwDs_sx6vA)
 - [x] [秒杀](./README/商品秒杀.md)
 
 </details>
