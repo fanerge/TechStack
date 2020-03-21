@@ -29,7 +29,8 @@ Command + S：Save
 Command + Alt + S：Save All
 Command + Alt + C：Copy Path
 Command + Shift + Alt + C：Copy Relative Path
-Command Delete：Delete（选中状态） Ctrl + Enter：Open to the side
+Command Delete：Delete（选中状态）
+Ctrl + Enter：Open to the side
 Ctrl + Tab：切换文件
 Ctrl + Number：切换到底Number个文件
 Shift + Alt + F：Format Document
@@ -38,7 +39,7 @@ Enter：Rename（选中状态）
 
 ##	Folder
 ```
-Alt + Shift + F：Find in Folder would would
+Alt + Shift + F：Find in Folder
 ```
 
 ##	折叠/展开代码
