@@ -230,6 +230,14 @@
       [TCP](./README/internet.md)
   </details>
 
+# Geeek训练
+<details>
+    <summary>工具使用技巧 && 快捷键</summary>
+
+- [x] [快捷键备忘录](./README/keyboardShortcuts.md)
+
+</details>
+
 # 算法和数据结构
 
 <details>
