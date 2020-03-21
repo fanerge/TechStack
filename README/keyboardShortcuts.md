@@ -1,4 +1,4 @@
-VSCODE快捷键
+# VSCODE快捷键
 
 ##	通用
 Command + Shift + P：打开命令面板（reload window）
@@ -64,7 +64,7 @@ Shift + Left/Right：光标选择移动
 Shift + Alt + Left/Right：扩展/缩小选取范围
 Ctrl + D：删除光标右边
 
-苹果快捷键
+# 苹果快捷键
 Command + Tab：切换应用
 Command + H：隐藏最前面的APP
 Command + Option + H：隐藏所有APP
