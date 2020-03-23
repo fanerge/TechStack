@@ -44,7 +44,7 @@ Alt + Shift + F：Find in Folder
 
 ##	折叠/展开代码
 ```
-Command + K；Command + O：折叠所有
+Command + K；Command + 0：折叠所有
 Command + K；Command + L：展开所有
 Command + K；Command + /：折叠注释
 Command + K；Command + Number：折叠NumberLevel
