@@ -151,6 +151,14 @@ HTTP2通过二进制分帧，原来Headers + Body的报文格式如今被拆分�
 todo
 ##  服务器推送
 Server Push，当 TCP 连接建立之后，服务端可以主动发送数据
-
+```
+// 如请求了 index.html 后服务器自动推送 style.css 等资源的 nginx 配置
+location / {
+  index  index.html index.htm;
+  http2_push /style.css;
+  http2_push /example.png;
+}
+// 前端可以使用 rel=preload; as=style; 来是服务端
+```
 > 参考文章
   [HTTP灵魂之问，巩固你的 HTTP 知识体系](https://juejin.im/post/5e76bd516fb9a07cce750746)
