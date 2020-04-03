@@ -1,4 +1,5 @@
 # hooks来模拟类组件生命周期的功能
+useEffect 会在每次 render 之后执行，不会阻塞浏览器
 ```
 useEffect(() => {
     // componentDidMount
@@ -60,6 +61,34 @@ useLayoutEffect和平常写的ClassComponent的'componentDidMount'和'componentD
 useEffect 会在每次浏览器绘制完毕执行，useLayoutEffect 则会在绘制之前执行<br>
 99%都使用 useEffect 来处理副作用，当跟 DOM 操作相关使用 useLayoutEffect
 
+# 自定义hook
+```
+function usePlayerState(lengthOfClip) {
+  const [volume, setVolume] = useState(80);
+  const [position, setPosition] = useState(0);
+  const [isPlaying, setPlaying] = useState(false);
+ 
+  const stop = () => {
+    setPlaying(false);
+    setPosition(0);
+  }
+ 
+  const start = () => {
+    setPlaying(true);
+  }
+ 
+  return {
+    volume,
+    position,
+    isPlaying,
+    setVolume,
+    setPosition,
+    start,
+    stop
+  };
+}
+```
+
 # other
 React.memo 等效于 PureComponent，但它只对 props 浅比较
 
@@ -67,6 +96,7 @@ React.memo 等效于 PureComponent，但它只对 props 浅比较
 
 
 > 参考文档：
+  [React Hooks 原理](https://github.com/brickspert/blog/issues/26)
   [React Hooks 你真的用对了吗？](https://zhuanlan.zhihu.com/p/85969406)
   [useEffect与useLayoutEffect](https://zhuanlan.zhihu.com/p/53077376)
   [hooks使用的一些注意点](https://www.cnblogs.com/vicky24k/p/11371771.html)
