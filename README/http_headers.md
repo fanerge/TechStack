@@ -1,9 +1,11 @@
 # Authentication
 
+```
 WWW-Authenticate
 Authorization
 Proxy-Authenticate
 Proxy-Authorization
+```
 
 # Caching
 
@@ -40,6 +42,7 @@ Cache-Control: no-store
 Cache-Control: no-transform
 Cache-Control: max-age=<seconds>
 Cache-Control: s-maxage=<seconds> // 优先于 max-age 和 Expires，不适用于 Cache-Control: private
+// 但是仅适用于共享缓存(比如各个代理)，私有缓存会忽略它。
 ```
 
 ## Clear-Site-Data
@@ -73,8 +76,6 @@ Clear-Site-Data: "*"
 ```
 Expires: <http-date> // 当为0时，代表过期
 ```
-
-# Client hints
 
 # Conditionals
 
