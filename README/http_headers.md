@@ -148,6 +148,39 @@ Keep-Alive: timeout=5, max=1000
 
 是一个通用消息头，允许消息发送者暗示连接的状态，还可以用来设置超时时长和最大请求数。
 
+# Client hints
+
+客户端客户端提示一些特性给服务端（支持度不好）
+
+## Accept-CH
+
+头由服务器设置，以指定客户端应在后续请求中应包含哪些客户端 Client Hints 提示头。
+
+## Accept-CH-Lifetime
+
+以指定 Accept-CH 标头值的持久性，该值指定客户端应在后续请求中包括哪些 Client Hints 标头。
+
+## Early-Data
+
+由某个中间者设置来表示请求已在 TLS early data 中传送 ，且表示 某个中间者理解 425 (Too Early) 状态码。
+
+## DPR
+
+它代表客户端设备的像素比(DPR)，该比例是与每个 CSS 像素相对应的物理设备像素的数量。
+
+## Device-Memory
+
+用来表示客户端设备内存的近似大小。
+
+## Save-Data
+
+表示客户端对减少数据使用量的偏好。
+值为 on 时，明确表示用户选择使用客户端简化数据使用模式，并且当与源进行通信时允许他们提供替代内容以减少下载的数据，例如较小的图像和视频资源，不同的标记和样式，禁用轮询和自动更新等。
+
+## Viewport-Width
+
+客户端的布局视口宽度为多少 css 像素。
+
 # Content negotiation（内容协商）
 
 ```
@@ -343,6 +376,82 @@ If-Range 头字段通常用于断点续传的下载过程中，用来自从上�
 ## Content-Range
 
 显示的是一个数据片段在整个文件中的位置。
+
+# Security
+
+```
+Cross-Origin-Embedder-Policy (COEP) // Embedder
+Cross-Origin-Opener-Policy (COOP) //
+Cross-Origin-Resource-Policy (CORP) // 响应头会指示浏览器阻止对指定资源的无源跨域/跨站点请求。
+Content-Security-Policy // 允许站点管理者控制用户代理能够为指定的页面加载哪些资源。有效防止XSS
+// <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src https://*; child-src 'none';">
+Content-Security-Policy-Report-Only // CSP report-uri 指令需要跟这个header一起用
+X-XSS-Protection // 当检测到跨站脚本攻击 (XSS)时，浏览器将停止加载页面，是CSP的兼容方案
+Expect-CT // 允许站点选择性报告和/或执行证书透明度 (Certificate Transparency) 要求，来防止错误签发的网站证书的使用不被察觉。
+Feature-Policy // 提供了一种可以在本页面或包含的iframe上启用或禁止浏览器特性的机制。
+// 是否允许设置document.domain，是否允许autoplay等
+Strict-Transport-Security // 它告诉浏览器只能通过HTTPS访问当前资源。
+Upgrade-Insecure-Requests // 用来向服务器端发送信号，表示客户端优先选择加密及带有身份验证的响应，并且它可以成功处理 upgrade-insecure-requests CSP 指令。
+X-Content-Type-Options // 被服务器用来提示客户端一定要遵循在 Content-Type 首部中对  MIME 类型 的设定，而不能对其进行修改。
+X-Frame-Options // 用来给浏览器指示允许一个页面可否在 <frame>, <iframe>, <embed> 或者 <object> 中展现的标记。
+// 站点可以通过确保网站没有被嵌入到别人的站点里面，从而避免 clickjacking 攻击
+X-Powered-By // 网站是用何种语言或框架编写的，出于安全的考虑，一般会修改或删除掉这个信息。
+```
+
+# Transfer coding
+
+## Transfer-Encoding
+
+Transfer-Encoding 是一个逐跳传输消息首部，即仅应用于两个节点之间的消息传递，而不是所请求的资源本身
+
+```
+// 最长用的
+Transfer-Encoding: chunked // 数据以一系列分块的形式进行发送。
+TE // 请求型头部用来指定用户代理希望使用的传输编码类型。Accept-Transfer-Encoding
+Trailer //  是一个响应首部，允许发送方在分块发送的消息后面添加额外的元信息，比如消息的完整性校验，消息的数字签名，或者消息经过处理之后的最终状态等。
+```
+
+# Other
+
+## Date
+
+包含了报文创建的日期和时间。
+
+## Large-Allocation
+
+响应头部是用来告诉浏览器加载该页面可能需要申请大内存。（只有 Firefox 支持）
+
+## Link
+
+提供了序列化 HTTP 头部链接的方法。它在语义上与 HTML 元素 link 相等。
+
+```
+Link: <https://example.com>; rel="preload"
+```
+
+## Retry-After
+
+表示用户代理需要等待多长时间之后才能继续发送请求。
+
+## Server-Timing
+
+标头传达在一个给定请求-响应周期中的一个或多个参数和描述。它用于在用户浏览器的开发工具或 PerformanceServerTiming 接口中显示任何后端服务器定时参数（例如，数据库读/写、CPU 时间、文件系统访问等）。
+
+## Upgrade
+
+传输协议连接上升级或更改为其他协议的规则。
+
+## X-DNS-Prefetch-Control
+
+头控制着浏览器的 DNS 预读取功能。 DNS 预读取是一项使浏览器主动去执行域名解析的功能。
+// network.dns.disablePrefetch = true js 关闭预读取功能
+
+```
+X-DNS-Prefetch-Control: on
+<meta http-equiv="x-dns-prefetch-control" content="on">
+// 强制查询特定主机名
+<link rel="dns-prefetch" href="//www.spreadfirefox.com">
+```
 
 > 参考文档
 > [MDN HTTP headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers)
