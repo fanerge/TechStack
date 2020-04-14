@@ -15,7 +15,8 @@ Age: seconds // 使用代理缓存的时间，如果为 0 则从 origin server �
 
 ## Cache-Control
 
-Pragma 为了解决 Cache-Control 的兼容性，为非标准
+Pragma 为了解决 Cache-Control 的兼容性，为非标准<br>
+smax-age > max-age > expires > 预估时间
 
 ### Cache request directives
 
