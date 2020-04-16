@@ -79,7 +79,19 @@ BGP：Border Gateway Protocol 边界网关协议（BGP）是运行于 TCP 上的
 
 ## TCP
 
-TCP 的特点：慢启动、拥塞避免、快速重传、快速恢复
+TCP 的拥塞控制手段：慢启动、拥塞避免、快速重传、快速恢复<br>
+拥塞控制判断依据：之前为以丢包作为依据，后面以探测带宽作为依据
+
+### RTT
+
+round-trip time<br>
+表示从发送端发送数据开始，到发送端收到来自接收端的确认（接收端收到数据后便立即发送确认），总共经历的时延。
+
+### RTO
+
+Retransmission TimeOut<br>
+重传超时时间。<br>
+RTO 应略大于 RTT
 
 ### TCP/三次握手建立连接
 
@@ -87,7 +99,16 @@ TCP 的特点：慢启动、拥塞避免、快速重传、快速恢复
 2.  服务器端收到 SYN 报文，回应一个 SYN （SEQ=y）ACK（ack=x+1）报文，进入 SYN_RECV 状态。
 3.  客户端收到服务器端的 SYN 报文，回应一个 ACK（ack=y+1）报文，进入连接建立状态。
 
-三次握手完成，TCP 客户端和服务器端成功地建立连接，可以开始传输数据了。
+三次握手完成，TCP 客户端和服务器端成功地建立连接，可以开始传输数据了。<br>
+三次挥手 CLient 和 Server 状态（20200416 更新）
+
+| Client      | Server       | 说明                                 |
+| ----------- | ------------ | ------------------------------------ |
+| closed      | closed       | 握手前都为 closed                    |
+| syn-sent    | listen       | client 发送 syn 后                   |
+|             | syn-received | server 接收 syn，并发送 syn 和 ack   |
+| established |              | client 接收到 syn 和 ack，并发送 ack |
+|             | established  | server 接收到 ack                    |
 
 ### TCP/四次握手终止连接
 
@@ -104,6 +125,18 @@ ACK:确认字符 (Acknowledge character)
 SEQ:序列号（sequance）
 FIN:结束标志（Finally）
 ```
+
+四次挥手 CLient 和 Server 状态（20200416 更新）
+
+| Client            | Server      | 说明                         |
+| ----------------- | ----------- | ---------------------------- |
+| established       | established | 分手前都为 established       |
+| fin-wait-1        |             | client 发送 fin 后           |
+|                   | close-wait  | server 接收 fin ，并发送 ack |
+| fin-wait-2        |             | client 接收到 ack            |
+|                   | last-ack    | server 发送 fin              |
+| time-wait（2MSL） | closed      | server 接收 ack              |
+| closed            |             |                              |
 
 ### TCP 第四次挥手为什么要等待 2 倍的 MSL
 
