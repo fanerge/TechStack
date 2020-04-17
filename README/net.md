@@ -12,9 +12,12 @@ FTP:File Transfer Protocol（文件传输协议），默认20和21这两个端�
 TFTP:Trivial File Transfer Protocol（简单文件传输协议），默认端口号为69。
 SMTP:Simple Mail Transfer Protocol（简单邮件传输协议），默认端口25。
 SNMP:简单网络管理协议。
-DNS:Domain Name System（域名系统），默认端口53。
+DNS:Domain Name System（域名系统），默认端口53，大多数情况使用 UDP协议。
 TELNET:（远程终端协议），是Internet远程登录服务的标准协议和主要方式，一般使用加密的SSH(Secure Shell）。
 SSH:Secure Shell（安全外壳协议），加密的远程登录服务，默认端口22。
+ICMP:ICMP协议是一种面向无连接的协议，用于传输出错报告控制信息。ping 使用的是ICMP协议。
+IGMP:Internet 组管理协议，该协议运行在主机和组播路由器之间。
+NAT:Network Address Translation，网络地址转换，当在专用网内部的一些主机本来已经分配到了本地IP地址（即仅在本专用网内使用的专用地址），但现在又想和因特网上的主机通信（并不需要加密）时，可使用NAT方法。
 ```
 
 ## 表示层
