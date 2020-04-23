@@ -848,9 +848,27 @@ AVL 树是一种高度平衡的二叉树，所以查找的效率非常高，但�
 对于每个节点的值都大于等于子树中每个节点值的堆，我们叫作“大顶堆”。
 对于每个节点的值都小于等于子树中每个节点值的堆，我们叫作“小顶堆”。
 
-### 堆测操作
+### 堆测操作（大根堆）
 
-往堆中插入一个元素
+插入和删除时间复杂度为 O(logn)
+因为数的高度为 log 以 2 为底 n 的对数，每次比较最多需要数的高度次。<i>
+假设当前节点 index 为 i，则其左孩子 index 为 2*i+1，右孩子 index 为 2*i+2
+
+#### 往堆中插入一个元素（insert）
+
+1.  在堆的最后新建一个节点
+2.  将数值赋予新节点
+3.  将其节点和父节点比较
+4.  如果新节点的数值比父节点大，调换父子节点的位置
+5.  重复步骤 3 和 4 直到最大堆的特性被满足
+
+#### 堆中移除根节点（poll）
+
+1.  移除根节点
+2.  将最后的元素移到根节点处
+3.  将子节点和父节点比较
+4.  如果父节点的数值比子节点数值小
+5.  重复步骤 3 和 4 直到最大堆的特性被满足
 
 ```
 
@@ -907,6 +925,272 @@ public class Heap {
 #### 动态数据
 
 我们可以一直都维护一个 K 大小的小顶堆，当有数据被添加到集合中时，我们就拿它与堆顶的元素对比。如果比堆顶元素大，我们就把堆顶元素删除，并且将这个元素插入到堆中；如果比堆顶元素小，则不做处理。这样，无论任何时候需要查询当前的前 K 大数据，我们都可以立刻返回给他。
+
+## 图（Graph）
+
+```
+顶点（vertex）：树中的元素我们称为节点，图中的元素我们就顶点（vertex）。
+边（edge）：顶点可以与任意其他顶点。
+顶点的度（degree）：顶点相连接的边的条数。
+我们把这种边有方向的图叫作“有向图”。
+我们把边没有方向的图就叫作“无向图”。
+顶点的入度，表示有多少条边指向这个顶点。
+顶点的出度，表示有多少条边是以这个顶点为起点指向其他顶点。
+带权图（weighted graph）每条边都有一个权重（weight）。
+```
+
+### 图的存储
+
+#### 邻接矩阵存储方法
+
+邻接矩阵的底层依赖一个二维数组。
+用邻接矩阵来表示一个图，虽然简单、直观，但是比较浪费存储空间（特别是无向图和稀疏图（Sparse Matrix））。
+邻接矩阵的存储方式简单、直接，因为基于数组，所以在获取两个顶点的关系时，就非常高效。
+用邻接矩阵存储图的另外一个好处是方便计算。这是因为，用邻接矩阵的方式存储图，可以将很多图的运算转换成矩阵之间的运算。
+
+#### 邻接表存储方法
+
+邻接表存储类似于 HashTable 和 LinkList。
+邻接表存储方法中每个顶点都对应一个链表，存储与其相连接的其他顶点。
+邻接表还有改进升级版，即将链表换成更加高效的动态数据结构，比如平衡二叉查找树、跳表、散列表等。
+
+### 如何存储微博、微信等社交网络中的好友关系？
+
+因为社交网络是一张稀疏图，使用邻接矩阵存储比较浪费存储空间。所以，这里我们采用邻接表来存储。
+邻接表中存储了用户的关注关系，逆邻接表中存储的是用户的被关注关系。
+
+### 深度和广度优先搜索
+
+深度优先搜索算法和广度优先搜索算法都是基于“图”这种数据结构的。
+
+```
+public class Graph { // 无向图
+  private int v; // 顶点的个数
+  private LinkedList<Integer> adj[]; // 邻接表
+
+  public Graph(int v) {
+    this.v = v;
+    adj = new LinkedList[v];
+    for (int i=0; i<v; ++i) {
+      adj[i] = new LinkedList<>();
+    }
+  }
+
+  public void addEdge(int s, int t) { // 无向图一条边存两次
+    adj[s].add(t);
+    adj[t].add(s);
+  }
+}
+
+public void bfs(int s, int t) {
+  if (s == t) return;
+  boolean[] visited = new boolean[v];
+  visited[s]=true;
+  Queue<Integer> queue = new LinkedList<>();
+  queue.add(s);
+  int[] prev = new int[v];
+  for (int i = 0; i < v; ++i) {
+    prev[i] = -1;
+  }
+  while (queue.size() != 0) {
+    int w = queue.poll();
+   for (int i = 0; i < adj[w].size(); ++i) {
+      int q = adj[w].get(i);
+      if (!visited[q]) {
+        prev[q] = w;
+        if (q == t) {
+          print(prev, s, t);
+          return;
+        }
+        visited[q] = true;
+        queue.add(q);
+      }
+    }
+  }
+}
+
+private void print(int[] prev, int s, int t) { // 递归打印s->t的路径
+  if (prev[t] != -1 && t != s) {
+    print(prev, s, prev[t]);
+  }
+  System.out.print(t + " ");
+}
+```
+
+#### 广度优先搜索（Breadth-First-Search）
+
+广度优先搜索的时间复杂度是 O(V+E)，其中，V 表示顶点的个数，E 表示边的个数。广度优先搜索的空间消耗主要在几个辅助变量 visited 数组、queue 队列、prev 数组上。这三个存储空间的大小都不会超过顶点的个数，所以空间复杂度是 O(V)。
+
+#### 深度优先搜索（Depth-First-Search）
+
+图上的深度优先搜索算法的时间复杂度是 O(E)，E 表示边的个数。
+深度优先搜索算法的消耗内存主要是 visited、prev 数组和递归调用栈。visited、prev 数组的大小跟顶点的个数 V 成正比，递归调用栈的最大深度不会超过顶点的个数，所以总的空间复杂度就是 O(V)。
+
+```
+
+boolean found = false; // 全局变量或者类成员变量
+
+public void dfs(int s, int t) {
+  found = false;
+  boolean[] visited = new boolean[v];
+  int[] prev = new int[v];
+  for (int i = 0; i < v; ++i) {
+    prev[i] = -1;
+  }
+  recurDfs(s, t, visited, prev);
+  print(prev, s, t);
+}
+
+private void recurDfs(int w, int t, boolean[] visited, int[] prev) {
+  if (found == true) return;
+  visited[w] = true;
+  if (w == t) {
+    found = true;
+    return;
+  }
+  for (int i = 0; i < adj[w].size(); ++i) {
+    int q = adj[w].get(i);
+    if (!visited[q]) {
+      prev[q] = w;
+      recurDfs(q, t, visited, prev);
+    }
+  }
+}
+```
+
+### 如何找出社交网络中的三度好友关系？
+
+这个问题就非常适合用图的广度优先搜索算法来解决，因为广度优先搜索是层层往外推进的。首先，遍历与起始顶点最近的一层顶点，也就是用户的一度好友，然后再遍历与用户距离的边数为 2 的顶点，也就是二度好友关系，以及与用户距离的边数为 3 的顶点，也就是三度好友关系。
+我们只需要稍加改造一下广度优先搜索代码，用一个数组来记录每个顶点与起始顶点的距离，非常容易就可以找出三度好友关系。
+
+## 字符串匹配
+
+BF 算法和 RK 算法。
+
+### BF 算法
+
+定义：我们在主串中，检查起始位置分别是 0、1、2…n-m 且长度为 m 的 n-m+1 个子串，看有没有跟模式串匹配的。
+BF 算法中的 BF 是 Brute Force 的缩写，中文叫作暴力匹配算法，也叫朴素匹配算法。
+主串和模式串：在字符串 A 中查找字符串 B，那字符串 A 就是主串，字符串 B 就是模式串。
+
+### RK 算法
+
+RK 算法的全称叫 Rabin-Karp 算法。
+整个 RK 算法包含两部分，计算子串哈希值和模式串哈希值与子串哈希值之间的比较。第一部分，我们前面也分析了，可以通过设计特殊的哈希算法，只需要扫描一遍主串就能计算出所有子串的哈希值了，所以这部分的时间复杂度是 O(n)。模式串哈希值与每个子串哈希值之间的比较的时间复杂度是 O(1)，总共需要比较 n-m+1 个子串的哈希值，所以，这部分的时间复杂度也是 O(n)。所以，RK 算法整体的时间复杂度就是 O(n)。
+
+### BM（Boyer-Moore）算法
+
+BM 算法包含两部分，分别是坏字符规则（bad character rule）和好后缀规则（good suffix shift）。
+坏字符规则：我们从模式串的末尾往前倒着匹配，当我们发现某个字符没法匹配的时候。我们把这个没有匹配的字符叫作坏字符（主串中的字符）。
+
+好后缀规则：
+
+### KMP 算法
+
+Knuth Morris Pratt 算法
+
+### 字典树（Trie 树）
+
+Trie 树，也叫“字典树”。顾名思义，它是一个树形结构。它是一种专门处理字符串匹配的数据结构，用来解决在一组字符串集合中快速查找某个字符串的问题。
+Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前缀合并在一起。
+
+#### 如何实现一棵 Trie 树？
+
+Trie 树主要有两个操作，一个是将字符串集合构造成 Trie 树。这个过程分解开来的话，就是一个将字符串插入到 Trie 树的过程。另一个是在 Trie 树中查询一个字符串。
+
+```
+
+public class Trie {
+  private TrieNode root = new TrieNode('/'); // 存储无意义字符
+
+  // 往Trie树中插入一个字符串
+  public void insert(char[] text) {
+    TrieNode p = root;
+    for (int i = 0; i < text.length; ++i) {
+      int index = text[i] - 'a';
+      if (p.children[index] == null) {
+        TrieNode newNode = new TrieNode(text[i]);
+        p.children[index] = newNode;
+      }
+      p = p.children[index];
+    }
+    p.isEndingChar = true;
+  }
+
+  // 在Trie树中查找一个字符串
+  public boolean find(char[] pattern) {
+    TrieNode p = root;
+    for (int i = 0; i < pattern.length; ++i) {
+      int index = pattern[i] - 'a';
+      if (p.children[index] == null) {
+        return false; // 不存在pattern
+      }
+      p = p.children[index];
+    }
+    if (p.isEndingChar == false) return false; // 不能完全匹配，只是前缀
+    else return true; // 找到pattern
+  }
+
+  public class TrieNode {
+    public char data;
+    public TrieNode[] children = new TrieNode[26];
+    public boolean isEndingChar = false;
+    public TrieNode(char data) {
+      this.data = data;
+    }
+  }
+}
+```
+
+构建 Trie 树的过程，需要扫描所有的字符串，时间复杂度是 O(n)（n 表示所有字符串的长度和）。但是一旦构建成功之后，后续的查询操作会非常高效。
+
+### 如何借助哈希算法实现高效字符串匹配？
+
+BF 算法 和 RK 算法
+
+### 如何实现文本编辑器中的查找功能？
+
+BM（Boyer-Moore）算法
+
+#### 如何实现搜索引擎的搜索关键词提示功能？
+
+Trie 树比较适合的是查找前缀匹配的字符串。
+
+### AC 自动机算法
+
+全称是 Aho-Corasick 算法。
+AC 自动机实际上就是在 Trie 树之上，加了类似 KMP 的 next 数组，只不过此处的 next 数组是构建在树上罢了。
+
+```
+将多个模式串构建成 Trie 树；
+在 Trie 树上构建失败指针（相当于 KMP 中的失效函数 next 数组）。
+```
+
+#### 如何用多模式串匹配实现敏感词过滤功能？
+
+Aho-Corasick 算法。
+
+## Greedy Algorithm（贪心算法）
+
+贪心算法、分治算法、回溯算法、动态规划。更加确切地说，它们应该是算法思想，并不是具体的算法，常用来指导我们设计具体的算法和编码等。
+贪心算法有很多经典的应用，比如霍夫曼编码（Huffman Coding）、Prim 和 Kruskal 最小生成树算法、还有 Dijkstra 单源最短路径算法。
+
+### 解题步骤
+
+1.  第一步，当我们看到这类问题的时候，首先要联想到贪心算法：针对一组数据，我们定义了限制值和期望值，希望从中选出几个数据，在满足限制值的情况下，期望值最大。
+2.  第二步，我们尝试看下这个问题是否可以用贪心算法解决：每次选择当前情况下，在对限制值同等贡献量的情况下，对期望值贡献最大的数据。
+3.  第三步，我们举几个例子看下贪心算法产生的结果是否是最优的。
+
+贪心算法解决问题的思路，并不总能给出最优解。
+
+### 案例
+
+分糖果、钱币找零、区间覆盖
+
+### 如何用贪心算法实现霍夫曼编码？
+
+霍夫曼编码不仅会考察文本中有多少个不同字符，还会考察每个字符出现的频率，根据频率的不同，选择不同长度的编码。霍夫曼编码试图用这种不等长的编码方法，来进一步增加压缩的效率。
+根据贪心的思想，我们可以把出现频率比较多的字符，用稍微短一些的编码；出现频率比较少的字符，用稍微长一些的编码。
 
 # 算法方法
 

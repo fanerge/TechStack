@@ -118,7 +118,8 @@
 - [x] DDoS（Distributed Denial of Service）分布式拒绝服务攻击
 - [x] [JWT/深度理解 token](https://segmentfault.com/a/1190000020143933)
 - [x] [Web 中的密码学（加密、哈希、编码、混淆）](./README/web_secret.md)
-  </details>
+- [x] 浏览器策略：Trusted Types 的工作方式就是锁定以下危险函数的接收参数，如果是不安全的，就直接阻止。
+</details>
 
 <details>
     <summary>WEB体验 && 数据可视化探索</summary>
@@ -131,7 +132,7 @@
 ---
 
 - [x] [Canvas 添加事件/isPointinPath](https://segmentfault.com/a/1190000019239594)
-  </details>
+</details>
 
 <details>
     <summary>React && VUE</summary>
@@ -169,7 +170,7 @@
 - [x] [Grid 布局手册](./README/css_grid.md)
 - [x] transform 失效（块级元素 和 原子行内级盒子元素起作用）
 - [x] [CSS 给 JS 传参](https://www.zhangxinxu.com/wordpress/2020/02/css-params-to-js/)
-  </details>
+</details>
 
 # 服务端相关
 
@@ -229,9 +230,9 @@
 
 - [x] OSI 七层模型
 - [x] TCP/IP 五层模型
-      ![OSI模型和TCP模型](./img/internet1.jpg)<br>
-      [TCP](./README/internet.md)
-  </details>
+    ![OSI模型和TCP模型](./img/internet1.jpg)<br>
+    [TCP](./README/internet.md)
+</details>
 
 # Geeek 训练
 
