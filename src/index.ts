@@ -1,40 +1,40 @@
-import result from './modules/array';
-import Stack, { divideBy2, baseConverter } from './modules/stack';
-import Queue, { PriorityQueue } from './modules/queue';
-import LinkedList, { Node } from './modules/linkedList';
-import Sets from './modules/Set';
-import Dictionary from './modules/dictionary';
-import HashTable from './modules/hashTable';
-import HashTable1 from './modules/hashTable1';
+import result from "./modules/array";
+import Stack, { divideBy2, baseConverter } from "./modules/stack";
+import Queue, { PriorityQueue } from "./modules/queue";
+import LinkedList, { Node } from "./modules/linkedList";
+import Sets from "./modules/Set";
+import Dictionary from "./modules/dictionary";
+import HashTable from "./modules/hashTable";
+import HashTable1 from "./modules/hashTable1";
 // import BinarySearchTree from './modules/binarySearchTree';
-import Graph from './modules/graph';
+import Graph from "./modules/graph";
 // import { cloneLoop } from './utils/deepClone';
-import { cloneOther } from './utils/other'; 
-import { 
-    checkType, 
-    deepClone, 
-    curry, 
-    compose,
-    pipe,
-    debounce,
-    throttle,
-    fmoney,
-    rmoney,
-    toCamelCase
- } from './modules/utils.ts';
- import {
+import { cloneOther } from "./utils/other";
+import {
+  checkType,
+  deepClone,
+  curry,
+  compose,
+  pipe,
+  debounce,
+  throttle,
+  fmoney,
+  rmoney,
+  toCamelCase,
+} from "./modules/utils.ts";
+import {
   instance_of,
-  myCall, 
-  myApply, 
-  myBind, 
+  myCall,
+  myApply,
+  myBind,
   objectFactory,
-  objectCreate
- } from './modules/theory';
-require('./modules/sort');
-require('./modules/fp');
+  objectCreate,
+} from "./modules/theory";
+require("./modules/sort");
+require("./modules/fp");
 // 剑指offer刷题
-require('./utils/offer');
-require('./modules/utils.js');
+require("./utils/offer");
+require("./modules/utils.js");
 
 // 栈
 // const stack: Stack = new Stack();
@@ -64,21 +64,21 @@ require('./modules/utils.js');
 
 // 循环队列——击鼓传花
 function hotPotato(nameList: string[], num: number) {
-    let queue = new Queue();
-    
-    for(let i = 0; i < nameList.length; i++ ) {
-        queue.enqueue(nameList[i]);
-    }
+  let queue = new Queue();
 
-    let eliminated = '';
-    while (queue.size() > 1){
-        for (let i=0; i<num; i++){
-            queue.enqueue(queue.dequeue()); 
-        }
-        eliminated = queue.dequeue();
-        console.log(eliminated + '在击鼓传花游戏中被淘汰。');
+  for (let i = 0; i < nameList.length; i++) {
+    queue.enqueue(nameList[i]);
+  }
+
+  let eliminated = "";
+  while (queue.size() > 1) {
+    for (let i = 0; i < num; i++) {
+      queue.enqueue(queue.dequeue());
     }
-    return queue.dequeue();
+    eliminated = queue.dequeue();
+    console.log(eliminated + "在击鼓传花游戏中被淘汰。");
+  }
+  return queue.dequeue();
 }
 // let names = ['John','Jack','Camila','Ingrid','Carl'];
 // let winner = hotPotato(names, 8);
@@ -92,11 +92,10 @@ function hotPotato(nameList: string[], num: number) {
 // link.remove(2);
 // // link.remove(0);
 
-
 // 测试deepClone
 // 测试循环引用
 // const obj1 = {
-//     x: 1, 
+//     x: 1,
 //     y: 2
 // };
 // obj1.z = obj1;
@@ -138,23 +137,23 @@ function hotPotato(nameList: string[], num: number) {
 // console.log(welcome2('dolb'))//HI:DDDDDOLB!
 
 // test-throttle
-let body = document.querySelector('body');
+let body = document.querySelector("body");
 let fragment = document.createDocumentFragment();
-var browsers = ['Firefox', 'Chrome', 'Opera', 'Safari', 'Internet Explorer'];
+var browsers = ["Firefox", "Chrome", "Opera", "Safari", "Internet Explorer"];
 
-browsers.forEach(function(browser) {
-    var h2 = document.createElement('h2');
-    h2.textContent = browser;
-    fragment.appendChild(h2);
+browsers.forEach(function (browser) {
+  var h2 = document.createElement("h2");
+  h2.textContent = browser;
+  fragment.appendChild(h2);
 });
 
 body.appendChild(fragment);
 // 防抖节流
-function handle(e: any) {            
-    // console.log(Math.random());   
-    console.log(e);      
+function handle(e: any) {
+  // console.log(Math.random());
+  console.log(e);
 }
-window.addEventListener('scroll', throttle(handle, 3000));
+window.addEventListener("scroll", throttle(handle, 3000));
 // let test = fmoney(10000);
 // // let test2 = rmoney(test);
 // console.log(test);
@@ -266,13 +265,13 @@ window.addEventListener('scroll', throttle(handle, 3000));
 
 // test-graph
 // var graph = new Graph();
-// var myVertices = ['A','B','C','D','E','F','G','H','I']; //{7} 
+// var myVertices = ['A','B','C','D','E','F','G','H','I']; //{7}
 // for (var i=0; i<myVertices.length; i++){ //{8}
 //   graph.addVertex(myVertices[i]);
 // }
 
 // graph.addEdge('A', 'B'); //{9}
-// graph.addEdge('A', 'C');  
+// graph.addEdge('A', 'C');
 // graph.addEdge('A', 'D');
 // graph.addEdge('C', 'D');
 // graph.addEdge('C', 'G');

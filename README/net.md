@@ -228,3 +228,4 @@ TCP 的队头阻塞并没有彻底解决（多个请求是跑在一个 TCP 管�
 本质原因：TCP 必须要保证资源的有序到达而导致的。
 
 ![](https://mmbiz.qpic.cn/mmbiz_png/zewrLkrYfsPJcceCMInZpsVErpdiaXm87wR2CP66VEj2naiaeTG1glYCJIa7S74tWhjkzAL65FiaYeJHeC9vggkNw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+[近 40 张图解被问千百遍的 TCP 三次握手和四次挥手面试题](https://mp.weixin.qq.com/s/tH8RFmjrveOmgLvk9hmrkw)
