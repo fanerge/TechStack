@@ -235,7 +235,7 @@
     [TCP](./README/internet.md)
 </details>
 
-# Geeek 训练
+# Geek 训练
 
 <details>
     <summary>工具使用技巧 && 快捷键</summary>
