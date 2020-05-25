@@ -1,7 +1,7 @@
 # 常用等 npm 包
 
 数字格式化：numeral
-数字计算精度问题：Math.js/decimal.js/big.js
+数字计算精度问题：Math.js/decimal.js/big.js/BigNumber.js
 时间格式化：moment/dayjs
 process.env 动态添加配置：dotenv
 发布订阅消息：EventEmitter3/wolfy87-eventemitter

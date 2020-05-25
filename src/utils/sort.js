@@ -1,0 +1,204 @@
+// 冒泡排序
+// 原理：两个元素比较，如果前者大于后者则交换位置，一次遍历后当前最大的元素将移动到后面
+function bubbleSort(ary) {
+  for (let i = 0; i < ary.length; i++) {
+    let flag = true;
+    for (let j = 0; j < ary.length - i - 1; j++) {
+      if (ary[j] > ary[j + 1]) {
+        flag = false;
+        [ary[j], ary[j + 1]] = [ary[j + 1], ary[j]];
+      }
+    }
+    if (flag) return ary;
+  }
+  return ary;
+}
+// console.log(bubbleSort([3, 21, 1, 4, 325]));
+
+// 选择排序
+// 原理：
+function selectSort(ary) {
+  for (let i = 0; i < ary.length - 1; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < ary.length; j++) {
+      if (ary[minIndex] > ary[j]) {
+        minIndex = j;
+      }
+    }
+    [ary[i], ary[minIndex]] = [ary[minIndex], ary[i]];
+  }
+  return ary;
+}
+// console.log(selectSort([3, 21, 1, 4, 325]));
+
+// 插入排序
+// 原理：顺序从待排序中取出一个元素然后与已排好序的元素逐个比较放入合适的位置（向后移动比它大的元素）
+
+function insertSort(ary) {
+  for (let i = 1; i < ary.length; i++) {
+    let currentInsertValue = ary[i];
+    // 默认第一个已经排好序了
+    for (let j = i - 1; j >= 0; j--) {
+      // 找到比待插入大的值将其后移，将待插入的值放入移动后的空位
+      if (ary[j] > currentInsertValue) {
+        ary[j + 1] = ary[j];
+        ary[j] = currentInsertValue;
+      }
+    }
+  }
+  return ary;
+}
+// console.log(insertSort([6, 999, 5, 4, 3, 2, 12]));
+
+// 归并排序
+// 原理：采用分治法（Divide and Conquer）的方法，将已有序的子序列合并，直到得到完全有序的序列
+function mergeSort(ary) {
+  if (ary.length === 1) {
+    return ary;
+  }
+  let mid = Math.floor(ary.length / 2);
+  let left = ary.slice(0, mid);
+  let right = ary.slice(mid);
+
+  return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right) {
+  let ary = [];
+  while (left.length && right.length) {
+    let left0 = left[0];
+    let right0 = right[0];
+    if (left0 > right0) {
+      ary.push(right.shift());
+    } else {
+      ary.push(left.shift());
+    }
+  }
+
+  while (left.length) {
+    ary.push(left.shift());
+  }
+  while (right.length) {
+    ary.push(right.shift());
+  }
+
+  return ary;
+}
+// console.log(mergeSort([6, 999, 5, 4, 3, 2, 12]));
+
+// 快速排序
+// 原理：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列
+function quickSort(arr) {
+  const sort = (ary, left = 0, right = ary.length - 1) => {
+    // debugger;
+    if (left >= right) return;
+    let i = left;
+    let j = right;
+    let baseValue = ary[right];
+    while (i < j) {
+      while (i < j && ary[i] <= baseValue) {
+        i++;
+      }
+      ary[j] = ary[i];
+      while (i < j && ary[j] >= baseValue) {
+        j--;
+      }
+      ary[i] = ary[j];
+    }
+    // i = j
+    ary[i] = baseValue;
+    sort(ary, left, i - 1);
+    sort(ary, i + 1, right);
+  };
+  sort(arr);
+  return arr;
+}
+// console.log(quickSort([6, 999, 5, 4, 3, 2, 12]));
+
+// 基数排序
+// 原理：将所有待比较数值（正整数）统一为同样的数位长度，数位较短的数前面补零。然后，从最低位开始，依次进行一次排序。这样从最低位排序一直到最高位排序完成以后, 数列就变成一个有序序列。
+// 数排序的方式可以采用LSD（Least significant digital）或MSD（Most significant digital），LSD的排序方式由键值的最右边开始，而MSD则相反，由键值的最左边开始。
+function radixSort(ary, maxDigit) {
+  // 实际为二维数组，外面为桶的编号（0-9），内部为每个基数的桶如1则可以放11，21，31等
+  let counter = [];
+  let mov = 10;
+  let dev = 1;
+  for (let i = 0; i < maxDigit; i++, dev *= 10, mov *= 10) {
+    // 放入桶中
+    for (let j = 0; j < ary.length; j++) {
+      // 第一轮以个位为index，第二轮以十位位index，...
+      let bucketIndex = parseInt((ary[j] % mov) / dev);
+      if (!Array.isArray(counter[bucketIndex])) {
+        counter[bucketIndex] = [];
+      }
+      counter[bucketIndex].push(ary[j]);
+    }
+    let pos = 0;
+    let value;
+    // 依次从桶中取出并放入原数组中
+    for (let k = 0; k < counter.length; k++) {
+      if (Array.isArray(counter[k])) {
+        while ((value = counter[k].shift()) !== undefined) {
+          ary[pos++] = value;
+        }
+      }
+    }
+  }
+
+  return ary;
+}
+// console.log(radixSort([3, 21, 1, 4, 325], 3));
+
+// 计数排序
+// 原理：对于给定的输入序列中的每一个元素x，确定该序列中值小于x的元素的个数（此处并非比较各元素的大小，而是通过对元素值的计数和计数值的累加来确定）。一旦有了这个信息，就可以将x直接存放到最终的输出序列的正确位置上。例如，如果输入序列中只有17个元素的值小于x的值，则x可以直接存放在输出序列的第18个位置上。
+// 你知道有17个数比你小，那你肯定排在第18的位置呗
+//
+function countingSort(ary) {
+  // 用一个数组，用数组的值作为 buckets 数组的index，对应的值为 出现的次数
+  let buckets = [];
+  let index = 0;
+  for (let i = 0; i < ary.length; i++) {
+    if (!buckets[ary[i]]) {
+      buckets[ary[i]] = 0;
+    }
+    buckets[ary[i]]++;
+  }
+  for (let j = 0; j < buckets.length; j++) {
+    while (buckets[j] > 0) {
+      ary[index++] = j;
+      buckets[j]--;
+    }
+  }
+  return ary;
+}
+// console.log(countingSort([3, 2, 1, 67, 1, 34, 00, 09]));
+
+// 桶排序
+// 原理：是计数排序的改进，将数组元素分别放入各个桶中（区间），然后对每个桶分别排序，最后依次重桶中取出即可
+function bucketSort(ary, bucketSize = 5) {
+  if (ary.length === 0) {
+    return arr;
+  }
+  let buckets = []; // 二位数组
+  // 用于等会儿为数组每个元素找到在桶中index
+  let min = Math.min(...ary);
+
+  for (let i = 0; i < ary.length; i++) {
+    // 将元素放入对应的桶中
+    let index = Math.floor((ary[i] - min) / bucketSize);
+    if (!Array.isArray(buckets[index])) {
+      buckets[index] = [];
+    }
+    buckets[index].push(ary[i]);
+  }
+  // 清空原数组放新数组
+  ary = [];
+  for (let j = 0; j < buckets.length; j++) {
+    // 对每个桶中元素进行排序
+    if (Array.isArray(buckets[j]) && buckets[j].length > 0) {
+      ary.push(...insertSort(buckets[j]));
+    }
+  }
+  return ary;
+}
+// console.log(bucketSort([3, 2, 1, 67, 1, 34, 00, 09]));

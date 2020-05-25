@@ -99,4 +99,227 @@ var arrangeCoins = function (n) {
     }
   }
 };
-console.log(arrangeCoins(5));
+
+var findTheDistanceValue = function (arr1, arr2, d) {
+  let n = 0;
+  arr2.sort((a, b) => a - b);
+  for (let i = 0; i < arr1.length; i++) {
+    let index = bf(arr2, arr1[i]);
+    debugger;
+    if (
+      Math.abs(arr1[i] - arr2[index]) >= d &&
+      Math.abs(arr1[i] - arr2[index - 1]) >= d &&
+      Math.abs(arr1[i] - arr2[index + 1]) >= d
+    ) {
+      n++;
+    }
+  }
+  return n;
+};
+
+var merge = function (A, m, B, n) {
+  let i = m - 1;
+  let j = n - 1;
+  let k = n + m - 1;
+  if (m === 0) {
+    while (j >= 0) {
+      A[k] = B[j];
+      j--;
+      k--;
+    }
+  }
+  while (i >= 0 && j >= 0) {
+    if (A[i] >= B[j]) {
+      A[k] = A[i];
+      i--;
+    } else {
+      A[k] = B.pop();
+      j--;
+    }
+    k--;
+  }
+  if (i === -1) {
+    while (B.length) {
+      A[k] = B.pop();
+      k--;
+    }
+  }
+  console.log(A);
+};
+
+var arrayRankTransform = function (arr) {
+  let sortArr = [...new Set(arr)].sort((a, b) => a - b);
+  let temp = arr.map((item, index) => {
+    return sortArr.indexOf(item) + 1;
+    // return sortArr.findIndex(item1 => {
+    //     return item1 === item
+    // }) + 1;
+  });
+  console.log(temp);
+  return temp;
+};
+
+var balancedStringSplit = function (s) {
+  let a = [];
+  let i = 1;
+  let n = 0;
+  a.push(s[0]);
+  while (i < s.length) {
+    if (a.length === 0 || a[a.length - 1] === s[i]) {
+      a.push(s[i]);
+    } else {
+      a.pop();
+      if (a.length === 0) {
+        n++;
+      }
+    }
+    i++;
+  }
+  return n;
+};
+
+var compress = function (chars) {
+  let oldCount;
+  let count = 1;
+  let i = 1;
+  let aryLen = 0;
+  if (chars.length === 1) {
+    return;
+  }
+  while (i < chars.length) {
+    if (chars[i - 1] === chars[i]) {
+      count++;
+    } else {
+      oldCount = count;
+      count = 1;
+    }
+    if (count === 1 && oldCount > 0) {
+      debugger;
+      let oldStr = String(oldCount);
+      // 字符
+      chars[aryLen++] = chars[i - 1];
+      // 数量
+      if (oldCount > 1 && oldStr.length >= 1) {
+        let j = 0;
+        while (j < oldStr.length) {
+          chars[aryLen++] = oldStr[j];
+          j++;
+        }
+      }
+    }
+    // 对尾巴特殊处理
+    if (i === chars.length - 1) {
+      if (chars[i - 1] === chars[i]) {
+        oldCount = count;
+        let oldStr = String(oldCount);
+        // 字符
+        chars[aryLen++] = chars[i - 1];
+        // 数量
+        let j = 0;
+        while (j < oldStr.length) {
+          chars[aryLen++] = oldStr[j];
+          j++;
+        }
+      } else {
+        chars[aryLen++] = chars[i];
+      }
+    }
+    i++;
+  }
+  console.log(aryLen);
+  chars.length = aryLen;
+  console.log(chars);
+};
+
+/**
+ * @param {string} s
+ * @return {string}
+ */
+var reformat = function (s) {
+  let numAry = [];
+  let strAry = [];
+  let result = [];
+  for (let i = 0; i < s.length; i++) {
+    if (/\d/.test(s[i])) {
+      numAry.push(s[i]);
+    } else {
+      strAry.push(s[i]);
+    }
+  }
+
+  if (Math.abs(numAry.length - strAry.length) <= 1) {
+    if (numAry.length !== strAry.length) {
+      let bool = numAry.length > strAry.length;
+      let longAry = bool ? numAry : strAry;
+      let shortAry = bool ? strAry : numAry;
+      for (let i = 0; i < s.length; i++) {
+        if (i % 2 === 0) {
+          result.push(longAry.shift());
+        } else {
+          result.push(shortAry.shift());
+        }
+      }
+    } else {
+      for (let i = 0; i < s.length; i++) {
+        if (i % 2 === 0) {
+          result.push(numAry.shift());
+        } else {
+          result.push(strAry.shift());
+        }
+      }
+    }
+
+    return result.join("");
+  } else {
+    return "";
+  }
+};
+
+var gcdOfStrings = function (str1, str2) {
+  if (`${str1}${str2}` !== `${str2}${str1}`) return "";
+
+  return str2.substring(0, gcd(str1.length, str2.length));
+};
+
+var gcd = (a, b) => {
+  return b === 0 ? a : gcd(b, a % b);
+};
+
+var removeDuplicates = function (S) {
+  let ary = [];
+  // 栈
+  [...S].forEach((item) => {
+    if (ary.length > 0 && ary[ary.length - 1] === item) {
+      ary.pop();
+    } else {
+      ary.push(item);
+    }
+  });
+  console.log(ary.join(""));
+  return ary.join("");
+};
+
+function radixSort(arr, maxDigit) {
+  var mod = 10;
+  var dev = 1;
+  var counter = [];
+  for (var i = 0; i < maxDigit; i++, dev *= 10, mod *= 10) {
+    for (var j = 0; j < arr.length; j++) {
+      var bucket = parseInt((arr[j] % mod) / dev);
+      if (counter[bucket] == null) {
+        counter[bucket] = [];
+      }
+      counter[bucket].push(arr[j]);
+    }
+    var pos = 0;
+    for (var j = 0; j < counter.length; j++) {
+      var value = null;
+      if (counter[j] != null) {
+        while ((value = counter[j].shift()) != null) {
+          arr[pos++] = value;
+        }
+      }
+    }
+  }
+  return arr;
+}

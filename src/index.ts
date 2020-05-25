@@ -35,6 +35,7 @@ require("./modules/fp");
 // 剑指offer刷题
 require("./utils/offer");
 require("./modules/utils.js");
+require("./utils/sort.js");
 
 // 栈
 // const stack: Stack = new Stack();
