@@ -35,9 +35,10 @@ function selectSort(ary) {
 // 原理：顺序从待排序中取出一个元素然后与已排好序的元素逐个比较放入合适的位置（向后移动比它大的元素）
 
 function insertSort(ary) {
+  // 默认第一个已经排好序了
   for (let i = 1; i < ary.length; i++) {
     let currentInsertValue = ary[i];
-    // 默认第一个已经排好序了
+    // 向前遍历已排好的元素
     for (let j = i - 1; j >= 0; j--) {
       // 找到比待插入大的值将其后移，将待插入的值放入移动后的空位
       if (ary[j] > currentInsertValue) {
@@ -202,3 +203,73 @@ function bucketSort(ary, bucketSize = 5) {
   return ary;
 }
 // console.log(bucketSort([3, 2, 1, 67, 1, 34, 00, 09]));
+
+// shellSort
+// 原理：定义gap，将数组按gap分割为多个子序列，对每个子序列分别进行插入排序，继续gap减小直到为1，重复上述过程
+// 三层循环，第一层gap增量减小，第二三层为间隔为gap的子序列进行插入排序
+// 动态定义间隔
+// while(gap < len/5) { //动态定义间隔序列
+//   gap =gap*5+1;
+// }
+function shellSort(ary) {
+  for (
+    let gap = Math.floor(ary.length / 2);
+    gap >= 1;
+    gap = Math.floor(gap / 2)
+  ) {
+    // 直接插入排序
+    for (let i = gap; i < ary.length; i++) {
+      // 对前面间隔gap的元素排序
+      for (let j = i - gap; j >= 0; j -= gap) {
+        if (ary[j] > ary[gap + j]) {
+          [ary[j], ary[gap + j]] = [ary[gap + j], ary[j]];
+        }
+      }
+    }
+  }
+
+  return ary;
+}
+// // console.log(shellSort([3, 2, 1, 67, 1, 34, 00, 09]));
+
+// heapSort
+// 原理：利用的堆的性质，每次取出堆顶（最大或最小的值），然后调整堆，继续上面的过程
+// 大顶堆：每个节点的值都大于或等于其子节点的值，在堆排序算法中用于升序排列；
+// 小顶堆：每个节点的值都小于或等于其子节点的值，在堆排序算法中用于降序排列；
+// 对数组中的前n项整理成堆
+function heapSort(array) {
+  let n = array.length;
+  while (n > 0) {
+    //刷新堆之后，将array[0]（最大值）与最后一个子节点交换
+    //然后重新刷新堆(不包括最后那些排好序的节点了)
+    refreshHeap(array, n--);
+    [array[0], array[n]] = [array[n], array[0]];
+  }
+  return array;
+}
+
+function refreshHeap(array, n) {
+  // i 为层数
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    // 堆调整
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+    let largest = i;
+    // 检查left child 是否比父节点小
+    if (left < n && array[left] > array[largest]) {
+      largest = left;
+    }
+    // 检查right child 是否比父节点小
+    if (right < n && array[right] > array[largest]) {
+      largest = right;
+    }
+    if (largest !== i) {
+      // 更新最大节点
+      [array[i], array[largest]] = [array[largest], array[i]];
+      refreshHeap(array, largest);
+    }
+  }
+  return array;
+}
+
+console.log(heapSort([3, 2, 1, 67, 1, 34, 00, 09], 9));

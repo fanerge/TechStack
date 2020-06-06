@@ -9,7 +9,8 @@ process.env 动态添加配置：dotenv
 开发环境接口代理：http-proxy-middleware
 请求库（client & server）：isomorphic-unfetch
 捕获错误信息：@sentry/browser、@sentry/node
-表单验证库（支持异步验证）async-validator
+表单验证库（支持异步验证）：async-validator
+分步引导库： driver.js
 
 ```
 Const Sentry = required('@sentry/node')

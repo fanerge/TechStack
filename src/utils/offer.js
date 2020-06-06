@@ -323,3 +323,24 @@ function radixSort(arr, maxDigit) {
   }
   return arr;
 }
+
+var heightChecker = function (nums) {
+  if (nums.length === 0) return 0;
+  // 快慢执政
+  let j = 0; // slow
+  let k = 1; // quick
+  while (k < nums.length) {
+    if (nums[j] !== nums[k]) {
+      j++;
+      nums[j] = nums[k];
+    } else {
+      nums[j] = nums[k];
+    }
+    k++;
+  }
+  nums.length = j + 1;
+
+  return nums.length;
+};
+
+console.log(heightChecker([1, 1, 2]));
