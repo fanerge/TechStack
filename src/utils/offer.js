@@ -323,24 +323,100 @@ function radixSort(arr, maxDigit) {
   }
   return arr;
 }
+var findRadius = function (houses, heaters) {
+  houses = houses.sort((a, b) => a - b);
+  heaters = heaters.sort((a, b) => a - b);
+  heaters.unshift(Number.MIN_SAFE_INTEGER);
+  heaters.push(Number.MAX_SAFE_INTEGER);
 
-var heightChecker = function (nums) {
-  if (nums.length === 0) return 0;
-  // 快慢执政
-  let j = 0; // slow
-  let k = 1; // quick
-  while (k < nums.length) {
-    if (nums[j] !== nums[k]) {
-      j++;
-      nums[j] = nums[k];
-    } else {
-      nums[j] = nums[k];
+  let minList = houses.map((item, index) => {
+    let left = 0;
+    let right = heaters.length - 1;
+    let mid;
+    let distance;
+    while (left < right) {
+      mid = Math.floor((right + left) / 2);
+      // 房子的位置比mid取暖位置要大，则需要去更大的取暖位置
+      if (item > heaters[mid]) {
+        left = mid + 1;
+      } else {
+        right = mid;
+      }
+      distance = Math.min(
+        Math.abs(item - heaters[left - 1]),
+        Math.abs(item - heaters[left])
+      );
     }
-    k++;
-  }
-  nums.length = j + 1;
 
-  return nums.length;
+    return distance;
+  });
+
+  return Math.max(...minList);
 };
 
-console.log(heightChecker([1, 1, 2]));
+var countNegatives = function (grid) {
+  let n = grid[0].length;
+  return grid.reduce((acc, ary) => {
+    let index = firstNegativeIndex(ary);
+    // console.log(index);
+    if (index !== -1) {
+      acc = acc + n - index;
+    }
+    return acc;
+  }, 0);
+};
+
+var firstNegativeIndex = function (ary) {
+  let left = 0;
+  let right = ary.length - 1;
+  let mid;
+  while (left <= right) {
+    mid = left + Math.floor((right - left) / 2);
+    if (ary[mid] < 0) {
+      if (mid === 0 || ary[mid - 1] >= 0) {
+        return mid;
+      }
+      right = mid;
+    } else {
+      left = mid + 1;
+    }
+  }
+  return -1;
+};
+
+var mySqrt = function (x) {
+  // 二分
+  let left = 0;
+  let right = x;
+  let mid;
+  let res = -1;
+  if (x === 0) {
+    return 0;
+  }
+  while (left <= right) {
+    /// debugger;
+    mid = left + Math.floor((right - left) / 2);
+    let val = mid * mid;
+    if (val <= x) {
+      if ((mid + 1) * (mid + 1) > x) {
+        return mid;
+      }
+      // res = mid;
+      // left = mid;
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+  // return res;
+  // return Number.parseInt(Math.sqrt(x))
+};
+
+var dd = function (nums) {
+  for (let i = 0; i < nums.length; i++) {
+    debugger;
+    if ((i = nums[i])) return i;
+  }
+  return -1;
+};
+console.log(dd([0, 2, 3, 4, 5]));

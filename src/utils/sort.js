@@ -272,4 +272,4 @@ function refreshHeap(array, n) {
   return array;
 }
 
-console.log(heapSort([3, 2, 1, 67, 1, 34, 00, 09], 9));
+// console.log(heapSort([3, 2, 1, 67, 1, 34, 00, 09], 9));
