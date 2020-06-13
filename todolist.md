@@ -12,3 +12,7 @@
 # 任务安排
 
 2020 主要研究算法和数据结构、其次 leetcode、牛客网适量刷题
+
+# 面试前看
+
+[从写简历，到面试、谈薪酬的那些技巧和防坑指南](https://mp.weixin.qq.com/s/KA9lTZlqySgc3JBBdBkZqA)

@@ -412,11 +412,42 @@ var mySqrt = function (x) {
   // return Number.parseInt(Math.sqrt(x))
 };
 
-var dd = function (nums) {
-  for (let i = 0; i < nums.length; i++) {
+var isPerfectSquare = function (num) {
+  let left = 0;
+  let right = num;
+  let mid;
+  while (left <= right) {
     debugger;
-    if ((i = nums[i])) return i;
+    mid = left + Math.floor((right - left) / 2);
+    let val = mid * mid;
+    if (val === num) {
+      return true;
+    } else if (val > num) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
   }
-  return -1;
+  return false;
 };
-console.log(dd([0, 2, 3, 4, 5]));
+var minArray = function (numbers) {
+  let left = 0;
+  let right = numbers.length - 1;
+  let mid;
+  if (right === 0) {
+    return numbers[0];
+  }
+  while (left < right) {
+    mid = left + Math.floor((right - left) / 2);
+    if (numbers[mid] > numbers[right]) {
+      left = mid + 1;
+    } else if (numbers[mid] < numbers[right]) {
+      right = mid;
+    } else {
+      right = right - 1;
+    }
+  }
+
+  return numbers[left];
+};
+// console.log(minArray([3, 1, 1]));

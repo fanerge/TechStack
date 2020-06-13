@@ -247,13 +247,16 @@
 # 算法和数据结构
 
 <details>
-    <summary>算法 && 数据结构</summary>
-
+    <summary>算法</summary>
 如果要刷下算法的话，这里推荐大家去[牛客网](https://www.nowcoder.com/)和[leetcode](https://leetcode-cn.com/)。
+- [x] [二分查找+6 种变体](./src/utils/binarySearch.js)
 
----
+</details>
 
-下面只是给出常用数据结构定义，对应数据结构知识点请移步[详细介绍请异步](./README/dataStructure.md)。
+<details>
+    <summary>数据结构</summary>
+
+下面只是给出常用数据结构定义，对应数据结构知识点请移步[详细介绍请移步](./README/dataStructure.md)。
 用 JavaScript 来实现以下数据结构。<br>
 线性结构：线性表，栈( Stack)，队列(Queue)。<br>
 非线性结构：数组(Array)，广义表，树( Tree)，堆(Heap)，图(Graph)。<br>
