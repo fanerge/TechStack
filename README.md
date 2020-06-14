@@ -249,6 +249,7 @@
 <details>
     <summary>算法</summary>
 如果要刷下算法的话，这里推荐大家去[牛客网](https://www.nowcoder.com/)和[leetcode](https://leetcode-cn.com/)。
+
 - [x] [二分查找+6 种变体](./src/algorithm/binarySearch.js)
 - [x] [动态规划](./src/algorithm/dp.js)
 
