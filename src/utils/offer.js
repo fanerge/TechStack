@@ -451,3 +451,64 @@ var minArray = function (numbers) {
   return numbers[left];
 };
 // console.log(minArray([3, 1, 1]));
+var merge = function (nums1, m, nums2, n) {
+  let len = m + n - 1;
+  m = m - 1;
+  n = n - 1;
+  while (m >= 0 && n >= 0) {
+    // debugger;
+    if (nums1[m] >= nums2[n]) {
+      nums1[len--] = nums1[m--];
+    } else {
+      nums1[len--] = nums2[n--];
+    }
+  }
+  while (m >= 0) {
+    nums1[len--] = nums1[m--];
+  }
+  while (n >= 0) {
+    nums1[len--] = nums2[n--];
+  }
+  console.log(nums1);
+};
+
+var numPairsDivisibleBy60 = function (time) {
+  let map = [];
+  let count = 0;
+  time.forEach((item, index) => {
+    let indexNew = item % 60;
+    if (map[indexNew]) {
+      map[indexNew] += 1;
+    } else {
+      map[indexNew] = 1;
+    }
+  });
+  // debugger;
+  map.slice(0, 31).forEach((item, index) => {
+    // debugger;
+    if (index === 0) {
+      count += (item * (item - 1)) / 2;
+    } else if (index === 30) {
+      count += (item * (item - 1)) / 2;
+    } else {
+      if (item && map[60 - index]) {
+        count += item * map[60 - index];
+      }
+    }
+  });
+
+  return count;
+};
+
+var countBits = function (num) {
+  let res = [];
+  for (let i = 0; i <= num; i++) {
+    debugger;
+    let count = [...i.toString(2)].filter((item) => item === 1).length || 0;
+    console.log(count);
+    res.push(count);
+  }
+  return res;
+};
+
+console.log(countBits(2));
