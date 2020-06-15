@@ -16,3 +16,28 @@
 # 面试前看
 
 [从写简历，到面试、谈薪酬的那些技巧和防坑指南](https://mp.weixin.qq.com/s/KA9lTZlqySgc3JBBdBkZqA)
+
+# 解决业务痛点
+
+## Form 实现 scrollFirstError
+
+element-ui 的 Form 组件不支持 scrollFirstError
+VUE 自定义 directive，在钩子函数中有个叫 vnode 的属性，vnode.componentInstance 可以拿到组件的实例
+通过重写 componentInstance 的 validate 方法
+
+```
+const form = vnode.componentInstance
+let oldValidate = from.validate;
+from.validate = (callback) => {
+  let promise = new Promise((resolve, reject) => {
+    oldValidate().then(valid => {
+      resolve(valid)
+    }).catch(error => {
+      let errorList = form.fields.filter(d => d.validateState === 'error')
+      // 即可实现
+      errorList[0].$el.scrollIntoView();
+    })
+  })
+  return promise;
+}
+```
