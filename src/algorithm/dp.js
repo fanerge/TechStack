@@ -56,4 +56,4 @@ var massage2 = function (nums) {
   }
   return dp[dp.length - 1];
 };
-console.log(massage2([2, 1, 4, 5, 3, 1, 1, 3]));
+// console.log(massage2([2, 1, 4, 5, 3, 1, 1, 3]));

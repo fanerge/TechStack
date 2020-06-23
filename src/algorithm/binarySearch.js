@@ -4,6 +4,7 @@
  * 6种变体，right 初始值取 ary.length - 1，循环条件left < right
  * 重点6种变体的mid 初始值（求解最大值）left + Math.floor((right - left + 1) / 2)
  * 重点6种变体的mid 初始值（求解最小值）left + Math.floor((right - left) / 2)
+ * 如果 left = mid + 1; right = mid - 1; 则上面循环条件必须为 left <= right，不然会遗漏掉 left=right的情况
  *
  */
 // 二分查找

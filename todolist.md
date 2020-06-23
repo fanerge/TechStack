@@ -19,6 +19,33 @@
 
 # 解决业务痛点
 
+## CJK 输入的问题
+
+在中文输入是会频繁触发 input 事件，我们应该在待确认文本选择时才触发对应事件
+对应事件先后顺序
+compositionstart > compositionupdate > input > compositionend
+
+```
+// 解决思路
+let iscomposing = true;
+$('input').on('input', function(e){
+  if(iscomposing) {
+    // todo
+    inputDoing()
+  }
+})
+$('input').on('compositionstart', function(e){
+  // 这里就阻止 input 在中文没选择时就执行
+  iscomposing = false;
+})
+$('input').on('compositionend', function(e){
+  // 如果输入非CJK文字，则不存在该问题，需重置为true
+  iscomposing = true;
+  // CJK被阻止了，所以这里要执行一次
+  inputDoing()
+})
+```
+
 ## Form 实现 scrollFirstError
 
 element-ui 的 Form 组件不支持 scrollFirstError

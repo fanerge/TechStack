@@ -500,15 +500,65 @@ var numPairsDivisibleBy60 = function (time) {
   return count;
 };
 
-var countBits = function (num) {
-  let res = [];
-  for (let i = 0; i <= num; i++) {
-    debugger;
-    let count = [...i.toString(2)].filter((item) => item === 1).length || 0;
-    console.log(count);
-    res.push(count);
-  }
-  return res;
+var reverseString = function (s) {
+  // return s.reverse()
+  swap(s, 0, s.length - 1);
 };
 
-console.log(countBits(2));
+var merge = function (nums1, m, nums2, n) {
+  let i = 0;
+  let j = 0;
+  if (m === 0) {
+    nums2.forEach((item, index) => {
+      nums1[index] = item;
+    });
+    return;
+  }
+  while (i < m + n && j < n) {
+    // debugger;
+    if (nums1[i] > nums2[j] || i >= m + j) {
+      // del add
+      nums1.pop();
+      nums1.splice(i, 0, nums2[j]);
+      j++;
+    }
+    i++;
+  }
+  console.log(nums1);
+};
+var maxSubArray = function (nums) {
+  // 前i项和的最大值（包括i）
+  // dp[i] = Max(dp[i-1]+nums[i], nums[i])
+  let dp = [];
+  dp[0] = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    // debugger;
+    dp[i] = Math.max(dp[i - 1] + nums[i], nums[i]);
+  }
+  console.log(Math.max(...dp));
+  return Math.max(...dp);
+};
+
+var mySqrt = function (x) {
+  if (x === 0) return 0;
+  if (x === 1) return 1;
+
+  let left = 0;
+  let right = x;
+  let mid;
+  while (left <= right) {
+    // debugger;
+    mid = left + Math.floor((right - left) / 2);
+    let temp = mid * mid;
+    if (temp > x) {
+      right = mid - 1;
+    } else {
+      if ((mid + 1) * (mid + 1) > x) {
+        return mid;
+      }
+      left = mid + 1;
+    }
+  }
+};
+let log = mySqrt(6);
+console.log(log);
