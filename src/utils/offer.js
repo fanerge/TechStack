@@ -539,26 +539,80 @@ var maxSubArray = function (nums) {
   return Math.max(...dp);
 };
 
-var mySqrt = function (x) {
-  if (x === 0) return 0;
-  if (x === 1) return 1;
+var searchRange = function (nums, target) {
+  return [findFirstEQValue(nums, target), findLastEQValue(nums, target)];
+};
 
+function findFirstEQValue(ary, target) {
   let left = 0;
-  let right = x;
+  let right = ary.length - 1;
   let mid;
-  while (left <= right) {
-    // debugger;
+  while (left < right) {
+    // 奇数： 中间； 偶数： 两个中间数的第一个
     mid = left + Math.floor((right - left) / 2);
-    let temp = mid * mid;
-    if (temp > x) {
-      right = mid - 1;
+    if (ary[mid] >= target) {
+      right = mid;
     } else {
-      if ((mid + 1) * (mid + 1) > x) {
-        return mid;
-      }
+      // ary[mid] < target
       left = mid + 1;
     }
   }
-};
-let log = mySqrt(6);
+
+  return ary[left] === target ? left : -1;
+}
+// console.log(findFirstEQValue([1, 2, 3, 4, 5, 9, 9, 9, 9, 9, 11, 18], 10));
+
+// 最大的i， 满足arr[i] = target. 不存在 返回 -1
+function findLastEQValue(ary, target) {
+  let left = 0;
+  let right = ary.length - 1;
+  let mid;
+  while (left < right) {
+    // 奇数： 中间；  偶数 ： 两个中间数的第二个
+    mid = left + Math.floor((right - left + 1) / 2);
+    if (ary[mid] <= target) {
+      left = mid;
+    } else {
+      // ary[mid] > target
+      right = mid - 1;
+    }
+  }
+
+  return ary[left] === target ? left : -1;
+}
+
+function firstValueIndex(nums, target) {
+  let left = 0;
+  let right = nums.length - 1;
+  let mid;
+  while (left < right) {
+    mid = left + ((right - left) >> 1);
+    if (nums[mid] >= target) {
+      right = mid;
+    } else {
+      // nums[mid] < target
+      left = mid + 1;
+    }
+  }
+
+  return nums[left] === target ? left : -1;
+}
+
+function lastValueIndex(nums, target) {
+  let left = 0;
+  let right = nums.length - 1;
+  let mid;
+  while (left < right) {
+    mid = left + ((right - left + 1) >> 1);
+    if (nums[mid] <= target) {
+      left = mid;
+    } else {
+      // nums[mid] > target
+      right = mid - 1;
+    }
+  }
+
+  return nums[left] === target ? left : -1;
+}
+let log = searchRange([5, 7, 7, 8, 8, 10], 8);
 console.log(log);
