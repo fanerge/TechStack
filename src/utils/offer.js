@@ -598,21 +598,24 @@ function firstValueIndex(nums, target) {
   return nums[left] === target ? left : -1;
 }
 
-function lastValueIndex(nums, target) {
+var isPerfectSquare = function (num) {
   let left = 0;
-  let right = nums.length - 1;
+  let right = num;
   let mid;
-  while (left < right) {
-    mid = left + ((right - left + 1) >> 1);
-    if (nums[mid] <= target) {
-      left = mid;
-    } else {
-      // nums[mid] > target
+  debugger;
+  while (left <= right) {
+    mid = left + ((right - left) >> 1);
+    let temp = mid * mid;
+    if (temp === num) {
+      return true;
+    } else if (temp > num) {
       right = mid - 1;
+    } else {
+      left = mid + 1;
     }
   }
 
-  return nums[left] === target ? left : -1;
-}
-let log = searchRange([5, 7, 7, 8, 8, 10], 8);
-console.log(log);
+  return false;
+};
+let log = isPerfectSquare(16);
+// console.log(log);

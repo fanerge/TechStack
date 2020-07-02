@@ -147,3 +147,94 @@ function findLastLEValue(ary, target) {
   return ary[left] <= target ? left : -1;
 }
 // console.log(findLastLEValue([1, 2, 3, 4, 5, 9, 9, 9, 9, 9, 11, 18], 20));
+
+// leetcode整理的3个模版
+// https://leetcode-cn.com/explore/learn/card/binary-search/212/template-analysis/847/
+// template1
+/**
+ * 终止迭代后：right + 1 = left
+ * 二分查找的最基础和最基本的形式。
+ * 查找条件可以在不与元素的两侧进行比较的情况下确定（或使用它周围的特定元素）。
+ * 不需要后处理，因为每一步中，你都在检查是否找到了元素。如果到达末尾，则知道未找到该元素。
+ */
+function template1(ary, target) {
+  let left = 0;
+  let right = ary.length - 1;
+  let mid;
+  while (left <= right) {
+    // 防止 left + right 溢出
+    mid = left + Math.floor((right - left) / 2);
+    if (ary[mid] === target) {
+      return mid;
+    } else if (ary[mid] > target) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+  // console.log(left, right);
+  return -1;
+}
+console.log(template1([1, 2, 4, 5, 7, 8, 9], 6));
+
+// template2
+/**
+ * 终止迭代后：right = left
+ * 一种实现二分查找的高级方法。
+ * 查找条件需要访问元素的直接右邻居。
+ * 使用元素的右邻居来确定是否满足条件，并决定是向左还是向右。
+ * 保证查找空间在每一步中至少有 2 个元素。
+ * 需要进行后处理。 当你剩下 1 个元素时，循环 / 递归结束。 需要评估剩余元素是否符合条件。
+ */
+function template2(ary, target) {
+  let left = 0;
+  let right = ary.length;
+  let mid;
+  while (left < right) {
+    // 防止 left + right 溢出
+    mid = left + Math.floor((right - left) / 2);
+    if (ary[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid;
+    }
+  }
+  // console.log(left, right);
+
+  // 根据不同要求得到结果
+  // 小于等于target
+  // return ary[left] <= target ? left : left - 1;
+  // 小于target
+  // return ary[left] < target ? left : left - 1;
+  // 大于等于target
+  // return ary[left] >= target ? left : -1;
+  // 大于target
+  return ary[left] > target ? left : left + 1;
+}
+// console.log(template2([1, 2, 4, 5, 7, 8], 8));
+
+// template3
+/**
+ * 终止迭代后：right = left + 1
+ * 实现二分查找的另一种方法。
+ * 搜索条件需要访问元素的直接左右邻居。
+ * 使用元素的邻居来确定它是向右还是向左。
+ * 保证查找空间在每个步骤中至少有 3 个元素。
+ * 需要进行后处理。 当剩下 2 个元素时，循环 / 递归结束。 需要评估其余元素是否符合条件。
+ */
+function template3(nums, target) {
+  let left = 0;
+  let right = nums.length - 1;
+  let mid;
+  while (left + 1 < right) {
+    mid = left + Math.floor((right - left) / 2);
+    if (nums[mid] < target) {
+      left = mid;
+    } else {
+      right = mid;
+    }
+  }
+  // console.log(left, right);
+  return nums[left] === target ? left : -1;
+}
+// console.log(template3([1, 2, 4, 5, 7, 8], 5));
