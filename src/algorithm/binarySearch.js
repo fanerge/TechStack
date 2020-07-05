@@ -175,7 +175,7 @@ function template1(ary, target) {
   // console.log(left, right);
   return -1;
 }
-console.log(template1([1, 2, 4, 5, 7, 8, 9], 6));
+// console.log(template1([1, 2, 4, 5, 7, 8, 9], 6));
 
 // template2
 /**

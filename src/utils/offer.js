@@ -597,25 +597,25 @@ function firstValueIndex(nums, target) {
 
   return nums[left] === target ? left : -1;
 }
-
-var isPerfectSquare = function (num) {
-  let left = 0;
-  let right = num;
-  let mid;
-  debugger;
-  while (left <= right) {
-    mid = left + ((right - left) >> 1);
-    let temp = mid * mid;
-    if (temp === num) {
-      return true;
-    } else if (temp > num) {
-      right = mid - 1;
-    } else {
-      left = mid + 1;
-    }
-  }
-
-  return false;
+function TreeNode(val) {
+  this.val = val;
+  this.left = this.right = null;
+}
+let inorder = [9, 3, 15, 20, 7];
+let postorder = [9, 15, 7, 20, 3];
+var buildTree = function (inorder, postorder) {
+  let build = (inorder) => {
+    if (!inorder.length) return null;
+    let temp = postorder.pop();
+    let node = new TreeNode(temp);
+    let nodeIndex = inorder.indexOf(node);
+    node.right = build(inorder.slice(nodeIndex + 1));
+    node.left = build(inorder.slice(0, nodeIndex - 1));
+    return node;
+  };
+  return build(inorder);
 };
-let log = isPerfectSquare(16);
-// console.log(log);
+
+console.log(buildTree(inorder, postorder));
+
+//

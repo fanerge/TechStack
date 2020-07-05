@@ -1,3 +1,11 @@
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+
 // BFS（实现原理-queue）
 /**
  *
@@ -100,4 +108,21 @@ function postOrder1(root) {
     top.right && stack.push(top.right);
   }
   return output;
+}
+
+// 从中序与后序遍历序列构造二叉树
+function buildTree(inorder, postorder) {
+  let build = (inorder) => {
+    if (inorder.length === 0) return null;
+    // 先序的话，根节点在 preorder.shift()
+    let rootVal = postorder.pop();
+    let rootIndex = inorder.indexOf(rootVal);
+    let root = new TreeNode(rootVal);
+    // 先序的话，需要交换 root.right 和 root.left 个构建顺序
+    root.right = build(inorder.slice(rootIndex + 1));
+    root.left = build(inorder.slice(0, rootIndex));
+    return root;
+  };
+
+  return build(inorder);
 }
