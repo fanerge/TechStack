@@ -9,14 +9,14 @@
 7.  如何促进业务落地
 8.  难点/亮点（实践 HTTP2 HPACK 等）
 
-[如何仅通过简历判断前端开发工程师的技术水平？](https://www.zhihu.com/question/352896523/answer/876463728?utm_source=wechat_session&utm_medium=social&utm_oi=663345137078505472)
-
 # 任务安排
 
 2020 主要研究算法和数据结构、其次 leetcode、牛客网适量刷题
 
 # 面试前看
 
+[如何仅通过简历判断前端开发工程师的技术水平？](https://www.zhihu.com/question/352896523/answer/876463728?utm_source=wechat_session&utm_medium=social&utm_oi=663345137078505472)
+[面试/项目经历准备篇](https://mp.weixin.qq.com/s/tkyGa6nxHVrqD6WoWGBNLg)
 [从写简历，到面试、谈薪酬的那些技巧和防坑指南](https://mp.weixin.qq.com/s/KA9lTZlqySgc3JBBdBkZqA)
 
 # 解决业务痛点
