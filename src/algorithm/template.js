@@ -10,3 +10,5 @@ function TailFactorial(n, total) {
 }
 // console.log(Factorial(100));
 // console.log(TailFactorial(400, 1));
+
+//

@@ -616,6 +616,100 @@ var buildTree = function (inorder, postorder) {
   return build(inorder);
 };
 
-console.log(buildTree(inorder, postorder));
+var threeSum = function (nums) {
+  nums.sort((a, b) => a - b);
+  let len = nums.length;
+  let res = [];
+  // first
+  for (let first = 0; first < len; ++first) {
+    if (first > 0 && nums[first] === nums[first - 1]) {
+      continue;
+    }
+    // debugger;
+    let third = len - 1;
+    // second
+    for (let second = first + 1; second < len; ++second) {
+      if (second > first + 1 && nums[second] === nums[second - 1]) {
+        continue;
+      }
+      while (second < third && nums[third] + nums[second] + nums[first] > 0) {
+        --third;
+      }
+      if (second === third) {
+        break;
+      }
+      if (nums[third] + nums[second] + nums[first] === 0) {
+        res.push([nums[first], nums[second], nums[third]]);
+      }
+    }
+  }
+  return res;
+};
 
+var exist = function (board, word) {
+  // 作为标记，表示该坐标的字符是否已经使用，如果已经使用后续将不能再使用
+  let marked = board.map((row) => {
+    return row.map((col) => {
+      return false;
+    });
+  });
+
+  // 上右下左
+  const direction = [
+    [-1, 0],
+    [0, 1],
+    [1, 0],
+    [0, -1],
+  ];
+
+  const rows = board.length;
+  const cols = board[0].length;
+
+  if (rows === 0) {
+    return false;
+  }
+
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (dfs(i, j, 0)) {
+        return true;
+      }
+    }
+  }
+
+  function dfs(row, col, curIndex) {
+    // 是否已经匹配到word的最后一个字符
+    if (curIndex === word.length - 1) {
+      return board[row][col] === word[curIndex];
+    }
+    if (board[row][col] === word[curIndex]) {
+      // 继续匹配word的下一个字符(可能4个方向)
+      marked[row][col] = true;
+      for (let i = 0; i < 4; i++) {
+        let newRow = row + direction[i][0];
+        let newCol = col + direction[i][1];
+        // marked 作为标记是否已经使用过改坐标
+        if (inArea(newRow, newCol) && !marked[newRow][newCol]) {
+          if (dfs(newRow, newCol, curIndex + 1)) {
+            return true;
+          }
+        }
+      }
+      marked[row][col] = false;
+    }
+    return false;
+  }
+
+  function inArea(row, col) {
+    return 0 <= row && row < rows && 0 <= col && col < cols;
+  }
+
+  return false;
+};
+const board = [
+  ["A", "B", "C", "E"],
+  ["S", "F", "C", "S"],
+  ["A", "D", "E", "E"],
+];
+// console.log(exist(board, "ABCCED"));
 //

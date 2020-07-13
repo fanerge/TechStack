@@ -39,6 +39,7 @@ require("./utils/sort.js");
 require("./algorithm/binarySearch.js");
 require("./algorithm/dp.js");
 require("./algorithm/template.js");
+import "./algorithm/floodfill";
 
 // 栈
 // const stack: Stack = new Stack();
