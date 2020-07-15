@@ -88,6 +88,7 @@
 - [x] [热更新原理](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack#how-does-it-work)&&[webpack 热加载原理探索](http://shepherdwind.com/2017/02/07/webpack-hmr-principle/)
 - [x] 自定义 Loader 原理探索
 - [x] 自定义 Plugins 原理探索
+- [x] [webpack 原理](https://segmentfault.com/a/1190000015088834)
       [webpack](./README/webpack.md)
 
 ---
@@ -120,6 +121,7 @@
 - [x] [JWT/深度理解 token](https://segmentfault.com/a/1190000020143933)
 - [x] [Web 中的密码学（加密、哈希、编码、混淆）](./README/web_secret.md)
 - [x] 浏览器策略：Trusted Types 的工作方式就是锁定以下危险函数的接收参数，如果是不安全的，就直接阻止。
+- [x] [七个用户体验指标](./README/chrome-performance.md)
 </details>
 
 <details>

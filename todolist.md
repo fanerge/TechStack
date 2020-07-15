@@ -8,6 +8,7 @@
 6.  面试技巧：技术成体系，逻辑清晰，等面试官说完先停顿两秒认真思考后再回答。
 7.  如何促进业务落地
 8.  难点/亮点（实践 HTTP2 HPACK 等）
+9.  STAR 法则情境(situation)、目标（target）、行动(action)、结果(result)
 
 # 任务安排
 
@@ -15,6 +16,7 @@
 
 # 面试前看
 
+[在阿里我是如何当面试官的](https://juejin.im/post/5e6ebfa86fb9a07ca714d0ec)
 [如何仅通过简历判断前端开发工程师的技术水平？](https://www.zhihu.com/question/352896523/answer/876463728?utm_source=wechat_session&utm_medium=social&utm_oi=663345137078505472)
 [面试/项目经历准备篇](https://mp.weixin.qq.com/s/tkyGa6nxHVrqD6WoWGBNLg)
 [从写简历，到面试、谈薪酬的那些技巧和防坑指南](https://mp.weixin.qq.com/s/KA9lTZlqySgc3JBBdBkZqA)
