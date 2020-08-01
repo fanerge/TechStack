@@ -711,5 +711,98 @@ const board = [
   ["S", "F", "C", "S"],
   ["A", "D", "E", "E"],
 ];
-// console.log(exist(board, "ABCCED"));
+
+var merge = function (intervals) {
+  let list = [];
+  if (intervals.length === 0) return [];
+  intervals.sort((a, b) => a[0] - b[0]);
+  let gap = intervals[0];
+  intervals.slice(1).forEach((ary) => {
+    if (gap[0] <= ary[0] && ary[0] <= gap[1]) {
+      if (gap[1] <= ary[1]) {
+        gap[1] = ary[1];
+      }
+    } else {
+      list.push([...gap]);
+      gap = [...ary];
+    }
+  });
+  list.push([...gap]);
+  // return intervals;
+  return list;
+};
+// console.log(
+//   merge([
+//     [1, 4],
+//     [4, 5],
+//   ])
+// );
 //
+
+var lengthOfLIS = function (nums) {
+  // dp[i] 表示前i个字符的最大升序子串长度
+  let len = nums.length;
+  if (len < 2) return len;
+  let dp = new Array(len).fill(1);
+
+  for (let i = 1; i < len; i++) {
+    for (let j = 0; j < i; j++) {
+      if (nums[j] < nums[i]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+      }
+    }
+  }
+
+  return Math.max(...dp);
+};
+
+var maxAreaOfIsland = function (grid) {
+  let maxArea = 0;
+  let rows = grid.length;
+  let cols = grid[0].length;
+
+  // 方向 上右下左
+  let direction = [
+    [0, -1],
+    [1, 0],
+    [0, 1],
+    [-1, 0],
+  ];
+
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (grid[i][j] == 1) {
+        dfs(i, j, 0);
+      }
+    }
+  }
+
+  function dfs(x, y, curArea) {
+    debugger;
+    grid[x][y] = 0;
+    curArea++;
+    maxArea = Math.max(maxArea, curArea);
+    console.log(maxArea);
+    let directionLen = direction.length;
+    for (let i = 0; i < directionLen; i++) {
+      let newX = x + direction[i][0];
+      let newY = y + direction[i][1];
+      // 不越界 是岛屿
+      if (checkArea(newX, newY) && grid[newX][newY] == 1) {
+        dfs(newX, newY, curArea);
+      }
+    }
+  }
+
+  function checkArea(x, y) {
+    return 0 <= x && x < rows && 0 <= y && y < cols;
+  }
+
+  return maxArea;
+};
+console.log(
+  maxAreaOfIsland([
+    [1, 1],
+    [1, 0],
+  ])
+);

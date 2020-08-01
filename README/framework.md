@@ -54,3 +54,11 @@ Server.get(‘/polyfill’, async (req, res) => {
 ```
 
 typescript 依赖：@types/node、@types/react、@types/react-dom、@types/styled-jsx
+
+# mac 工具
+
+## 命令行工具
+
+homebrew 安装
+文本搜索
+[ag](https://www.mankier.com/1/ag)

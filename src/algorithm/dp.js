@@ -57,3 +57,31 @@ var massage2 = function (nums) {
   return dp[dp.length - 1];
 };
 // console.log(massage2([2, 1, 4, 5, 3, 1, 1, 3]));
+
+/**
+ * 跳跃游戏
+ 给定一个非负整数数组，你最初位于数组的第一个位置。
+ 数组中的每个元素代表你在该位置可以跳跃的最大长度。
+ 判断你是否能够到达最后一个位置。
+ https://leetcode-cn.com/explore/interview/card/top-interview-questions-medium/51/dynamic-programming/104/
+ */
+var canJump = function (nums) {
+  if (nums.length === 0) return true;
+  // 记录当前位置最大能走多远（前面剩余的步数 和 当前可走步数的最大值）
+  let dp = [];
+  let preMax = -Infinity;
+  for (let i = 0; i < nums.length; i++) {
+    dp[i] = Math.max(preMax - 1, nums[i]);
+    preMax = dp[i];
+  }
+
+  if (!dp.some((item) => item === 0)) {
+    return true;
+  } else {
+    let index = dp.indexOf(0);
+    return index === nums.length - 1;
+  }
+
+  // dp 中最后没有0 或 dp中最后一个为0 都表示可以到达最后一项
+  return !dp.some((item) => item === 0) || dp.indexOf(0) === nums.length - 1;
+};
