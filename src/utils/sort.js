@@ -76,11 +76,12 @@ function merge(left, right) {
     }
   }
 
-  while (left.length) {
-    ary.push(left.shift());
+  if (left.length) {
+    ary = ary.concat(left);
   }
-  while (right.length) {
-    ary.push(right.shift());
+
+  if (right.length) {
+    ary = ary.concat(right);
   }
 
   return ary;
