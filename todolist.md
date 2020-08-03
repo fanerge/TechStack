@@ -9,6 +9,7 @@
 7.  如何促进业务落地
 8.  难点/亮点（实践 HTTP2 HPACK 等）
 9.  STAR 法则情境(situation)、目标（target）、行动(action)、结果(result)
+10. owner 意识，凡事有交代。
 
 # 任务安排
 
