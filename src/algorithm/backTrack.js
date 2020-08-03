@@ -1,3 +1,45 @@
+// 参考文档：https://leetcode-cn.com/problems/permutations/solution/hui-su-suan-fa-xiang-jie-by-labuladong-2/
+
+/** 回溯算法模版
+ result = []
+def backtrack(路径, 选择列表):
+    if 满足结束条件:
+        result.add(路径)
+        return
+    
+    for 选择 in 选择列表:
+        # 做选择
+        将该选择从选择列表移除
+        路径.add(选择)
+        backtrack(路径, 选择列表)
+        # 撤销选择
+        路径.remove(选择)
+        将该选择再加入选择列表
+ */
+
+/**
+ * 46. 全排列
+ * 给定一个 没有重复 数字的序列，返回其所有可能的全排列。
+ */
+let permute = (nums) => {
+  let res = [];
+  backTrack1([], nums, res);
+  return res;
+};
+// used 为路径，all为选择列表
+let backTrack1 = (used, all, res) => {
+  if (used.length === all.length) {
+    res.push(used.slice(0));
+    return;
+  }
+  for (let i = 0; i < all.length; i++) {
+    if (used.includes(all[i])) continue;
+    used.push(all[i]);
+    backTrack1(used, all, res);
+    used.pop();
+  }
+};
+
 /**
  * 理解回溯算法
  * 22题括号生成
@@ -130,9 +172,9 @@ var exist = function (board, word) {
 
   return false;
 };
-const board = [
-  ["A", "B", "C", "E"],
-  ["S", "F", "C", "S"],
-  ["A", "D", "E", "E"],
-];
-console.log(exist(board, "ABCCED"));
+// const board = [
+//   ["A", "B", "C", "E"],
+//   ["S", "F", "C", "S"],
+//   ["A", "D", "E", "E"],
+// ];
+// console.log(exist(board, "ABCCED"));
