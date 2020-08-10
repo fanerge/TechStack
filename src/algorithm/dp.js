@@ -1,3 +1,14 @@
+// 参考地址
+// https://labuladong.gitbook.io/algo/di-ling-zhang-bi-du-xi-lie/dong-tai-gui-hua-xiang-jie-jin-jie
+// 动态规划模版
+// # 初始化 base case
+// dp[0][0][...] = base
+// # 进行状态转移
+// for 状态1 in 状态1的所有取值：
+//     for 状态2 in 状态2的所有取值：
+//         for ...
+//             dp[状态1][状态2][...] = 求最值(选择1，选择2...) // 一般为最大、最小值
+
 /**
  * 参考大佬文章：
  * https://leetcode-cn.com/problems/the-masseuse-lcci/solution/dong-tai-gui-hua-by-liweiwei1419-8/

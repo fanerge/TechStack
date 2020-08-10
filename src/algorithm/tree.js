@@ -1,3 +1,5 @@
+// 参考地址
+// https://labuladong.gitbook.io/algo/di-ling-zhang-bi-du-xi-lie/xue-xi-shu-ju-jie-gou-he-suan-fa-de-gao-xiao-fang-fa
 /**
  * Definition for a binary tree node.
  * function TreeNode(val) {
@@ -5,6 +7,15 @@
  *     this.left = this.right = null;
  * }
  */
+
+// 遍历模版
+// void traverse(TreeNode root) {
+//   // 前序遍历
+//   traverse(root.left)
+//   // 中序遍历
+//   traverse(root.right)
+//   // 后序遍历
+// }
 
 // BFS（实现原理-queue）
 /**

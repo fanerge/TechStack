@@ -1,3 +1,25 @@
+// 模版
+// https://labuladong.gitbook.io/algo/di-ling-zhang-bi-du-xi-lie/er-fen-cha-zhao-xiang-jie
+// int binarySearch(int[] nums, int target) {
+//   int left = 0, right = ...;
+//   while(...) {
+//       int mid = left + Math.floor((right - left) / 2);
+//       if (nums[mid] == target) {
+//           ...
+//       } else if (nums[mid] < target) {
+//           left = ...
+//       } else if (nums[mid] > target) {
+//           right = ...
+//       }
+//   }
+//   return ...;
+// }
+// 分析：如果 right=nums.length-1; 则while循环应该为 left<=right; 访问区间[0, nums.length-1]
+// 分析：如果 right=nums.length; 则while循环应该为 left<right; 访问区间[0, nums.length) // 开区间
+// 注意下面的越界处理
+// 分析：当while循环为 left<=right时，退出循环 left=right+1
+// 分析：当while循环为 left<right时，退出循环 left===right
+
 /**
  * 二分查找1种原型+6种变体
  * 原型right 初始值取 ary.length，循环条件left <= right，mid 初始值为 left + Math.floor((right - left) / 2)
@@ -14,7 +36,7 @@
 // 查找某个元素是否存在
 function findValue(ary, target) {
   let left = 0;
-  let right = ary.length;
+  let right = ary.length - 1;
   let mid;
   while (left <= right) {
     // 防止 left + right 溢出
