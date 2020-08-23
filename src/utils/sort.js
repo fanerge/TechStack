@@ -241,8 +241,8 @@ function shellSort(ary) {
 function heapSort(array) {
   let n = array.length;
   while (n > 0) {
-    //刷新堆之后，将array[0]（最大值）与最后一个子节点交换
-    //然后重新刷新堆(不包括最后那些排好序的节点了)
+    // 刷新堆之后，将array[0]（最大值）与最后一个子节点交换
+    // 然后重新刷新堆(不包括最后那些排好序的节点了)
     refreshHeap(array, n--);
     [array[0], array[n]] = [array[n], array[0]];
   }
@@ -274,3 +274,62 @@ function refreshHeap(array, n) {
 }
 
 // console.log(heapSort([3, 2, 1, 67, 1, 34, 00, 09], 9));
+
+
+// 堆排序
+// 将待排序序列构造成一个大顶堆，此时，整个序列的最大值就是堆顶的根节点。
+// 将其与末尾元素进行交换，此时末尾就为最大值。
+// 然后调整堆，从n-1中取出最小值。如此反复执行，便能得到一个有序序列了。
+class HeapSort {
+  constructor(array) {
+    this.sort(array);
+    console.log(array)
+    return array;
+  }
+
+  sort(array) {
+    const {adjustHeap, swap} = this;
+    // 1.构建大顶堆
+    for(let i = Math.floor(array.length/2) - 1; i >= 0; i--) {
+      // 从第一个非叶子结点从下至上，从右至左调整结构
+      adjustHeap(array, i, array.length);
+    }
+
+    // 2.调整堆结构+交换堆顶元素与末尾元素
+    for(let j = array.length-1; j>0;j--) {
+      // 将堆顶元素与末尾元素进行交换
+      swap(array, 0, j);
+      // 重新对堆进行调整
+      adjustHeap(array, 0, j);
+    }
+  }
+
+ // 调整大顶堆（仅是调整过程，建立在大顶堆已构建的基础上）
+  adjustHeap(arr, i, length) {
+    // 先取出当前元素i
+    let temp = arr[i];
+    // 从i结点的左子结点开始，也就是2i+1处开始
+    for(let k = 2*i+1; k<length; k=k*2+1) {
+      if(k+1 < length && arr[k] < arr[k+1]) {
+        // 如果左子结点小于右子结点，k指向右子结点
+        k++;
+      }
+      // 如果子节点大于父节点，将子节点值赋给父节点（不用进行交换）
+      if(arr[k] > temp) {
+        arr[i] = arr[k];
+        i = k;
+      }else{
+        break;
+      }
+    }
+    // 将temp值放到最终的位置
+    arr[i] = temp;
+
+  }
+
+  swap(arr, i, j) {
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// var heapSort1 = new HeapSort([3, 2, 1, 67, 1, 34, 00, 09]);
