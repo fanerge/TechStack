@@ -11,6 +11,8 @@ process.env 动态添加配置：dotenv
 捕获错误信息：@sentry/browser、@sentry/node
 表单验证库（支持异步验证）：async-validator
 分步引导库： driver.js
+随机数：uuid
+前端状态机（流程开发）：xstate
 
 ```
 Const Sentry = required('@sentry/node')
