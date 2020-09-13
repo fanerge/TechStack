@@ -51,6 +51,46 @@ function insertSort(ary) {
 }
 // console.log(insertSort([6, 999, 5, 4, 3, 2, 12]));
 
+
+// 归并排序
+// 标准算法
+function mergeSort1(ary, lo, hi) {
+  // 判断是否只剩下最后一个元素
+  if (lo >= hi) return;
+  // 从中间将数组分成两个部分
+  let mid = lo + Math.floor((hi - lo) / 2);
+  // 分别递归地将左右两半排好序
+  mergeSort1(ary, lo, mid);
+  mergeSort1(ary, mid + 1, hi);
+
+  // 将排好序的左右两半合并
+  merge1(ary, lo, mid, hi);
+}
+function merge1(ary, lo, mid, hi) {
+  // 复制一份原来的数组
+  let copy = [...ary];
+  // 定义一个 k 指针表示从什么位置开始修改原来的数组，i 指针表示左半边的起始位置，j 表示右半边的起始位置
+  let k = lo, i = lo, j = mid + 1;
+  while (k <= hi) {
+    if (i > mid) {
+      // 左半边处理完后直接把右半边逐个copy过来
+      ary[k++] = copy[j++]
+    } else if (j > hi) {
+      // 右半边处理完后直接把左半边逐个copy过来
+      ary[k++] = copy[i++];
+    } else if (copy[i] > copy[j]) {
+      ary[k++] = copy[j++];
+    } else {
+      ary[k++] = copy[i++];
+    }
+  }
+}
+// let testAry = [6, 999, 5, 4, 3, 2, 12];
+// mergeSort1(testAry, 0, 6);
+// console.log(testAry);
+
+
+
 // 归并排序
 // 原理：采用分治法（Divide and Conquer）的方法，将已有序的子序列合并，直到得到完全有序的序列
 function mergeSort(ary) {
@@ -88,6 +128,7 @@ function merge(left, right) {
 }
 // console.log(mergeSort([6, 999, 5, 4, 3, 2, 12]));
 
+
 // 快速排序
 // 原理：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列
 function quickSort(arr) {
@@ -115,7 +156,7 @@ function quickSort(arr) {
   sort(arr);
   return arr;
 }
-// console.log(quickSort([6, 999, 5, 4, 3, 2, 12]));
+console.log(quickSort([6, 999, 5, 4, 3, 2, 12]));
 
 // 基数排序
 // 原理：将所有待比较数值（正整数）统一为同样的数位长度，数位较短的数前面补零。然后，从最低位开始，依次进行一次排序。这样从最低位排序一直到最高位排序完成以后, 数列就变成一个有序序列。
@@ -288,15 +329,15 @@ class HeapSort {
   }
 
   sort(array) {
-    const {adjustHeap, swap} = this;
+    const { adjustHeap, swap } = this;
     // 1.构建大顶堆
-    for(let i = Math.floor(array.length/2) - 1; i >= 0; i--) {
+    for (let i = Math.floor(array.length / 2) - 1; i >= 0; i--) {
       // 从第一个非叶子结点从下至上，从右至左调整结构
       adjustHeap(array, i, array.length);
     }
 
     // 2.调整堆结构+交换堆顶元素与末尾元素
-    for(let j = array.length-1; j>0;j--) {
+    for (let j = array.length - 1; j > 0; j--) {
       // 将堆顶元素与末尾元素进行交换
       swap(array, 0, j);
       // 重新对堆进行调整
@@ -304,21 +345,21 @@ class HeapSort {
     }
   }
 
- // 调整大顶堆（仅是调整过程，建立在大顶堆已构建的基础上）
+  // 调整大顶堆（仅是调整过程，建立在大顶堆已构建的基础上）
   adjustHeap(arr, i, length) {
     // 先取出当前元素i
     let temp = arr[i];
     // 从i结点的左子结点开始，也就是2i+1处开始
-    for(let k = 2*i+1; k<length; k=k*2+1) {
-      if(k+1 < length && arr[k] < arr[k+1]) {
+    for (let k = 2 * i + 1; k < length; k = k * 2 + 1) {
+      if (k + 1 < length && arr[k] < arr[k + 1]) {
         // 如果左子结点小于右子结点，k指向右子结点
         k++;
       }
       // 如果子节点大于父节点，将子节点值赋给父节点（不用进行交换）
-      if(arr[k] > temp) {
+      if (arr[k] > temp) {
         arr[i] = arr[k];
         i = k;
-      }else{
+      } else {
         break;
       }
     }

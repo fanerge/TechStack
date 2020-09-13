@@ -781,7 +781,6 @@ var maxAreaOfIsland = function (grid) {
     grid[x][y] = 0;
     curArea++;
     maxArea = Math.max(maxArea, curArea);
-    console.log(maxArea);
     let directionLen = direction.length;
     for (let i = 0; i < directionLen; i++) {
       let newX = x + direction[i][0];
@@ -799,12 +798,12 @@ var maxAreaOfIsland = function (grid) {
 
   return maxArea;
 };
-console.log(
-  maxAreaOfIsland([
-    [1, 1],
-    [1, 0],
-  ])
-);
+// console.log(
+//   maxAreaOfIsland([
+//     [1, 1],
+//     [1, 0],
+//   ])
+// );
 
 let direction = [
   [0, -1],

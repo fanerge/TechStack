@@ -126,4 +126,4 @@ const numIslands1 = function (grid) {
   return count;
 };
 
-console.log(numIslands1(grid));
+// console.log(numIslands1(grid));
