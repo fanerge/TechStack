@@ -13,6 +13,14 @@ process.env 动态添加配置：dotenv
 分步引导库： driver.js
 随机数：uuid
 前端状态机（流程开发）：xstate
+web黏贴板：clipboard
+代码格式化：prettier
+操作引导：driver.js
+代理配置（开发环境）：http-proxy-middleware
+富文本编辑器：Quill、tinymce
+元素尺寸改变监听：element-resize-event、iframe-resizer
+polyfill（兼容）：stickyfilljs
+git hook：husky
 
 ```
 Const Sentry = required('@sentry/node')
