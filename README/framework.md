@@ -5,7 +5,6 @@
 时间格式化：moment/dayjs
 process.env 动态添加配置：dotenv
 发布订阅消息：EventEmitter3/wolfy87-eventemitter
-组件与 viewport 交互：react-waypoint
 开发环境接口代理：http-proxy-middleware
 请求库（client & server）：isomorphic-unfetch
 捕获错误信息：@sentry/browser、@sentry/node
@@ -21,7 +20,9 @@ web黏贴板：clipboard
 元素尺寸改变监听：element-resize-event、iframe-resizer
 polyfill（兼容）：stickyfilljs
 git hook：husky
-
+移动端调试：vConsole
+拖拽：react-dnd
+组件与 viewport 交互：react-waypoint
 ```
 Const Sentry = required('@sentry/node')
 // 监听应用报错事触发
