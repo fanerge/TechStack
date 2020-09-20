@@ -21,8 +21,19 @@ web黏贴板：clipboard
 polyfill（兼容）：stickyfilljs
 git hook：husky
 移动端调试：vConsole
+
+##	react 系列
+
 拖拽：react-dnd
 组件与 viewport 交互：react-waypoint
+Svg 以组件导入：svg-react-loader
+动画：react-transition-group、react-motion、react-spring、framer-motion、Animated  (React Native)
+可视化和图表库：nivo、Victory、react-vis、Recharts、Chart Parts
+表单库：formik、react-hook-form
+国际化：react-i18next、react-intl、LinguiJS、FBT
+富文本编辑器：Draft.js、Slate
+文档：Styleguidist、docz、Docusaurus
+
 ```
 Const Sentry = required('@sentry/node')
 // 监听应用报错事触发
@@ -30,8 +41,6 @@ server.on(‘error’, (e) => {
 	Sentry.captureMessage(e, ‘error’)
 })
 ```
-
-Svg 以组件导入：svg-react-loader
 通过 user-agent 返回适合浏览器的 polyfill：polyfill-service
 
 ```
