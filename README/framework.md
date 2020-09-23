@@ -20,7 +20,7 @@ web黏贴板：clipboard
 元素尺寸改变监听：element-resize-event、iframe-resizer
 polyfill（兼容）：stickyfilljs
 git hook：husky
-移动端调试：vConsole
+移动端调试：vConsole、eruda
 
 ##	react 系列
 
