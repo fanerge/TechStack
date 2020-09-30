@@ -1,4 +1,23 @@
-# 常用等 npm 包
+#	架构
+
+##	git ssh相关
+// 生成ssh密钥
+ssh-keygen -t rsa -C "your_email@example.com"
+// 将密钥添加到ssh-agent服务
+ssh-add ~/.ssh/id_rsa
+// 测试是否成功
+ssh -T git@github.com
+
+##	提高效率的VScode插件
+Code Spell Checker、Todo Tree、Bracket Pair Colorizer、draw.io
+
+## mac 相关
+
+homebrew 安装
+[设置国内镜像](https://blog.csdn.net/iroguel/article/details/93481795)
+[文本搜索-ag](https://www.mankier.com/1/ag)
+
+## 常用的 npm 包
 
 数字格式化：numeral
 数字计算精度问题：Math.js/decimal.js/big.js/BigNumber.js
@@ -21,6 +40,8 @@ web黏贴板：clipboard
 polyfill（兼容）：stickyfilljs
 git hook：husky
 移动端调试：vConsole、eruda
+
+
 
 ##	react 系列
 
@@ -75,10 +96,4 @@ Server.get(‘/polyfill’, async (req, res) => {
 
 typescript 依赖：@types/node、@types/react、@types/react-dom、@types/styled-jsx
 
-# mac 工具
 
-## 命令行工具
-
-homebrew 安装
-文本搜索
-[ag](https://www.mankier.com/1/ag)
