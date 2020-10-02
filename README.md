@@ -33,6 +33,8 @@
 - [x] V8 如何优化字符串（v8 中字符串 5 种表达模式）
 - [x] JIT 和 AOT
 - [x] 垃圾回收（新生代和老生代内存回收方式）
+- [x] [内存管理](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Memory_Management)
+
 
 [V8.md](./README/v8.md)
 
