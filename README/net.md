@@ -209,7 +209,6 @@ HTTP/2 （原名 HTTP/2.0）即超文本传输协议 2.0。
 4.  流的优先级（权重和继承或者依赖，20200415 更新）
 5.  Server Push（服务器推送）
 6.  提高安全性（TLS，之前是明文）
-7.  添加二进制帧
 
 [解读 HTTP/2 与 HTTP/3 的新特性](https://mp.weixin.qq.com/s/n8HBG9LuzQjOT__M4pxKwA)
 

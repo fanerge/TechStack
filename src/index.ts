@@ -41,6 +41,8 @@ require("./algorithm/dp.js");
 require("./algorithm/template.js");
 import "./algorithm/floodfill";
 import "./algorithm/heap"
+import "./utils/promise"
+import "./javascript"
 
 // 栈
 // const stack: Stack = new Stack();

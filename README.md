@@ -17,6 +17,7 @@
 - [x] css 的下载解析 js 的下载解析与 html 解析的关系（阻塞）
 - [x] [浏览器解析 HTML 和 CSS 与 JS 加载、解析的关系](./README/render.md)
 - [x] [CustomEvent 的应用](./README/js_customEvent.md)
+- [x] [实现拖拽](./README/dragAndDrop.md)
 
 ![webkitflow.png](./img/webkitflow.png)
 ![js加载执行与HTML解析关系](./img/js加载执行与HTML解析关系.jpeg)
@@ -56,7 +57,8 @@
 - [x] curry 柯里化函数
 - [x] throttle、debounce
 - [x] 千分位 regExp、Number.prototype.toLocaleString、Intl.NumberFormat().format(number)、reduce 版本
-- [x] [Promise 并行和串行执行方式](./src/modules/utils.js)
+- [x] [Promise any\all\race\allSettled\串行](.src/utils/promise.js)
+- [x] [javascript技巧](/src/javascript.js)
 - [x] [你不知道的 JSON.stringify()](https://juejin.im/post/5decf09de51d45584d238319)
 
 [工具函数集合](./src/modules/utils.ts)
@@ -86,6 +88,7 @@
 
 ---
 
+- [x] [TypeScript](./README/typescript.md)
 - [x] [项目架构相关](./README/framework.md)
 - [x] [热更新原理](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack#how-does-it-work)&&[webpack 热加载原理探索](http://shepherdwind.com/2017/02/07/webpack-hmr-principle/)
 - [x] 自定义 Loader 原理探索
