@@ -181,6 +181,13 @@
 - [x] [CSS 给 JS 传参](https://www.zhangxinxu.com/wordpress/2020/02/css-params-to-js/)
 </details>
 
+<details>
+    <summary>业务场景、中后台（表单、表格、图表）</summary>
+
+- [x] 虚拟列表
+- [x] 动态表单/schema json配置化
+</details>
+
 # 服务端相关
 
 <details>
