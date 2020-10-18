@@ -9,7 +9,7 @@
 - [x] 作用域链 Scope chain
 - [x] 原型链
 - [x] 装箱和拆箱
-- [x] 全等运算符（===）和相等运算符（==）
+- [x] [相等运算符（==）一般规则](./README/double-equals.md)
 - [x] 元编程（metaprogramming）
 - [x] 闭包原理
 - [x] [IntersectionObserver 的应用](https://mp.weixin.qq.com/s/uRMYrxaduPaMkc97Upjkqg)
