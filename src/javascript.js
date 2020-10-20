@@ -54,3 +54,16 @@ let ClassB = (function () {
 // console.log(bb.getX());
 
 
+// 时针和分针的夹角？
+export function calcAngle(h, m) {
+  if (h < 24 && m < 60) {
+    // 分别计算与0的夹角
+    // 1小时 30 度，1分钟再走 0.5 度。
+    const hAngle = h % 12 * 30 + m * 0.5;
+    const mAngle = m * 6;
+    const res = Math.abs(hAngle - mAngle);
+    console.log(res);
+    return res;
+  }
+}
+// calcAngle(12, 1)

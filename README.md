@@ -112,6 +112,7 @@
     <summary>WEB性能（监控） && 安全</summary>
 
 - [x] [Navigation Timing API](https://developer.mozilla.org/zh-CN/docs/Web/API/Navigation_timing_API) && navigator.sendBeacon() 实现收集和上报
+- [x] [性能优化](./README/performance.md)
 
 ---
 
