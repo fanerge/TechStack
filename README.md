@@ -170,8 +170,8 @@
 <details>
     <summary>CSS</summary>
 
+- [x] [CSS 备忘录](./README/css.md)
 - [x] 滚动穿透/控制浏览器过度滚动时的表现 CSS 属性 overscroll-behavior
-- [x] [你知道我们平时在 CSS 中写的%都是相对于谁吗？](./README/css.md)
 - [x] [堆叠上下文](./README/css_stack_context.md)
 - [x] [BFC](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
 - [x] [Margin collapsing](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing)
