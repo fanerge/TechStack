@@ -33,7 +33,6 @@ function selectSort(ary) {
 
 // 插入排序
 // 原理：顺序从待排序中取出一个元素然后与已排好序的元素逐个比较放入合适的位置（向后移动比它大的元素）
-
 function insertSort(ary) {
   // 默认第一个已经排好序了
   for (let i = 1; i < ary.length; i++) {
@@ -51,82 +50,57 @@ function insertSort(ary) {
 }
 // console.log(insertSort([6, 999, 5, 4, 3, 2, 12]));
 
+// 折半插入排序（Binary Insertion Sort）
+function binayInsertionSort(arr) {
+    for (var i = 1; i < arr.length; i++) {
+      if (arr[i] >= arr[i - 1]) continue
+      let temp = arr[i];
+      let low = 0;
+      let high = i - 1;
 
-// 归并排序
-// 标准算法
-function mergeSort1(ary, lo, hi) {
-  // 判断是否只剩下最后一个元素
-  if (lo >= hi) return;
-  // 从中间将数组分成两个部分
-  let mid = lo + Math.floor((hi - lo) / 2);
-  // 分别递归地将左右两半排好序
-  mergeSort1(ary, lo, mid);
-  mergeSort1(ary, mid + 1, hi);
-
-  // 将排好序的左右两半合并
-  merge1(ary, lo, mid, hi);
+      while (low <= high) {
+        mid = Math.floor((low + high) / 2);
+        if (temp > arr[mid]) {
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+  
+      for (var j = i; j > low; --j) {
+        arr[j] = arr[j - 1];
+      }
+      arr[j] = temp;
+    }
 }
-function merge1(ary, lo, mid, hi) {
-  // 复制一份原来的数组
-  let copy = [...ary];
-  // 定义一个 k 指针表示从什么位置开始修改原来的数组，i 指针表示左半边的起始位置，j 表示右半边的起始位置
-  let k = lo, i = lo, j = mid + 1;
-  while (k <= hi) {
-    if (i > mid) {
-      // 左半边处理完后直接把右半边逐个copy过来
-      ary[k++] = copy[j++]
-    } else if (j > hi) {
-      // 右半边处理完后直接把左半边逐个copy过来
-      ary[k++] = copy[i++];
-    } else if (copy[i] > copy[j]) {
-      ary[k++] = copy[j++];
-    } else {
-      ary[k++] = copy[i++];
+  
+// 归并排序
+function mergeSort(arr) {
+
+  function merge(left, right) {
+    let result = [];
+    while(left.length > 0 && right.length > 0) {
+      if(left[0] <= right[0]) {
+        result.push(left.shift())
+      }else{
+        result.push(right.shift())
+      }
     }
+
+    return result.concat(left).concat(right);
   }
-}
-// let testAry = [6, 999, 5, 4, 3, 2, 12];
-// mergeSort1(testAry, 0, 6);
-// console.log(testAry);
-
-
-
-// 归并排序
-// 原理：采用分治法（Divide and Conquer）的方法，将已有序的子序列合并，直到得到完全有序的序列
-function mergeSort(ary) {
-  if (ary.length === 1) {
-    return ary;
+  
+  let len = arr.length;
+  if(len <= 1) {
+    return arr;
   }
-  let mid = Math.floor(ary.length / 2);
-  let left = ary.slice(0, mid);
-  let right = ary.slice(mid);
+  let mid = Math.floor(len / 2);
+  let left = arr.slice(0, mid);
+  let right = arr.slice(mid);
 
   return merge(mergeSort(left), mergeSort(right));
 }
-
-function merge(left, right) {
-  let ary = [];
-  while (left.length && right.length) {
-    let left0 = left[0];
-    let right0 = right[0];
-    if (left0 > right0) {
-      ary.push(right.shift());
-    } else {
-      ary.push(left.shift());
-    }
-  }
-
-  if (left.length) {
-    ary = ary.concat(left);
-  }
-
-  if (right.length) {
-    ary = ary.concat(right);
-  }
-
-  return ary;
-}
-// console.log(mergeSort([6, 999, 5, 4, 3, 2, 12]));
+// console.log(mergeSort([6, 999, 5, 4,23,  3, 2, 12, 999]));
 
 
 // 快速排序
