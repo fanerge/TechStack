@@ -1,14 +1,22 @@
-#	架构
+# 架构
+
 [图片无版权](https://unsplash.com/)
-##	git ssh相关
-// 生成ssh密钥
+
+## 项目组织方案
+
+multirepo 和 monorepo
+
+## git ssh 相关
+
+// 生成 ssh 密钥
 ssh-keygen -t rsa -C "your_email@example.com"
-// 将密钥添加到ssh-agent服务
+// 将密钥添加到 ssh-agent 服务
 ssh-add ~/.ssh/id_rsa
 // 测试是否成功
 ssh -T git@github.com
 
-##	提高效率的VScode插件
+## 提高效率的 VScode 插件
+
 Code Spell Checker、Todo Tree、Bracket Pair Colorizer、draw.io
 
 ## mac 相关
@@ -31,7 +39,7 @@ process.env 动态添加配置：dotenv
 分步引导库： driver.js
 随机数：uuid
 前端状态机（流程开发）：xstate
-web黏贴板：clipboard
+web 黏贴板：clipboard
 代码格式化：prettier
 操作引导：driver.js
 代理配置（开发环境）：http-proxy-middleware
@@ -41,12 +49,12 @@ polyfill（兼容）：stickyfilljs
 git hook：husky
 移动端调试：vConsole、eruda
 
-##	react 系列
+## react 系列
 
 拖拽：react-dnd
 组件与 viewport 交互：react-waypoint
 Svg 以组件导入：svg-react-loader
-动画：react-transition-group、react-motion、react-spring、framer-motion、Animated  (React Native)
+动画：react-transition-group、react-motion、react-spring、framer-motion、Animated (React Native)
 可视化和图表库：nivo、Victory、react-vis、Recharts、Chart Parts
 表单库：formik、react-hook-form
 国际化：react-i18next、react-intl、LinguiJS、FBT
@@ -60,6 +68,7 @@ server.on(‘error’, (e) => {
 	Sentry.captureMessage(e, ‘error’)
 })
 ```
+
 通过 user-agent 返回适合浏览器的 polyfill：polyfill-service
 
 ```
@@ -93,5 +102,3 @@ Server.get(‘/polyfill’, async (req, res) => {
 ```
 
 typescript 依赖：@types/node、@types/react、@types/react-dom、@types/styled-jsx
-
-
