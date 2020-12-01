@@ -86,9 +86,14 @@ export class MyEventEmitter{
     if(!Array.isArray(eventMap[type])) {
       eventMap[type] = [];
     }
+    // 是否已经存在
+    if(eventMap[type].includes(handler)) {
+      return 
+    }
     eventMap[type].push(handler);
   }
 
+  // once方法是on方法和off方法的结合
   once(type, handler) {
     const self = this;
     if(!type || !handler) {
@@ -107,14 +112,14 @@ export class MyEventEmitter{
     this.on(type, tempHandler);
   }
 
-  emit(type, params) {
+  emit(type, ...params) {
     if(!type) {
       throw Error('type 为必填参数');
     }
     const {eventMap} = this;
     const list = eventMap[type];
     list.forEach(func => {
-      func(params);
+      func.apply(null, params);
     });
   }
 

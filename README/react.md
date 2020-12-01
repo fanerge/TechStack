@@ -42,6 +42,11 @@ componentDidUpdate(prevProps, prevState, valueFromSnapshot) {
 
 如果组件提供的一个 Context 发生了变化，而中间父组件的 shouldComponentUpdate 返回 false，那么使用到该值的后代组件不会进行更新。使用了 Context 的组件则完全失控，所以基本上没有办法能够可靠的更新 Context。
 
+# 函数组件 和 类组件最大的区别
+
+函数组件会捕获 render 内部的状态，这是两类组件最大的不同。
+[How Are Function Components Different from Classes?](https://overreacted.io/how-are-function-components-different-from-classes/)
+
 # 为啥 constructor(){ this.target = this.func.bind(this); },JSX 里 onChange={this.target}的写法要比要比非 bind 的 func = () => {}的写法效率高？
 
 1.  bind 之后锁定了上下文，不用向上查找（免去了向上查找执行上下文的过程，不一定正确，待验证查明）。
