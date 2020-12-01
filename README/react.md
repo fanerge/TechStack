@@ -1,3 +1,43 @@
+# 部分生命周期的理解
+
+## componentWillReceiveProps
+
+触发时机：componentWillReceiveProps 并不是由 props 的变化触发的，而是由父组件的更新触发的。
+
+## getDerivedStateFromProps
+
+为静态方法 static，不能访问到 this。
+触发时机：初始化/更新时调用（new props、setState、forceUpdate）
+
+```
+// 参数： props 和 state，它们分别代表当前组件接收到的来自父组件的 props 和当前组件自身的 state。
+// 返回值：必须为 Object 或 null。它会和现有的 state 进行合并
+static getDerivedStateFromProps(props, state) {
+    return {
+      fatherText: props.text
+    }
+  }
+```
+
+## getSnapshotBeforeUpdate
+
+触发时机：组件更新时调用（mountd）
+getSnapshotBeforeUpdate 要想发挥作用，离不开 componentDidUpdate 的配合。
+getSnapshotBeforeUpdate 的返回值会作为第三个参数给到 componentDidUpdate。
+
+```
+// 组件更新时调用
+getSnapshotBeforeUpdate(prevProps, prevState) {
+  // valueFromSnapshot
+  return "haha";
+}
+// 组件更新后调用
+componentDidUpdate(prevProps, prevState, valueFromSnapshot) {
+  console.log("从 getSnapshotBeforeUpdate 获取到的值是", valueFromSnapshot);
+  // 根据 valueFromSnapshot 做一些处理。
+}
+```
+
 # 为啥 constructor(){ this.target = this.func.bind(this); },JSX 里 onChange={this.target}的写法要比要比非 bind 的 func = () => {}的写法效率高？
 
 1.  bind 之后锁定了上下文，不用向上查找（免去了向上查找执行上下文的过程，不一定正确，待验证查明）。
