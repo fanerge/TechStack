@@ -62,8 +62,84 @@ export function calcAngle(h, m) {
     const hAngle = h % 12 * 30 + m * 0.5;
     const mAngle = m * 6;
     const res = Math.abs(hAngle - mAngle);
-    console.log(res);
     return res;
   }
 }
 // calcAngle(12, 1)
+
+// 发布-订阅
+// https://zhuanlan.zhihu.com/p/77876876
+// TODO 大的 maxCapacity
+export class MyEventEmitter{
+  constructor() {
+    this.eventMap = {};
+  }
+
+  on(type, handler) {
+    const {eventMap} = this;
+    if(!type || !handler) {
+      throw Error('type, handler 为必填参数');
+    }
+    if(typeof handler !== 'function') {
+      throw Error('handler 参数必须为 function');
+    }
+    if(!Array.isArray(eventMap[type])) {
+      eventMap[type] = [];
+    }
+    eventMap[type].push(handler);
+  }
+
+  once(type, handler) {
+    const self = this;
+    if(!type || !handler) {
+      throw Error('type, handler 为必填参数');
+    }
+    if(typeof handler !== 'function') {
+      throw Error('handler 参数必须为 function');
+    }
+
+    // 重点
+    function tempHandler() {
+      var args = Array.prototype.slice.call(arguments);
+      handler.apply(null, args);
+      self.off(type, tempHandler);
+    }
+    this.on(type, tempHandler);
+  }
+
+  emit(type, params) {
+    if(!type) {
+      throw Error('type 为必填参数');
+    }
+    const {eventMap} = this;
+    const list = eventMap[type];
+    list.forEach(func => {
+      func(params);
+    });
+  }
+
+  off(type, handler) {
+    const {eventMap} = this;
+    if(!type) {
+      throw Error('type 为必填参数');
+    }
+    const list = eventMap[type]
+    if(type && handler) {
+      let index = list.indexOf(handler);
+      if(index > -1) {
+        list.splice(index, 1)
+      }
+    }else{
+      eventMap[type] = [];
+    }
+  }
+}
+
+// test
+// let eventEmitter = new MyEventEmitter();
+// eventEmitter.once('eat', (a) => {
+//   console.log('eat', a)
+// })
+
+// eventEmitter.emit('eat', 'sd')
+// console.log(eventEmitter)
