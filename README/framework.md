@@ -4,7 +4,9 @@
 
 ## 项目组织方案
 
-multirepo 和 monorepo
+SourceMap、
+代码组织：multirepo 和 monorepo
+Mock：Mock.js 和 Faker.js、YApi 和 Apifox
 
 ## git ssh 相关
 

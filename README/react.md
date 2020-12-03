@@ -47,6 +47,17 @@ componentDidUpdate(prevProps, prevState, valueFromSnapshot) {
 函数组件会捕获 render 内部的状态，这是两类组件最大的不同。
 [How Are Function Components Different from Classes?](https://overreacted.io/how-are-function-components-different-from-classes/)
 
+# virtual DOM 的优势
+
+提升研发体验/研发效率
+解决跨平台的问题，虚拟 DOM 是对真实渲染内容的一层抽象，它描述的东西可以是真实 DOM，也可以是 iOS 界面、安卓界面、小程序。
+更好做 diff 和 patch
+
+# React 如何防止 XSS 攻击
+
+自动转义，React 在渲染 HTML 内容和渲染 DOM 属性，将特殊字符转义，转换为实体字符。
+JSX 语法，ReactElement 有一个 $$typeof: Symbol('react.element')，否则为非法的 ReactElement，JSON 序列化时会丢失值为 Symbol 的属性。
+
 # 为啥 constructor(){ this.target = this.func.bind(this); },JSX 里 onChange={this.target}的写法要比要比非 bind 的 func = () => {}的写法效率高？
 
 1.  bind 之后锁定了上下文，不用向上查找（免去了向上查找执行上下文的过程，不一定正确，待验证查明）。
