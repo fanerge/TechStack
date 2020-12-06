@@ -16,7 +16,7 @@ function bubbleSort(ary) {
 // console.log(bubbleSort([3, 21, 1, 4, 325]));
 
 // 选择排序
-// 原理：
+// 原理：每次找到最小的数的 index 和当前位置交互
 function selectSort(ary) {
   for (let i = 0; i < ary.length - 1; i++) {
     let minIndex = i;
@@ -131,6 +131,25 @@ function merge(left, right) {
 
 // 快速排序
 // 原理：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列
+function quickSort1(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+  let pivotIndex = Math.floor(arr.length / 2);
+  let pivot = arr.splice(pivotIndex, 1)[0];
+  let left = [];
+  let right = [];
+  arr.forEach(item => {
+    if (item < pivot) {
+      left.push(item);
+    } else {
+      right.push(item);
+    }
+  });
+
+  return quickSort1(left).concat([pivot], quickSort1(right));
+}
+
 function quickSort(arr) {
   const sort = (ary, left = 0, right = ary.length - 1) => {
     // debugger;

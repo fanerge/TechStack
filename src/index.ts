@@ -43,6 +43,7 @@ import "./algorithm/floodfill";
 import "./algorithm/heap"
 import "./utils/promise"
 import "./javascript"
+import "./test"
 
 // 栈
 // const stack: Stack = new Stack();
@@ -120,7 +121,7 @@ function hotPotato(nameList: string[], num: number) {
 // function demo(a, b, c) {console.log(this.name); return a + b + c;};
 // console.log(demo.myApply(ss, [1, 2, 6]));
 
-// 测试myApply
+// // 测试myApply
 // const ss = {name: 'fanerge'};
 // Function.prototype.myBind = myBind;
 // function demo(a, b, c, d) {console.log(this.name); return a + b + c + d;};

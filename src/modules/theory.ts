@@ -58,12 +58,12 @@ export function myBind() {
   }
   let that = this;
 
-  return function() {
+  return function(...rest: any[]) {
       // 防止第二次调用 func 是，该func已经被delete了，需要重新赋值 
       if(!thisArg.func) {
         thisArg.func = that;
       }
-      let result = thisArg.func(...args);
+      let result = thisArg.func(...args, ...rest);
       // thisArg原本没有func方法
       delete thisArg.func;
       return result;
