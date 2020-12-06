@@ -1,3 +1,63 @@
+# 部分生命周期的理解
+
+## componentWillReceiveProps
+
+触发时机：componentWillReceiveProps 并不是由 props 的变化触发的，而是由父组件的更新触发的。
+
+## getDerivedStateFromProps
+
+为静态方法 static，不能访问到 this。
+触发时机：初始化/更新时调用（new props、setState、forceUpdate）
+
+```
+// 参数： props 和 state，它们分别代表当前组件接收到的来自父组件的 props 和当前组件自身的 state。
+// 返回值：必须为 Object 或 null。它会和现有的 state 进行合并
+static getDerivedStateFromProps(props, state) {
+    return {
+      fatherText: props.text
+    }
+  }
+```
+
+## getSnapshotBeforeUpdate
+
+触发时机：组件更新时调用（mountd）
+getSnapshotBeforeUpdate 要想发挥作用，离不开 componentDidUpdate 的配合。
+getSnapshotBeforeUpdate 的返回值会作为第三个参数给到 componentDidUpdate。
+
+```
+// 组件更新时调用
+getSnapshotBeforeUpdate(prevProps, prevState) {
+  // valueFromSnapshot
+  return "haha";
+}
+// 组件更新后调用
+componentDidUpdate(prevProps, prevState, valueFromSnapshot) {
+  console.log("从 getSnapshotBeforeUpdate 获取到的值是", valueFromSnapshot);
+  // 根据 valueFromSnapshot 做一些处理。
+}
+```
+
+# 老的 context 问题
+
+如果组件提供的一个 Context 发生了变化，而中间父组件的 shouldComponentUpdate 返回 false，那么使用到该值的后代组件不会进行更新。使用了 Context 的组件则完全失控，所以基本上没有办法能够可靠的更新 Context。
+
+# 函数组件 和 类组件最大的区别
+
+函数组件会捕获 render 内部的状态，这是两类组件最大的不同。
+[How Are Function Components Different from Classes?](https://overreacted.io/how-are-function-components-different-from-classes/)
+
+# virtual DOM 的优势
+
+提升研发体验/研发效率
+解决跨平台的问题，虚拟 DOM 是对真实渲染内容的一层抽象，它描述的东西可以是真实 DOM，也可以是 iOS 界面、安卓界面、小程序。
+更好做 diff 和 patch
+
+# React 如何防止 XSS 攻击
+
+自动转义，React 在渲染 HTML 内容和渲染 DOM 属性，将特殊字符转义，转换为实体字符。
+JSX 语法，ReactElement 有一个 $$typeof: Symbol('react.element')，否则为非法的 ReactElement，JSON 序列化时会丢失值为 Symbol 的属性。
+
 # 为啥 constructor(){ this.target = this.func.bind(this); },JSX 里 onChange={this.target}的写法要比要比非 bind 的 func = () => {}的写法效率高？
 
 1.  bind 之后锁定了上下文，不用向上查找（免去了向上查找执行上下文的过程，不一定正确，待验证查明）。
