@@ -255,3 +255,25 @@ Split Chunks（分包）是指在 Chunk 生成之后，将原先以入口点来�
 
 Tree Shaking（摇树）是指在构建打包过程中，移除那些引入但未被使用的无效代码（Dead-code elimination）。
 只有 ES6 类型的模块才能进行 Tree Shaking。因为 ES6 模块的依赖关系是确定的，因此可以进行不依赖运行时的静态分析，而 CommonJS 类型的模块则不能。
+
+# Webpack 缓存优化
+
+## 缓存优化的基本原理
+
+Webpack 4 内置了压缩插件 TerserWebpackPlugin，且默认开启了缓存参数。在初次构建的压缩代码过程中，就将这一阶段的结果写入了缓存目录（node_modules/.cache/terser-webpack-plugin/）中，当再次构建进行到压缩代码阶段时，即可对比读取已有缓存。
+
+## 编译阶段的缓存优化
+
+编译过程的耗时点主要在使用不同加载器（Loader）来编译模块的过程。
+
+### Babel-loader
+
+```
+cacheDirectory：默认为 false，即不开启缓存。当值为 true 时开启缓存并使用默认缓存目录（./node_modules/.cache/babel-loader/），也可以指定其他路径值作为缓存目录。
+cacheIdentifier：用于计算缓存标识符。
+cacheCompression：默认为 true，将缓存内容压缩为 gz 包以减小缓存目录的体积。
+```
+
+### Cache-loader
+
+在编译过程中利用缓存的第二种方式是使用 Cache-loader。在使用时，需要将 cache-loader 添加到对构建效率影响较大的 Loader（如 babel-loader 等）之前。

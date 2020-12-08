@@ -2,6 +2,14 @@
 
 [图片无版权](https://unsplash.com/)
 
+## 代码部署工具
+
+Jenkins、CircleCI、Github Actions、Gitlab CI
+
+## 前端依赖的安装方式
+
+npm、yarn、pnpm
+
 ## 项目组织方案
 
 SourceMap、

@@ -51,7 +51,7 @@ function insertSort(ary) {
 // console.log(insertSort([6, 999, 5, 4, 3, 2, 12]));
 
 // 折半插入排序（Binary Insertion Sort）
-function binayInsertionSort(arr) {
+function binaryInsertionSort(arr) {
   for (var i = 1; i < arr.length; i++) {
     if (arr[i] >= arr[i - 1]) continue
     let temp = arr[i];
