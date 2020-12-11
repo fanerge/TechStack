@@ -55,30 +55,155 @@ componentDidUpdate(prevProps, prevState, valueFromSnapshot) {
 
 # React 如何防止 XSS 攻击
 
-自动转义，React 在渲染 HTML 内容和渲染 DOM 属性，将特殊字符转义，转换为实体字符。
-JSX 语法，ReactElement 有一个 $$typeof: Symbol('react.element')，否则为非法的 ReactElement，JSON 序列化时会丢失值为 Symbol 的属性。
+1.  自动转义，React 在渲染 HTML 内容和渲染 DOM 属性，将特殊字符转义，转换为实体字符。
+2.  JSX 语法，ReactElement 有一个 $$typeof: Symbol('react.element')，否则为非法的 ReactElement，JSON 序列化时会丢失值为 Symbol 的属性。
 
-# 为啥 constructor(){ this.target = this.func.bind(this); },JSX 里 onChange={this.target}的写法要比要比非 bind 的 func = () => {}的写法效率高？
+# React15 栈调和（Stack Reconciler）
 
-1.  bind 之后锁定了上下文，不用向上查找（免去了向上查找执行上下文的过程，不一定正确，待验证查明）。
+## 调和/Reconciliation？
+
+调和器的工作，包括组件的挂载、卸载、更新等过程，其中更新过程涉及对 Diff 算法的调用。
+通过如 ReactDOM 等类库使虚拟 DOM 与“真实的” DOM 同步，这一过程叫作协调（调和）。
+
+## Diff 算法
+
+Diff 算法属于调和阶段性的一个过程。
+
+### 如何将复杂度降低为 O(n)
+
+前提：
+
+1.  若两个组件属于同一个类型，那么它们将拥有相同的 DOM 树形结构；
+2.  处于同一层级的一组子节点，可用通过设置 key 作为唯一标识，从而维持各个节点在不同渲染过程中的稳定性。
+3.  DOM 节点之间的跨层级操作并不多，同层级操作是主流（也就是说跨层级操作直接不 diff）。
+
+具体算法：
+
+1.  Diff 算法性能突破的关键点在于“分层对比”（决定时间复杂度的核心，当然还是递归）；
+2.  类型一致的节点才有继续 Diff 的必要性（同类型的组件）；
+3.  key 属性的设置，可以帮我们尽可能重用同一层级内的节点（所以必须保证唯一性）。
+
+# React16 Fiber 调和
 
 # setState 什么时候是同步的，什么时候是异步（批量处理）的？
 
-异步：生命周期钩子函数和合成事件方法（比如通过 onClick、onCaptureClick）。<br>
-同步：除此之外的 setState 调用会同步执行 this.state（componentDidUpdate 生命周期、绕开 React 的事件处理如 addEventListener 直接添加的事件处理函数还有通过 setTimeout/setInterval 产生的异步调用）。<br>
+## 为什么要异步（批量更新）？
+
+一般情况，触发 setState 导致如下流程，性能开销太大，所以才有批量更新的操作。
+setState -> shouldComponentUpdate -> componentWillUpdate -> render -> componentDidUpdate
+
+## 结论
+
+异步（批量）：生命周期钩子函数和合成事件方法（比如通过 onClick 等）。<br>
+同步：原生绑定事件方式 addEventListener 和 setTimeout/setInterval 中调用 setState）。
+
+## setState 工作流程（原理）
+
+setState -> enqueueSetState -> enqueueUpdate -> isBatchingUpdates
+如果 isBatchingUpdates 为 true 时，该组件进入 dirtyComponents 队列，否则就循环更新 dirtyComponents 里面的组件。<br>
+React 的生命周期函数以及合成事件执行前，已经被 React 将 isBatchingUpdates 修改为了 true，这时我们所做的 setState 操作自然不会立即生效。当函数执行完毕后，再把 isBatchingUpdates 重置为 false。<br>
+
+### 流程解释
 
 ```
-// 批量更新 state 的流程
-1.  React的 setState 函数实现中，有一个 isBatchingUpdates 变量用来确定是否批量更新。
-2.  isBatchingUpdates 默认是 false。
-3.  有一个函数 batchedUpdates 会将 isBatchingUpdates 修改为 true。
-4.  如果组件在事务流会先调用 batchedUpdates 函数，然后将要更新的state存入_pendingStateQueue，将要更新的组件存入 dirtyComponent。
-5.  当上一次更新机制执行完毕，最顶层组件 didmount 后会将批处理标志设置为 false。这时将取出 dirtyComponent中的组件以及 _pendingStateQueue中的 state进行更新。
+// enqueueSetState 做了两件事：
+将新的 state 放进组件的状态队列里；
+用 enqueueUpdate 来处理将要更新的实例对象。
+// enqueueUpdate
+引入了一个关键的对象——batchingStrategy（全局对象，相当于全局锁，又一个 isBatchingUpdates 属性）
+isBatchingUpdates 属性决定直接走更新流程，还是应该排队等待。
+```
+
+### 合成事件中 setState 原理
+
+```
+increment = () => {
+  // 进来先锁上
+  isBatchingUpdates = true
+  console.log('increment setState前的count', this.state.count)
+  this.setState({
+    count: this.state.count + 1
+  });
+  console.log('increment setState后的count', this.state.count)
+  // 执行完函数再放开
+  isBatchingUpdates = false
+}
+```
+
+### setTimeout setState 原理
+
+```
+reduce = () => {
+  // 进来先锁上
+  isBatchingUpdates = true
+  setTimeout(() => {
+    console.log('reduce setState前的count', this.state.count)
+    // PS：由于setTimeout是异步的，当其回掉函数真正执行时，isBatchingUpdates 已经重置为 false了，所以不会触发批量更新
+    this.setState({
+      count: this.state.count - 1
+    });
+    console.log('reduce setState后的count', this.state.count)
+  },0);
+  // 执行完函数再放开
+  isBatchingUpdates = false
+}
 ```
 
 [setState](https://juejin.im/post/5c92f499f265da612647b754#3)
 [setState 的执行机制](https://mp.weixin.qq.com/s?__biz=Mzg2NDAzMjE5NQ==&mid=2247483989&idx=1&sn=d78f889c6e1d7d57058c9c232b1a620e&chksm=ce6ec6f9f9194fef681c79ee869bf58d5413132c73496710b2eb32c859a2249a895c2ce8a7cd&scene=21#wechat_redirect)
 [深入 setState 机制](https://github.com/sisterAn/blog/issues/26)
+
+# ReactDOM.render
+
+分为初始化、render 和 commit 等过程。
+
+## 三种模式
+
+```
+legacy 模式：
+ReactDOM.render(<App />, rootNode)
+blocking 模式：
+ReactDOM.createBlockingRoot(rootNode).render(<App />)
+concurrent 模式：
+ReactDOM.createRoot(rootNode).render(<App />)
+```
+
+## 初始化
+
+## render
+
+performSyncWorkOnRoot 标志着 render 阶段的开始。（lane === SyncLane）
+finishSyncRender 标志着 render 阶段的结束。
+
+## commit
+
+commitRoot 方法开启的则是真实 DOM 的渲染过程（commit 阶段）
+
+# 为什么 current 树 与 workInProgress 两棵树？
+
+两棵树：current 节点（即 rootFiber）、workInProgress 节点（current 的副本），主要现实“双缓冲”模式。
+当 current 树呈现在用户眼前时，所有的更新都会由 workInProgress 树来承接。workInProgress 树将会在用户看不到的地方（内存里）悄悄地完成所有改变，直到 current 指针指向它的时候，此时就意味着 commit 阶段已经执行完毕，workInProgress 树变成了那棵呈现在界面上的 current 树。
+同步渲染：performSyncWorkOnRoot 标志着 render 阶段的开始。（SyncLane）
+异步渲染：performConcurrentWorkOnRoot 标志着 render 阶段的开始。（lane）
+
+## 优先级调度？
+
+Scheduler 导出的一个核心方法，它将结合任务的优先级信息为其执行不同的调度逻辑。
+timerQueue(未过期任务)：一个以 startTime 为排序依据的小顶堆，它存储的是 startTime 大于当前时间（也就是待执行）的任务。
+taskQueue(过期任务)：一个以 expirationTime 为排序依据的小顶堆，它存储的是 startTime 小于当前时间（也就是已过期）的任务。
+expirationTime 这是一个和优先级相关的值，expirationTime 越小，任务的优先级就越高。
+
+```
+// 任务优先级
+IMMEDIATE_PRIORITY_TIMEOUT
+USER_BLOCKING_PRIORITY_TIMEOUT
+IDLE_PRIORITY_TIMEOUT
+LOW_PRIORITY_TIMEOUT
+NORMAL_PRIORITY_TIMEOUT
+```
+
+流程：
+[流程](../img/react-concurrent.png)
 
 # React Other
 
