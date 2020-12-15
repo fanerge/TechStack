@@ -205,6 +205,36 @@ NORMAL_PRIORITY_TIMEOUT
 流程：
 [流程](../img/react-concurrent.png)
 
+# Redux
+
+## Flux 架构
+
+View（视图层）：用户界面。该用户界面可以是以任何形式实现出来的，React 组件是一种形式，Vue、Angular 也完全 OK。Flux 架构与 React 之间并不存在耦合关系。
+Action（动作）：也可以理解为视图层发出的“消息”，它会触发应用状态的改变。
+Dispatcher（派发器）：它负责对 action 进行分发。
+Store（数据层）：它是存储应用状态的“仓库”，此外还会定义修改状态的逻辑。store 的变化最终会映射到 view 层上去。
+
+## 核心概念
+
+严格的单向数据流（状态的变化是可预测的）
+Store：它是一个单一的数据源，而且是只读的。
+Action 人如其名，是“动作”的意思，它是对变化的描述。
+Reducer 是一个函数，它负责对变化进行分发和处理，最终将新的数据返回给 Store。
+
+## api
+
+```
+applyMiddleware 是中间件模块
+bindActionCreators（用于将传入的 actionCreator 与 dispatch 方法相结合，揉成一个新的方法）
+combineReducers（用于将多个  reducer 合并起来）
+compose（用于把接收到的函数从右向左进行组合）这三个方法均为工具性质的方法
+createStore 整个流程的入口
+常使用方法：
+getState
+subscribe
+dispatch
+```
+
 # React Other
 
 ## Portal
