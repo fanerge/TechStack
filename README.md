@@ -64,7 +64,7 @@
 
 <details>
     <summary>Hybrid APP && JS工具函数 && JS原生api模拟</summary>
-
+- [x] [微信小程序weApp](./README/weapp.md)
 - [x] h5 唤起 APP 方式
 - [x] JSBridge
 
