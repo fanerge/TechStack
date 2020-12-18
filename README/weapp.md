@@ -48,3 +48,33 @@ WXML 是基于 HTML 的一种 DSL（Domain Specific Language，领域专属语�
 避免 setData 的数据过大
 避免短时间内发起太多的图片请求
 避免短时间内发起太多的请求
+
+# 自动化测试
+
+## 小程序自定义组件测试工具集
+
+miniprogram-simulate
+
+## 自动化测试的工具
+
+miniprogram-automator
+
+# 数据监控（善用数据驱动产品迭代）
+
+埋点、性能 Trace 工具
+
+# CI/CD
+
+持续集成（Continuous integration，CI）和持续交付（Continuous Delivery，CD）
+
+## 源码管理平台
+
+Github 、Gitlab 以及国内的码云
+
+## 制定触发 Webhooks 的规范
+
+可以触发 Webhook 的事件类型有很多，Push、Tag、Merge……
+
+## 搭建 CI 服务器和相关工具
+
+用于监听 Webhooks 事件和发起自动化任务，目前比较流行的平台有 Gitlab CI、Jenkins

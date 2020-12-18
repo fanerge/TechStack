@@ -21,6 +21,18 @@ Macrotask：主代码块（同步代码）、MessageChannel、postMessage、setT
 Microtask：process.nextTick、Promise.then、MutaionObserver（监听 DOM 变动的构造函数）、Object.observe（已废弃）<br>
 [Event Loop](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-10)
 
+## 重绘和回流其实也和 Eventloop 有关
+
+1.  当 Eventloop 执行完 Microtasks 后，会判断 document 是否需要更新，因为浏览器是 60Hz 的刷新率，每 16.6ms 才会更新一次。
+2.  然后判断是否有 resize 或者 scroll 事件，有的话会去触发事件，所以 resize 和 scroll 事件也是至少 16ms 才会触发一次，并且自带节流功能。
+3.  判断是否触发了 media query
+4.  更新动画并且发送事件
+5.  判断是否有全屏操作事件
+6.  执行 requestAnimationFrame 回调
+7.  执行 IntersectionObserver 回调，该方法用于判断元素是否可见，可以用于懒加载上，但是兼容性不好
+8.  更新界面
+9.  以上就是一帧中可能会做的事情。如果在一帧中有空闲时间，就会去执行 requestIdleCallback 回调。
+
 # Node.js
 
 在一个 I/O 循环内：setImmediate 总是优先于 setTimeout(callback ,0)<br>
