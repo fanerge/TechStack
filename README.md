@@ -2,14 +2,14 @@
 
 <details>
     <summary>算法</summary>
-如果要刷下算法的话，这里推荐大家去[牛客网](https://www.nowcoder.com/)和[leetcode](https://leetcode-cn.com/)。
+如果要刷下算法的话，这里推荐大家去[牛客网](https://www.nowcoder.com/) 和 [leetcode](https://leetcode-cn.com/)。
 
 - [x] [二分查找+6 种变体](./src/algorithm/binarySearch.js)
 - [x] [动态规划 dp](./src/algorithm/dp.js)
 - [x] [树的遍历 DFS BFS](./src/algorithm/tree.js)
 - [x] [回溯算法 backtracking](./src/algorithm/backTrack.js)
-- [x][flood fill算法](./src/algorithm/floodfill.js)
-- [x][滑动窗口 slidingwindow](./src/algorithm/slidingWindow.js)
+- [x] [flood fill算法](./src/algorithm/floodfill.js)
+- [x] [滑动窗口 slidingwindow](./src/algorithm/slidingWindow.js)
 
 </details>
 
