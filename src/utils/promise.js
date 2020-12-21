@@ -1,3 +1,11 @@
+/** promise 的一些特性，2020-12-21更新 */
+// 参考地址：https://mp.weixin.qq.com/s/ON4m0uNF6u-FjLHYih8JIA
+// 1. 只有promise.then 执行时才将其callback放入大 MicroQueue 中
+// 2. 要触发promise.catch 只有 promise.rejected 可以，直接 throw 不行（类似于，Promise.resolve(new Error('error!!!'))）
+// 3. promise.then 或 promise.catch 参数只接受函数，传入非函数则会发生值穿透
+// 4. promise.then 可以接收两个参数，第一个是处理成功的函数，第二个是处理错误的函数。但第二个处理错误的函数不能捕获第一个函数抛出的错误但promise.catch可以
+
+
 /**第一题 */
 // JS实现一个带并发限制的异步调度器Scheduler，保证同时运行的任务最多有两个
 // http://blog.mapplat.com/public/javascript/%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8Epromise%E7%9A%84%E9%97%AE%E9%A2%98/
@@ -7,27 +15,28 @@
 // 关键点为 Promise 没有被 resolve 或 reject 时后面代码会被暂停，Promise 的 resolve 或 reject 可以在Promise构造函数外执行
 
 class Scheduler {
-  constructor() {
-    this.awatiArr = [];
+  constructor(limit = 2) {
+    this.awaitArr = [];
     this.count = 0;
+    this.limit = limit;
   }
   async add(promiseCreator) {
-    if (this.count >= 2) {
+    if (this.count >= this.limit) {
       await new Promise((resolve) => {
-        this.awatiArr.push(resolve);
+        this.awaitArr.push(resolve);
       });
     }
     this.count++;
     const res = await promiseCreator();
     this.count--;
-    if (this.awatiArr.length) {
+    if (this.awaitArr.length) {
       // 前面promise的resolve
-      this.awatiArr.shift()();
+      this.awaitArr.shift()();
     }
     return res;
   }
 }
-const scheduler = new Scheduler();
+const scheduler = new Scheduler(2);
 const timeout = (time) => {
   return new Promise(r => setTimeout(r, time))
 }
@@ -234,4 +243,147 @@ function PromiseTimeout(ms, promise) {
 // }).catch(error => {
 //   console.log(error)
 // });
+
+/**第八题 */
+// 红灯3秒亮一次，绿灯1秒亮一次，黄灯2秒亮一次；如何使用Promise让三个灯不断交替重复亮灯？
+let testNowTime = Date.now();
+function red() {
+  let testCurTime = Date.now();
+  console.log((testCurTime - testNowTime)/1000)
+  testNowTime = testCurTime
+  console.log('red');
+}
+
+function green() {
+  let testCurTime = Date.now();
+  console.log((testCurTime - testNowTime)/1000)
+  testNowTime = testCurTime
+  console.log('green');
+}
+
+function yellow() {
+  let testCurTime = Date.now();
+  console.log((testCurTime - testNowTime)/1000)
+  testNowTime = testCurTime
+  console.log('yellow');
+}
+
+const myLight = (timer, cb) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      cb();
+      resolve();
+    }, timer);
+  });
+}
+
+const myStep = () => {
+  Promise.resolve().then(() => {
+    return myLight(3000, red)
+  }).then(() => {
+    return myLight(1000, green)
+  }).then(() => {
+    return myLight(2000, yellow)
+  }).then(() => {
+    myStep();
+  })
+}
+// myStep()
+
+const myStepAsync = async () => {
+  await myLight(3000, red);
+  await myLight(1000, green);
+  await myLight(2000, yellow)
+  myStepAsync();
+}
+// myStepAsync();
+
+/**第九题 */
+// 请实现一个mergePromise函数，把传进去的数组按顺序先后执行，并且把返回的数据先后放到数组data中。
+const timeoutMerge = ms => new Promise((resolve, reject) => {
+  setTimeout(() => {
+      resolve();
+  }, ms);
+});
+
+const ajax1 = () => timeoutMerge(2000).then(() => {
+  console.log('1');
+  return 1;
+});
+
+const ajax2 = () => timeoutMerge(1000).then(() => {
+  console.log('2');
+  return 2;
+});
+
+const ajax3 = () => timeoutMerge(2000).then(() => {
+  console.log('3');
+  return 3;
+});
+
+const mergePromise = ajaxArray => {
+  // 在这里实现你的代码
+  let data = [];
+
+  let p = ajaxArray.reduce((acc, func, index) => {
+    return acc.then(func).then(res => {
+      data.push(res);
+    })
+  }, Promise.resolve());
+
+  return p.then(() => data);
+}
+
+const mergePromise1 = ajaxArray => {
+  // 在这里实现你的代码
+  var data = [];
+
+  // Promise.resolve方法调用时不带参数，直接返回一个resolved状态的 Promise 对象。
+  var sequence = Promise.resolve();
+
+  ajaxArray.forEach(item => {
+    // 第一次的 then 方法用来执行数组中的每个函数，
+    // 第二次的 then 方法接受数组中的函数执行后返回的结果，
+    // 并把结果添加到 data 中，然后把 data 返回。
+    sequence = sequence.then(item).then(res => {
+      data.push(res);
+      return data;
+    });
+  });
+
+// 遍历结束后，返回一个 Promise，也就是 sequence， 他的 [[PromiseValue]] 值就是 data，
+// 而 data（保存数组中的函数执行后的结果） 也会作为参数，传入下次调用的 then 方法中。
+  return sequence;
+};
+// test
+// mergePromise([ajax1, ajax2, ajax3]).then(data => {
+//   console.log('done');
+//   console.log(data); // data 为 [1, 2, 3]
+// });
+
+/**第十题 */
+// 现有8个图片资源的url，已经存储在数组urls中，且已有一个函数function loading，输入一个url链接，返回一个Promise，该Promise在图片下载完成的时候resolve，下载失败则reject。
+var urls = ['https://www.kkkk1000.com/images/getImgData/getImgDatadata.jpg', 'https://www.kkkk1000.com/images/getImgData/gray.gif', 'https://www.kkkk1000.com/images/getImgData/Particle.gif', 'https://www.kkkk1000.com/images/getImgData/arithmetic.png', 'https://www.kkkk1000.com/images/getImgData/arithmetic2.gif', 'https://www.kkkk1000.com/images/getImgData/getImgDataError.jpg', 'https://www.kkkk1000.com/images/getImgData/arithmetic.gif', 'https://www.kkkk1000.com/images/wxQrCode2.png'];
+
+function loadImg(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => {
+            console.log('一张图片加载完成');
+            resolve();
+        }
+        img.onerror = reject;
+        img.src = url;
+    })
+};
+
+function limitLoad(urls, handler, limit) {
+  let schedulers = new Scheduler(limit);
+  urls.forEach(url => {
+    schedulers.add(handler.bind(null, url))
+  });
+  
+}
+
+// limitLoad(urls, loadImg, 3);
 
