@@ -169,7 +169,7 @@ TLS 1.2 协议的握手需要 1.5 RTT，在 1.3 协议中，首次建立连接�
 2. server hello
 3. 会话密钥确认
 
-// TLS 1.3(首次1.0 RTT，恢复时不需要RTT)
+// TLS 1.3(首次1.0 RTT，恢复时不需要RTT,缓存当前会话的上下文)
 1. client hello，key share
 2. server hello
 ```
