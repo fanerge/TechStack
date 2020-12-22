@@ -156,6 +156,24 @@ Hypertext Transfer Protocol Secure，超文本传输安全协议，看作 HTTP +
 
 SSL(Secure Sockets Layer 安全套接层),及其继任者传输层安全（Transport Layer Security，TLS）是为网络通信提供安全及数据完整性的一种安全协议。TLS 与 SSL 在传输层与应用层之间对网络连接进行加密。
 
+#### TLS 原理
+
+私钥只有分发公钥的一方才知道。
+简单流程如下：首先服务端将公钥公布出去，那么客户端也就知道公钥了。接下来客户端创建一个秘钥，然后通过公钥加密并发送给服务端，服务端接收到密文以后通过私钥解密出正确的秘钥，这时候两端就都知道（客户端）生成的秘钥是什么了。
+TLS 1.2 协议的握手需要 1.5 RTT，在 1.3 协议中，首次建立连接只需要一个 RTT，后面恢复连接不需要 RTT 了。
+
+```
+#   密钥协商过程
+// TLS 1.2(1.5 RTT)
+1. client hello
+2. server hello
+3. 会话密钥确认
+
+// TLS 1.3(首次1.0 RTT，恢复时不需要RTT)
+1. client hello，key share
+2. server hello
+```
+
 #### 作用
 
 1）认证用户和服务器，确保数据发送到正确的客户机和服务器（依靠证书）；
