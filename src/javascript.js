@@ -193,3 +193,59 @@ export class MyEventEmitter {
 
 // eventEmitter.emit('eat', 'sd')
 // console.log(eventEmitter)
+
+// 递归的函数如何非递归表达？改写斐波那契数列第 N 项目
+function fib(n) {
+  if(n === 0 || n === 1) {
+    return n;
+  }
+  return fib(n-1) + fib(n-2);
+}
+
+function fib2(n){
+  const Down = 1;
+  const Up = 2;
+  // stack
+  // stack中每一项是一个Record {num, phase}
+  // num 代表当前 n，phase 代表当前递归方向（down=1代表向下，up=2代表向上）
+  let stack = [];
+
+  stack.push({
+    num: n,
+    phase: Down
+  });
+
+  while(stack.length > 1) {
+    let {num, phase} = stack.pop();
+    if(phase === Down) {
+      if(n === 1 || n === 2) {
+        // 不需要循环了
+        stack.push({
+          num: 1, 
+          phase: ''
+        });
+        continue;
+      }
+      stack.push({
+        num: num - 1,
+        phase: Down,
+      });
+      stack.push({
+        num: num - 1,
+        phase: Up,
+      });
+    }else {
+      const last1 = stack.pop();
+      const last2 = stack.pop();
+      stack.push({
+        num: last1.num + last2.num,
+        phase: Up,
+      });
+    }
+  }
+
+  return stack.pop()['num']
+}
+
+console.log('fib', fib(2))
+console.log('fib2', fib2(5))
