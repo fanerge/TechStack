@@ -215,6 +215,7 @@ function fib2(n){
     phase: Down
   });
 
+  // 循环进不去呀？？
   while(stack.length > 1) {
     let {num, phase} = stack.pop();
     if(phase === Down) {
