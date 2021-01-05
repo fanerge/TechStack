@@ -528,3 +528,24 @@ TLB 中最主要的信息就是 Page Number 到 Frame Number 的映射关系。
 ```
 sudo sysctl -w vm.nr_hugepages=2048
 ```
+
+## 缓存置换算法（Cache Replacement Algorithm）
+
+缓存是用来存储常用的数据，加速常用数据访问的数据结构。
+缓存设计中有一个重要的环节：当缓存满了，新的缓存条目要写入时，哪个旧条目被置换出去呢？
+在缓存中找到数据叫作一次命中（Hit），没有找到叫作穿透（Miss）。
+
+### LRU（Least Recently Used）
+
+最近最少使用算法
+LRU 认为，最近一段时间最少使用到的数据应该被淘汰，把空间让给最近频繁使用的数据。
+
+### NRU（Not Recently Used）
+
+最近未使用算法
+一种非常简单、有效的缓存实现就是优先把最近没有使用的数据置换出去（Not Recently Used)。
+
+### LFU（Least Frequently Used）
+
+最不经常使用算法
+如果一个数据在最近一段时间很少被访问到，那么可以认为在将来它被访问的可能性也很小。因此，当空间满时，最小频率访问的数据最先被淘汰。
