@@ -415,6 +415,62 @@ react 的组件渲染机制，新的架构使原来同步渲染的组件现在�
 
 useState 一定要写在函数初始的位置不能在循环或判断语句等里面调用，这样是为了让我们的 Hooks 在每次渲染的时候都会按照 相同的顺序 调用，因为这里有一个关键的问题，那就是 useState 需要依赖参照第一次渲染的调用顺序来匹配对于的 state，否则 useState 会无法正确返回它对于的 state。
 
+# React 17 新特性
+
+## 重构 JSX 转换逻辑
+
+React 17 则允许我们在不引入 React 的情况下直接使用 JSX。这是因为在 React 17 中，编译器会自动帮我们引入 JSX 的解析器。
+
+```
+import {jsx as _jsx} from 'react/jsx-runtime';
+function MyComponent() {
+  return _jsx('p', { children: '这是我的组件' });
+}
+```
+
+## 事件系统重构
+
+### 放弃利用 document 来做事件的中心化管控
+
+issue：想阻止 Input 的 click 时间冒泡到 document，却不能实现。
+解决方案：事件的中心化管控不会再全部依赖 document，管控相关的逻辑被转移到了每个 React 组件自己的容器 DOM 节点中。
+
+```
+function ElInput() {
+  function handleClick(e) {
+    e.stopPropagation();
+  }
+
+  return <>
+  <input onClick="handleCLick">
+  </input>
+}
+```
+
+### 放弃事件池
+
+在 React 17 之前，合成事件对象会被放进一个叫作“事件池”的地方统一管理。这样做的目的是能够实现事件对象的复用，进而提高性能。
+每当事件处理函数执行完毕后，其对应的合成事件对象内部的所有属性都会被置空，意在为下一次被复用做准备。
+解决方案：放弃事件池，为每一个合成事件创建新的对象。
+
+```
+function handleChange(e) {
+  // This won't work because the event object gets reused.
+  // 迫使该 event 对象不被事件池回收利用
+  e.persist()
+  setTimeout(() => {
+    console.log(e.target.value); // Too late!
+  }, 100);
+}
+```
+
+## Lane 模型的引入
+
+React 16 中处理优先级采用的是 expirationTime 模型。
+expirationTime 模型使用 expirationTime（一个时间长度） 来描述任务的优先级；而 Lane 模型则使用二进制数来表示任务的优先级：
+lane 模型通过将不同优先级赋值给一个位，通过 31 位的位运算来操作优先级。
+Lane 模型提供了一个新的优先级排序的思路，相对于 expirationTime 来说，它对优先级的处理会更细腻，能够覆盖更多的边界条件。
+
 ## useState
 
 作用：该钩子用于创建一个新的状态，参数为一个固定的值或者一个有返回值的方法。<br>
