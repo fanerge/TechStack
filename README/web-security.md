@@ -1,3 +1,61 @@
+# 常用的渗透测试工具
+```
+Burp Suite：集成化的 Web 应用测试工具 // Chrome 上的插件“Proxy SwitchyOmega”来快速切换代理
+Acunetix WVS（Web Vulnerability Scanner）
+Xray：Web 漏洞扫描器
+Goby：基于网络空间测绘的漏洞扫描器
+SQLMap：SQL 注入检测与利用
+Nmap：网络扫描与主机检测
+Postman：模拟发包工具
+HackBar：安全测试插件
+NC（NetCat）：网络瑞士军刀
+Metasploit：渗透测试平台
+```
+# 信息收集实践
+##  子域名与 IP 收集
+bounty-targets-data\OneForAll、subDomainsBrute、subfinder、ESD、Amass、DNSDumpster 和 Subdomain Finder。
+##  端口服务探测
+Nmap -A lagou.com
+##  网站指纹识别
+Wappalyzer 
+##  旁站与 C 段查询
+旁站即同一服务器上的其他域名网站，如果你能攻下该旁站，就有机会间接拿到目标网站的权限。
+// 
+https://www.webscan.cc/
+// ip查询
+https://chapangzhan.com/
+##  WAF 探测
+当网站开启 WAF（Web 防火墙）时，很多测试请求都会被拦截，导致无法正常扫描。
+SQLMap\TScan
+##  敏感信息收集
+Recon-NG 是一款被动信息收集工具，它可以通过搜索获取 IP 地址、地理位置、用户、邮件地址、密码泄露或者其他敏感信息，最终生成一份完整报告。
+
+# 靶场
+```
+sqli-labs 靶场
+sqli-labs 是一款用于学习 SQL 注入的靶场平台，覆盖了各种类型的 SQL 注入，题目共 75 道
+DVWA 靶场
+DVWA（Damn Vulnerable Web Application）是一款比较著名的漏洞靶场，很多 Web 安全的初学者都会拿它来练习
+Pikachu 靶场
+Pikachu 也是一款 Web 漏洞靶场，涵盖各种 Web 漏洞类型的练习，也是基于 PHP+MySQL 搭建的平台，是由国人开发的。
+CTF 赛题练习
+CTF（Capture The Flag）夺旗赛，在网络安全领域中指的是网络安全技术人员之间进行技术竞技的一种比赛形式。
+XCTF 攻防世界
+https://adworld.xctf.org.cn
+SQL 注入挑战平台
+http://redtiger.labs.overthewire.org
+韩国 Web 安全挑战平台
+https://webhacking.kr/
+Websec CTF 练习平台
+http://www.websec.fr/
+网络信息安全攻防学习平台
+http://hackinglab.cn/index.php
+国外的 XSS 挑战平台
+http://prompt.ml/
+VulHub 真实漏洞靶场
+https://github.com/vulhub/vulhub
+```
+
 # 跨站脚本（Cross Site Scripting，XSS）
 
 一般我们把 XSS 分为反射型、存储型、DOM 型 3 种类型。
@@ -47,3 +105,4 @@ ALLOW-FROM [URL]：表示该页面可以在指定来源的 iframe 中引用。
 # Downgrade attack
 
 降级攻击（Downgrade attack）是一种对计算机系统或通讯协议的攻击。在降级攻击中，攻击者故意使系统放弃新式、安全性高的工作方式（如加密连接），反而使用为向下兼容而准备的老式、安全性差的工作方式（如明文通讯）。
+

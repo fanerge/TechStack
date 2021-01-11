@@ -111,3 +111,6 @@ docker-compose stop // 停止服务<br>
 docker-compose rm // 删除服务中的各个容器<br>
 docker-compose logs // 观察各个容器的日志<br>
 docker-compose ps // 列出服务相关的容器<br>
+
+
+
