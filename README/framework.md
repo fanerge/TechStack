@@ -112,3 +112,7 @@ Server.get(‘/polyfill’, async (req, res) => {
 ```
 
 typescript 依赖：@types/node、@types/react、@types/react-dom、@types/styled-jsx
+
+# 动画解决方案
+
+lottie-复杂帧动画的解决方案
