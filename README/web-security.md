@@ -80,7 +80,6 @@ Content Security Policy 告诉浏览器可以加载和执行哪些外部资源�
 Content-Security-Policy: script-src 'self'; object-src 'none';style-src cdn.example.org third-party.org; child-src https:
 // 通过网页的<meta>标签设置
 <meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:">
-
 ```
 
 # 跨站请求伪造（Cross-site Request Forgery，CSRF/XSRF）
@@ -116,3 +115,11 @@ ALLOW-FROM [URL]：表示该页面可以在指定来源的 iframe 中引用。
 
 降级攻击（Downgrade attack）是一种对计算机系统或通讯协议的攻击。在降级攻击中，攻击者故意使系统放弃新式、安全性高的工作方式（如加密连接），反而使用为向下兼容而准备的老式、安全性差的工作方式（如明文通讯）。
 
+
+# SQL注入
+开发时未对用户的输入数据（可能是 GET 或 POST 参数，也可能是 Cookie、HTTP 头等）进行有效过滤，直接带入 SQL 语句解析，使得原本应为参数数据的内容，却被用来拼接 SQL 语句做解析。
+防御：不要直接使用用户输入的内容来拼接SQL语句，要对各个参数严格过滤。
+```
+// 万能密码
+SELECT username, password FROM users WHERE username=''or'1'='1' and password=''or'1'='1' LIMIT 0,1
+```
