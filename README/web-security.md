@@ -10,10 +10,20 @@ DOM 型 XSS 可以看作一种特殊的反射型 XSS，它也是一种非持久�
 
 ## XSS 防御手段
 
+输入检查（转实体字符&白名单&黑名单）、输出检查、
 参数校验。对于 HTTP 请求的 URL 参数和请求体 payload 的数据进行校验。
 字符转义。对于一些特殊符号，比如“<”“>”“&”“"”“'”“/”，我们需要对其进行转义，后端接收这些代码时候的转义存储，前端在显示的时候，再把它们转成原来的字符串进行显示。
-对于用户输入的字符串内容，不要使用 eval、new Function 等动态执行字符串的方法，也不要将这些字符串通过 innerHTML、outerHTML、document.write() 方式直接写到 HTML 中。
+对于用户输入的字符串内容，不要使用 eval、new Function 等动态执行字符串的方法，注意 innerHTML、outerHTML、document.write、img 的 src、a 的 href、setAttribute、background-image 等方式直接使用用户产生的数据来填充。
 cookie，比如保存用户凭证的 session，将其设置为 http only，避免前端访问 cookie。
+Content Security Policy 告诉浏览器可以加载和执行哪些外部资源，这样就能防止被一些第三方恶意脚本注入执行。
+
+```
+// 通过 HTTP 头信息的 Content-Security-Policy 的字段
+Content-Security-Policy: script-src 'self'; object-src 'none';style-src cdn.example.org third-party.org; child-src https:
+// 通过网页的<meta>标签设置
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:">
+
+```
 
 # 跨站请求伪造（Cross-site Request Forgery，CSRF/XSRF）
 
