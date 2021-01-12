@@ -1,4 +1,5 @@
 # 常用的渗透测试工具
+
 ```
 Burp Suite：集成化的 Web 应用测试工具 // Chrome 上的插件“Proxy SwitchyOmega”来快速切换代理
 Acunetix WVS（Web Vulnerability Scanner）
@@ -11,26 +12,40 @@ HackBar：安全测试插件
 NC（NetCat）：网络瑞士军刀
 Metasploit：渗透测试平台
 ```
+
 # 信息收集实践
-##  子域名与 IP 收集
+
+## 子域名与 IP 收集
+
 bounty-targets-data\OneForAll、subDomainsBrute、subfinder、ESD、Amass、DNSDumpster 和 Subdomain Finder。
-##  端口服务探测
+
+## 端口服务探测
+
 Nmap -A lagou.com
-##  网站指纹识别
-Wappalyzer 
-##  旁站与 C 段查询
+
+## 网站指纹识别
+
+Wappalyzer
+
+## 旁站与 C 段查询
+
 旁站即同一服务器上的其他域名网站，如果你能攻下该旁站，就有机会间接拿到目标网站的权限。
-// 
+//
 https://www.webscan.cc/
-// ip查询
+// ip 查询
 https://chapangzhan.com/
-##  WAF 探测
+
+## WAF 探测
+
 当网站开启 WAF（Web 防火墙）时，很多测试请求都会被拦截，导致无法正常扫描。
 SQLMap\TScan
-##  敏感信息收集
+
+## 敏感信息收集
+
 Recon-NG 是一款被动信息收集工具，它可以通过搜索获取 IP 地址、地理位置、用户、邮件地址、密码泄露或者其他敏感信息，最终生成一份完整报告。
 
 # 靶场
+
 ```
 sqli-labs 靶场
 sqli-labs 是一款用于学习 SQL 注入的靶场平台，覆盖了各种类型的 SQL 注入，题目共 75 道
@@ -115,11 +130,21 @@ ALLOW-FROM [URL]：表示该页面可以在指定来源的 iframe 中引用。
 
 降级攻击（Downgrade attack）是一种对计算机系统或通讯协议的攻击。在降级攻击中，攻击者故意使系统放弃新式、安全性高的工作方式（如加密连接），反而使用为向下兼容而准备的老式、安全性差的工作方式（如明文通讯）。
 
+# SQL 注入
 
-# SQL注入
 开发时未对用户的输入数据（可能是 GET 或 POST 参数，也可能是 Cookie、HTTP 头等）进行有效过滤，直接带入 SQL 语句解析，使得原本应为参数数据的内容，却被用来拼接 SQL 语句做解析。
-防御：不要直接使用用户输入的内容来拼接SQL语句，要对各个参数严格过滤。
+防御：不要直接使用用户输入的内容来拼接 SQL 语句，要对各个参数严格过滤。
+
 ```
 // 万能密码
 SELECT username, password FROM users WHERE username=''or'1'='1' and password=''or'1'='1' LIMIT 0,1
+```
+
+## 防御 SQL 注入
+
+```
+1.  白名单：如果请求参数有特定值的约束，比如参数是固定整数值，那么就只允许接收整数；还有就是常量值限制，比如特定的字符串、整数值等。
+2.  参数化查询：参数化查询是预编译 SQL 语句的一种处理方式，所以也叫预编译查询，它可以将输入数据插入到 SQL 语句中的“参数”（即变量）中，防止数据被当作 SQL 语句执行，从而防止 SQL 注入漏洞的产生。
+3.  WAF（Web 防火墙）：能够抵挡住大部分的攻击，几乎是当前各网站必备的安全产品。但它也不是无懈可击的，难免会被绕过。不过安全本身就是为了不断提高攻击成本而设立的，并不是为了完全、绝对地解决入侵问题。
+4.  RASP（Runtime Application Self-Protection）是一项运行时应用程序自我保护的安全技术，通过搜集和分析应用运行时的相关信息来检测和阻止针对应用本身的攻击，利用 RASP 对 WAF 进行有效的补充，可以构建更加完善的安全防御体系。
 ```
