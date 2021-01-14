@@ -23,6 +23,117 @@ Cgroups 是一种 Linux 内核功能，可以限制和隔离进程的资源使�
 
 联合文件系统，又叫 UnionFS，是一种通过创建文件层进程操作的文件系统，因此，联合文件系统非常轻快。Docker 使用联合文件系统为容器提供构建层，使得容器可以实现写时复制以及镜像的分层构建和存储。常用的联合文件系统有 AUFS、Overlay 和 Devicemapper 等。
 
+# 核心概念
+
+OCI 全称为开放容器标准（Open Container Initiative），它是一个轻量级、开放的治理结构，目前主要有两个标准文档：容器运行时标准 （runtime spec）和容器镜像标准（image spec）。
+
+## 镜像（images）
+
+它是一个只读的文件和文件夹组合，它包含了容器运行时所需要的所有基础文件和配置信息，是容器启动的基础。
+
+### 镜像操作
+
+```
+// 拉取镜像，默认先从本地搜索，如果本地搜索不到busybox镜像
+docker pull [Registry]/[Repository]/[Image]:[Tag]
+// 查看镜像
+docker images
+docker image ls
+docker images busybox
+// “重命名”镜像，它们指向了同一个镜像文件，只是别名不同而已。
+docker tag [SOURCE_IMAGE][:TAG] [TARGET_IMAGE][:TAG]
+// 删除镜像
+docker rmi busybox
+docker image rm busybox
+// 构建镜像
+// 1.   使用docker commit命令从运行中的容器提交为镜像；
+// 将当前运行的 busybox commit 为一个 busybox tag 为hello 的镜像
+docker commit busybox busybox:hello
+// 2.   使用docker build命令从 Dockerfile 构建镜像。
+```
+
+### Docker file 指令
+
+Dockerfile 的每一行命令都会生成一个独立的镜像层，并且拥有唯一的 ID
+
+```
+Dockerfile 指令 指令简介
+FROM Dockerfile 除了注释第一行必须是 FROM ，FROM 后面跟镜像名称，代表我们要基于哪个基础镜像构建我们的容器。
+RUN RUN 后面跟一个具体的命令，类似于 Linux 命令行执行命令。
+ADD 拷贝本机文件或者远程文件到镜像内
+COPY 拷贝本机文件到镜像内
+USER 指定容器启动的用户
+ENTRYPOINT 容器的启动命令
+CMD CMD 为 ENTRYPOINT 指令提供默认参数，也可以单独使用 CMD 指定容器启动参数
+ENV 指定容器运行时的环境变量，格式为 key=value
+ARG 定义外部变量，构建镜像时可以使用 build-arg = 的格式传递参数用于构建
+EXPOSE 指定容器监听的端口，格式为 [port]/tcp 或者 [port]/udp
+WORKDIR 为 Dockerfile 中跟在其后的所有 RUN、CMD、ENTRYPOINT、COPY 和 ADD 命令设置工作目录。
+```
+
+### 清理容器多余数据
+
+```
+// 仅仅清除没有被容器使用的镜像文件
+docker image prune -af
+// 清除多余的数据，包括停止的容器、多余的镜像、未被使用的volume等等
+docker system prune -f
+```
+
+## 容器（container）
+
+容器是基于镜像创建的可运行实例，并且单独存在，一个镜像可以创建出多个容器。运行容器化环境时，实际上是在容器内部创建该文件系统的读写副本。 这将添加一个容器层，该层允许修改镜像的整个副本。
+
+### 容器的生命周期
+
+```
+// created：初建状态
+docker create [OPTIONS] IMAGE [COMMAND] [ARG...]
+docker create -it --name=busybox busybox // 容器处于停止状态
+
+// running：运行状态
+docker start [OPTIONS] CONTAINER [CONTAINER...]
+docker start busybox
+
+docker run -it --name=busybox busybox // create + start
+docker restart [OPTIONS] CONTAINER [CONTAINER...]
+docker restart busybox
+
+// stopped：停止状态
+docker stop [OPTIONS] CONTAINER [CONTAINER...]
+docker stop busybox
+
+// paused： 暂停状态
+docker pause [OPTIONS] CONTAINER [CONTAINER...]
+docker pause busybox
+docker unpause [OPTIONS] CONTAINER [CONTAINER...]
+docker unpause busybox
+
+// deleted：删除状态
+docker rm [OPTIONS] CONTAINER [CONTAINER...]
+docker rm busybox
+docker rm -f busybox // --force
+
+// 进入容器
+docker attach [OPTIONS] CONTAINER
+docker attach busybox // 多个终端同步显示可能会发生命令阻塞
+docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+docker exec -it busybox sh // 各个终端是独立的
+
+// 导出导入容器（实现容器的迁移）
+// export
+docker export [OPTIONS] CONTAINER
+docker export busybox > busybox.tar
+// import
+docker import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]
+docker import busybox.tar busybox:test
+```
+
+用来存储和分发 Docker 镜像。
+[官方镜像仓库](https://hub.docker.com/)
+
+---
+
 # 工作原理
 
 Docker 的底层核心原理是利用了 Linux 内核的 namespace 以及 cgroup 特性，其中 namespace 进行资源隔离，cgroup 进行资源配额。
