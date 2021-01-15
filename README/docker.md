@@ -129,10 +129,119 @@ docker import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]
 docker import busybox.tar busybox:test
 ```
 
-用来存储和分发 Docker 镜像。
+## 仓库（repository）
+
+仓库（Repository）是存储和分发 Docker 镜像的地方。
+
+### 注册服务器（Registry）和仓库（Repository）
+
+注册服务器是存放仓库的实际服务器，而仓库则可以被理解为一个具体的项目或者目录；注册服务器可以包含很多个仓库，每个仓库又可以包含多个镜像。
+
+### 仓库操作
+
 [官方镜像仓库](https://hub.docker.com/)
 
----
+```
+// 推送镜像
+docker login
+docker push [repository]/[repository]
+// 搭建私有仓库
+// https://github.com/docker/distribution
+// https://hub.docker.com/_/registry
+// 私有镜像仓库 localhost:5000
+docker run -d -p 5000:5000 --name registry registry:2.7
+// 重命名
+docker tag busybox localhost:5000/busybox
+docker push localhost:5000/busybox
+docker pull localhost:5000/busybox
+// 持久化镜像存储（把 Docker 容器的某个目录或文件挂载到主机上，保证容器被重建后数据不丢失）
+docker run -v /var/lib/registry/data:/var/lib/registry -d -p 5000:5000 --name registry registry:2.7
+// 构建外部可访问的镜像仓库
+docker stop registry && docker rm registry
+// 使用 -v 参数把镜像数据持久化在/var/lib/registry/data目录中，同时把主机上的证书文件挂载到了容器的 /certs 目录下，同时通过 -e 参数设置 HTTPS 相关的环境变量参数，最后让仓库在主机上监听 443 端口。
+$ docker run -d \
+  --name registry \
+  -v "/var/lib/registry/data:/var/lib/registry \
+  -v "/var/lib/registry/certs:/certs \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/regisry.lagoudocker.io.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/regisry.lagoudocker.io.key \
+  -p 443:443 \
+  registry:2.7
+
+// 更好私有仓库
+https://goharbor.io/
+```
+
+# Dockerfile
+
+生产实践中一定优先使用 Dockerfile 的方式构建镜像
+
+## 使用 Dockerfile 构建镜像可以带来很多好处
+
+易于版本化管理
+过程可追溯，Dockerfile 的每一行指令代表一个镜像层
+屏蔽构建环境异构，使用 Dockerfile 构建镜像无须考虑构建环境，基于相同 Dockerfile 无论在哪里运行，构建结果都一致
+
+## Dockerfile 书写原则
+
+1.  单一职责/由于容器的本质是进程，一个容器代表一个进程，因此不同功能的应用应该尽量拆分为不同的容器，每个容器只负责单一业务进程。
+2.  提供注释信息/保持良好的代码编写习惯，晦涩难懂的代码尽量添加注释，让协作者可以一目了然地知道每一行代码的作用，并且方便扩展和使用。
+3.  保持容器最小化/应该避免安装无用的软件包。
+4.  合理选择基础镜像/容器的核心是应用，因此只要基础镜像能够满足应用的运行环境即可。
+5.  使用 .dockerignore 文件/.dockerignore 文件允许我们在构建时，忽略一些不需要参与构建的文件，从而提升构建效率。
+6.  尽量使用构建缓存/如果构建时发现要构建的镜像层的父镜像层已经存在，并且下一条命令使用了相同的指令，即可命中构建缓存。
+7.  不轻易改变的指令放到 Dockerfile 前面（例如安装软件包），而可能经常发生改变的指令放在 Dockerfile 末尾（例如编译应用程序）。
+8.  正确设置时区
+9.  国内软件源加快镜像构建速度
+10. 最小化镜像层数/在构建镜像时尽可能地减少 Dockerfile 指令行数。
+
+```
+// 正确设置时区 中国时区
+// Ubuntu 和Debian 系统
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN echo "Asia/Shanghai" >> /etc/timezone
+// CentOS 系统
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+// .dockerignore
+规则	含义
+#	# 开头的表示注释，# 后面所有内容将会被忽略
+/tmp	匹配当前目录下任何以 tmp 开头的文件或者文件夹
+*.md	匹配以 .md 为后缀的任意文件
+tem?	匹配以 tem 开头并且以任意字符结尾的文件，？代表任意一个字符
+!README.md	! 表示排除忽略。
+例如 .dockerignore 定义如下：
+
+*.md
+!README.md
+
+表示除了 README.md 文件外所有以 .md 结尾的文件。
+
+```
+
+## Dockerfile 指令书写建议
+
+1.  RUN/RUN 指令在构建时将会生成一个新的镜像层并且执行 RUN 指令后面的内容。
+    当 RUN 指令后面跟的内容比较复杂时，建议使用反斜杠（\） 结尾并且换行；
+    RUN 指令后面的内容尽量按照字母顺序排序，提高可读性。
+
+```
+FROM centos:7
+
+RUN yum install -y automake \
+                   curl \
+                   python \
+                   vim
+```
+
+2.  CMD 和 ENTRYPOINT
+    CMD/ENTRYPOINT["command" , "param"]。这种格式是使用 Linux 的 exec 实现的， 一般称为 exec 模式，这种书写格式为 CMD/ENTRYPOINT 后面跟 json 数组，也是 Docker 推荐的使用格式。
+3.  ADD 和 COPY
+    ADD 和 COPY 指令功能类似，都是从外部往容器内添加文件。但是 COPY 指令只支持基本的文件和文件夹拷贝功能，ADD 则支持更多文件来源类型，比如自动提取 tar 包，并且可以支持源文件为 URL 格式。
+4.  WORKDIR/为了使构建过程更加清晰明了，推荐使用 WORKDIR 来指定容器的工作路径
+
+[Dockerfile/nginx](https://github.com/nginxinc/docker-nginx/blob/9774b522d4661effea57a1fbf64c883e699ac3ec/mainline/buster/Dockerfile)
 
 # 工作原理
 
