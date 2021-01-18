@@ -243,11 +243,11 @@ RUN yum install -y automake \
 
 [Dockerfile/nginx](https://github.com/nginxinc/docker-nginx/blob/9774b522d4661effea57a1fbf64c883e699ac3ec/mainline/buster/Dockerfile)
 
+# Docker 安全
 
-#   Docker 安全
 1.  使用 Capabilities 划分权限/特殊权限可以使用 --cap-add 参数，根据使用场景适当添加相应的权限。
 2.  使用安全加固组件/Linux 的 SELinux、AppArmor、GRSecurity 组件都是 Docker 官方推荐的安全加固组件。下面我对这三个组件做简单介绍。
-3.  资源限制/核、内存、PID数量
+3.  资源限制/核、内存、PID 数量
 
 ```
 // 启动一个 1 核 2G 的容器，并且限制在容器内最多只能创建 1000 个 PID
@@ -256,6 +256,45 @@ docker run -it --cpus=1 -m=2048m --pids-limit=1000 busybox sh
 -m, --memory                    限制内存配额
 --pids-limit                    限制容器的 PID 个数
 ```
+
+# 容器监控
+
+生产环境中监控容器的运行状况十分重要，通过监控我们可以随时掌握容器的运行状态，做到线上隐患和问题早发现，早解决。
+
+## 使用 docker stats 命令
+
+docker stats nginx
+docker stats 命令可以很方便地看到主机上所有容器的 CPU、内存、网络 IO、磁盘 IO、PID 等资源的使用情况。
+
+## cAdvisor
+
+cAdvisor 不仅可以采集机器上所有运行的容器信息，还提供了基础的查询界面和 HTTP 接口，更方便与外部系统结合。
+
+```
+docker pull lagoudocker/cadvisor
+docker run \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --volume=/dev/disk/:/dev/disk:ro \
+  --publish=8080:8080 \
+  --detach=true \
+  --name=cadvisor \
+  --privileged \
+  --device=/dev/kmsg \
+  lagoudocker/cadvisor:v0.37.0
+// cAdvisor 查看主机监控
+http://localhost:8080/containers/
+// cAdvisor 查看容器监控
+http://localhost:8080/docker/
+```
+
+### cAdvisor 监控原理
+
+容器的监控原理其实就是定时读取 Linux 主机上相关的文件并展示给用户。
+我们知道 Docker 是基于 Namespace、Cgroups 和联合文件系统实现的。其中 Cgroups 不仅可以用于容器资源的限制，还可以提供容器的资源使用率。无论何种监控方案的实现，底层数据都来源于 Cgroups。
+/sys/fs/cgroup 目录下包含了 Cgroups 的所有内容。
 
 # 工作原理
 

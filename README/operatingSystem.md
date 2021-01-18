@@ -787,3 +787,30 @@ HDFS（Hadoop Distributed File System）
 ### 容灾
 
 在 HDFS 设计中，Master 节点也被称为 NameNode，用于存储命名空间数据。ChunkServer 也被称为 DataNode，用来存储文件数据。在 HDFS 的设计中，还有一个特殊的节点叫作辅助节点（Secondary Node）。在 HDFS 中这些日志会形成一个还原点文件，这个机制和日志文件系统类似。
+
+# 网络协议的分层
+
+## 应用层（Application Layer）
+
+当两个应用需要通信的时候，应用（进程中的线程）就调用传输层进行通信。
+DNS、FTP、HTTP
+
+## 传输层（Transport Layer）
+
+将数据切块（TCP Segment）、通过端口号 Port 为了区分同一个主机上不同应用，80 HTTP、22 SSH 等
+TCP、UDP
+
+## 网络层（Internet Layer）
+
+网络层负责将数据从一个设备传输到另一个设备（Host To Host），通过 IP 地址来区分主机。
+寻址（Addressing），子网掩码只有一个作用，就是将某个 IP 地址划分成网络地址和主机地址两部分。
+IP 协议还有一个非常重要的能力就是路由，选择合适的链路。
+IP
+
+## 数据链路层（Data Link Layer）
+
+数据链路层为网络层提供链路级别传输的支持。
+
+## 物理层（Physical Layer）
+
+将光电信号、设备差异封装起来，为数据链路层提供二进制传输的服务。

@@ -483,7 +483,7 @@ export default function (props) {
     const [count, setCount] = useState(0);
     // 获取 state --- count
     // 修改 state
-    setUser(newCount);
+    segeser(newCount);
     // 可以获得之前的state
     setUser(count => {
         return newCount
