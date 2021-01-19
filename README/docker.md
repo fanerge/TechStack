@@ -6,18 +6,66 @@ Docker 是利用 Linux 的 Namespace 、Cgroups 和联合文件系统三大机�
 
 Namespace 是 Linux 内核的一项功能，该功能对内核资源进行隔离，使得容器中的进程都可以在单独的命名空间中运行，并且只可以访问当前容器命名空间的资源。Namespace 可以隔离进程 ID、主机名、用户 ID、文件名、网络访问和进程间通信等相关资源。
 
-```
-// Docker 主要用到以下五种命名空间
-pid namespace：用于隔离进程 ID。
-net namespace：隔离网络接口，在虚拟的 net namespace 内用户可以拥有自己独立的 IP、路由、端口等。
-mnt namespace：文件系统挂载点隔离。
-ipc namespace：信号量,消息队列和共享内存的隔离。
-uts namespace：主机名和域名的隔离。
-```
+### docker 目前使用了 linux 的 6 中 namespace
+
+unshare 是 util-linux 工具包中的一个工具。
+unshare 命令可以实现创建并访问不同类型的 Namespace。
+
+#### Mount Namespace
+
+Mount Namespace 它可以用来隔离不同的进程或进程组看到的挂载点。通俗地说，就是可以实现在不同的进程中看到不同的挂载目录。
+// 创建一个 bash 进程并且新建一个 Mount Namespace
+sudo unshare --mount --fork /bin/bash
+
+#### PID Namespace
+
+PID Namespace 的作用是用来隔离进程。在不同的 PID Namespace 中，进程可以拥有相同的 PID 号，利用 PID Namespace 可以实现每个容器的主进程为 1 号进程，而容器内的进程在主机上却拥有不同的 PID。
+// 创建一个 bash 进程，并且新建一个 PID Namespace
+sudo unshare --pid --fork --mount-proc /bin/bash
+
+#### UTS Namespace
+
+UTS Namespace 主要是用来隔离主机名的，它允许每个 UTS Namespace 拥有一个独立的主机名。
+// 创建一个 UTS Namespace
+sudo unshare --uts --fork /bin/bash
+
+#### IPC Namespace
+
+IPC Namespace 主要是用来隔离进程间通信的。例如 PID Namespace 和 IPC Namespace 一起使用可以实现同一 IPC Namespace 内的进程彼此可以通信，不同 IPC Namespace 的进程却不能通信。
+// 创建一个 IPC Namespace
+sudo unshare --ipc --fork /bin/bash
+
+#### User Namespace
+
+User Namespace 主要是用来隔离用户和用户组的。一个比较典型的应用场景就是在主机上以非 root 用户运行的进程可以在一个单独的 User Namespace 中映射成 root 用户。
+// 创建一个 User Namespace
+unshare --user -r /bin/bash
+
+#### Net Namespace
+
+Net Namespace 是用来隔离网络设备、IP 地址和端口等信息的。Net Namespace 可以让每个进程拥有自己独立的 IP 地址，端口和网卡信息。
+// 创建一个 Net Namespace
+sudo unshare --net --fork /bin/bash
 
 ## Cgroups
 
-Cgroups 是一种 Linux 内核功能，可以限制和隔离进程的资源使用情况（CPU、内存、磁盘 I/O、网络等）。在容器的实现中，Cgroups 通常用来限制容器的 CPU 和内存等资源的使用。
+cgroups（全称：control groups）是 Linux 内核的一个功能，它可以实现限制进程或者进程组的资源（如 CPU、内存、磁盘 IO 等）。
+也被称为进程容器（process containers）。
+
+### 核心概念
+
+cgroups 功能的实现依赖于三个核心概念：子系统、控制组、层级树。
+
+1.  子系统（subsystem）：是一个内核的组件，一个子系统代表一类资源调度控制器。例如内存子系统可以限制内存的使用量，CPU 子系统可以限制 CPU 的使用时间。
+2.  控制组（cgroup）：表示一组进程和一组带有参数的子系统的关联关系。例如，一个进程使用了 CPU 子系统来限制 CPU 的使用时间，则这个进程和 CPU 子系统的关联关系称为控制组。
+3.  层级树（hierarchy）：是由一系列的控制组按照树状结构排列组成的。这种排列方式可以使得控制组拥有父子关系，子控制组默认拥有父控制组的属性，也就是子控制组会继承于父控制组。比如，系统中定义了一个控制组 c1，限制了 CPU 可以使用 1 核，然后另外一个控制组 c2 想实现既限制 CPU 使用 1 核，同时限制内存使用 2G，那么 c2 就可以直接继承 c1，无须重复定义 CPU 限制。
+
+### Cgroups 功能
+
+1.  资源限制： 限制资源的使用量，例如我们可以通过限制某个业务的内存上限，从而保护主机其他业务的安全运行。
+2.  优先级控制：不同的组可以有不同的资源（ CPU 、磁盘 IO 等）使用优先级。
+3.  审计：计算控制组的资源使用情况。
+4.  控制：控制进程的挂起或恢复。
 
 ## 联合文件系统
 

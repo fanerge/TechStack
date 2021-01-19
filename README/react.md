@@ -1,3 +1,26 @@
+# 生命周期
+
+```
+// mounting
+constructor
+static getDerivedStateFromProps
+componentWillMount // unsafe
+render
+componentDidMount
+
+// updating
+// props\setState\forceUpdate
+static getDerivedStateFromProps // componentWillReceiveProps unsafe
+shouldComponentUpdate
+componentWillUpdate // unsafe
+render
+static getSnapShotBeforeUpdate
+componentDidUpdate
+
+// unmounting
+componentWillUnMount
+```
+
 # 部分生命周期的理解
 
 ## componentWillReceiveProps
