@@ -344,6 +344,60 @@ http://localhost:8080/docker/
 我们知道 Docker 是基于 Namespace、Cgroups 和联合文件系统实现的。其中 Cgroups 不仅可以用于容器资源的限制，还可以提供容器的资源使用率。无论何种监控方案的实现，底层数据都来源于 Cgroups。
 /sys/fs/cgroup 目录下包含了 Cgroups 的所有内容。
 
+
+
+
+
+
+
+
+
+
+
+
+#   Docker 的组件构成
+
+##  Docker 相关的组件
+docker、dockerd、docker-init 和 docker-proxy
+### docker
+Docker 客户端与服务端的交互过程是：docker 组件向服务端发送请求后，服务端根据请求执行具体的动作并将结果返回给 docker，docker 解析服务端的返回结果，并将结果通过命令行标准输出展示给用户。
+### dockerd
+dockerd 是 Docker 服务端的后台常驻进程，用来接收客户端发送的请求，执行具体的处理任务，处理完成后将结果返回给客户端。
+Docker 客户端与 dockerd 的交互方式有三种：通过 UNIX 套接字与服务端通信、通过 TCP 与服务端通信、通过文件描述符的方式与服务端通信
+### docker-init
+1 号进程是 init 进程，是所有进程的父进程。主机上的进程出现问题时，init 进程可以帮我们回收这些问题进程。
+docker-init 作为1号进程，帮你管理容器内子进程，例如回收僵尸进程等。
+```
+docker run -it --init busybox sh
+```
+### docker-proxy
+docker-proxy 主要是用来做端口映射的。当我们使用 docker run 命令启动容器时，如果使用了 -p 参数，docker-proxy 组件就会把容器内相应的端口映射到主机上来，底层是依赖于 iptables 实现的。
+```
+// 启动一个 nginx 容器并把容器的 80 端口映射到主机的 8080 端口
+docker run --name=nginx -d -p 8080:80 nginx
+```
+##  containerd 相关的组件
+containerd、containerd-shim 和 ctr
+
+### containerd
+containerd 不仅负责容器生命周期的管理，而且负责以下命令。
+镜像的管理，例如容器运行前从镜像仓库拉取镜像到本地
+接收 dockerd 的请求，通过适当的参数调用 runc 启动容器
+管理存储相关资源
+管理网络相关资源
+
+
+### containerd-shim
+containerd-shim 的意思是垫片，类似于拧螺丝时夹在螺丝和螺母之间的垫片。containerd-shim 的主要作用是将 containerd 和真正的容器进程解耦，使用 containerd-shim 作为容器进程的父进程，从而实现重启 containerd 不影响已经启动的容器进程。
+
+### ctr
+ctr 实际上是 containerd-ctr，它是 containerd 的客户端，主要用来开发和调试，在没有 dockerd 的环境中，ctr 可以充当 docker 客户端的部分角色，直接向 containerd 守护进程发送操作容器的请求。
+##  容器运行时相关的组件 runc
+
+runc 是一个标准的 OCI 容器运行时的实现，它是一个命令行工具，可以直接用来创建和运行容器。
+
+
+
 # 工作原理
 
 Docker 的底层核心原理是利用了 Linux 内核的 namespace 以及 cgroup 特性，其中 namespace 进行资源隔离，cgroup 进行资源配额。
