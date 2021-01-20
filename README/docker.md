@@ -70,6 +70,23 @@ cgroups 功能的实现依赖于三个核心概念：子系统、控制组、层
 ## 联合文件系统
 
 联合文件系统，又叫 UnionFS，是一种通过创建文件层进程操作的文件系统，因此，联合文件系统非常轻快。Docker 使用联合文件系统为容器提供构建层，使得容器可以实现写时复制以及镜像的分层构建和存储。常用的联合文件系统有 AUFS、Overlay 和 Devicemapper 等。
+它可以把多个目录内容联合挂载到同一目录下，从而形成一个单一的文件系统，这种特性可以让使用者像是使用一个目录一样使用联合文件系统。
+
+### 如何配置 Docker 的 AUFS 模式
+
+AUFS 是联合文件系统，意味着它在主机上使用多层目录存储，每一个目录在 AUFS 中都叫作分支，而在 Docker 中则称之为层（layer），但最终呈现给用户的则是一个普通单层的文件系统，我们把多层以单一层的方式呈现出来的过程叫作联合挂载。
+
+```
+// 查看你的系统是否支持 AUFS
+grep aufs /proc/filesystems
+// /etc/docker 下新建 daemon.json 文件
+{
+  "storage-driver": "aufs"
+}
+// restart
+sudo systemctl restart docker
+docker info
+```
 
 # 核心概念
 
@@ -460,6 +477,54 @@ docker exec -it busybox1 sh
 docker run -it --net=container:busybox1 --name=busybox2 busybox sh
 // 此时，busybox2 共享了 busybox1 的网络
 ```
+
+# Docker 卷与持久化数据存储
+
+Docker 的卷，为我们的容器插上磁盘，实现容器数据的持久化。
+
+## 持久化的原因
+
+因为未持久化数据的容器根目录的生命周期与容器的生命周期一样，容器文件系统的本质是在镜像层上面创建的读写层，运行中的容器对任何文件的修改都存在于该读写层，当容器被删除时，容器中的读写层也会随之消失。部分业务如 MySQL、Kafka 需要保证数据持久性。
+
+## Docker 中的卷
+
+它可以绕过默认的联合文件系统，直接以文件或目录的形式存在于宿主机上。卷的概念不仅解决了数据持久化的问题，还解决了容器间共享数据的问题。使用卷可以将容器内的目录或文件持久化，当容器重启后保证数据不丢失，例如我们可以使用卷将 MySQL 的目录持久化，实现容器重启数据库数据不丢失。
+
+## Docker 卷的操作
+
+```
+// 创建一个名为 myvolume 的数据卷
+docker volume create myvolume
+// 启动了一个 nginx 容器，-v参数使得 Docker 自动生成一个卷并且绑定到容器的 /usr/share/nginx/html 目录中
+docker run -d --name=nginx-volume -v /usr/share/nginx/html nginx
+// 查看下主机上的卷
+docker volume ls
+// 查看某个 volumeName 数据卷的详细信息
+docker volume inspect volumeName
+// 使用数据卷（启动一个 nginx 容器，并将 /usr/share/nginx/html 目录与 myvolume 卷关联）
+docker run -d --name=nginx --mount source=myvolume,target=/usr/share/nginx/html nginx
+// 删除数据卷
+docker volume rm myvolume
+
+// 容器与容器之间数据共享（Filebeat 和 nginx 容器使用同一个目录）
+docker volume create log-vol
+// 启动一个生产日志的容器
+docker run --mount source=log-vol,target=/tmp/log --name=log-producer -it busybox
+// 启动一个消费者容器
+docker run -it --name consumer --volumes-from log-producer  busybox
+// 使用volumes-from参数可以在启动新的容器时来挂载已经存在的容器的卷，volumes-from参数后面跟已经启动的容器名称
+
+// 主机与容器之间数据共享
+// Docker 卷的目录默认在 /var/lib/docker 下，当我们想把主机的其他目录映射到容器内时，就需要用到主机与容器之间数据共享的方式了
+// 挂载主机的 /data 目录到容器中的 /usr/local/data
+docker run -v /data:/usr/local/data -it busybox
+
+```
+
+## Docker 卷的实现原理
+
+Docker 容器的文件系统不是一个真正的文件系统，而是通过联合文件系统实现的一个伪文件系统，而 Docker 卷则是直接利用主机的某个文件或者目录，它可以绕过联合文件系统，直接挂载主机上的文件或目录到容器中，这就是它的工作原理。
+Docker 卷的实现原理是在主机的 /var/lib/docker/volumes 目录下，根据卷的名称创建相应的目录，然后在每个卷的目录下创建 \_data 目录，在容器启动时如果使用 --mount 参数，Docker 会把主机上的目录直接映射到容器的指定目录下，实现数据持久化。
 
 # 工作原理
 
