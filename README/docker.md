@@ -344,59 +344,122 @@ http://localhost:8080/docker/
 我们知道 Docker 是基于 Namespace、Cgroups 和联合文件系统实现的。其中 Cgroups 不仅可以用于容器资源的限制，还可以提供容器的资源使用率。无论何种监控方案的实现，底层数据都来源于 Cgroups。
 /sys/fs/cgroup 目录下包含了 Cgroups 的所有内容。
 
+# Docker 的组件构成
 
+## Docker 相关的组件
 
-
-
-
-
-
-
-
-
-
-#   Docker 的组件构成
-
-##  Docker 相关的组件
 docker、dockerd、docker-init 和 docker-proxy
+
 ### docker
+
 Docker 客户端与服务端的交互过程是：docker 组件向服务端发送请求后，服务端根据请求执行具体的动作并将结果返回给 docker，docker 解析服务端的返回结果，并将结果通过命令行标准输出展示给用户。
+
 ### dockerd
+
 dockerd 是 Docker 服务端的后台常驻进程，用来接收客户端发送的请求，执行具体的处理任务，处理完成后将结果返回给客户端。
 Docker 客户端与 dockerd 的交互方式有三种：通过 UNIX 套接字与服务端通信、通过 TCP 与服务端通信、通过文件描述符的方式与服务端通信
+
 ### docker-init
+
 1 号进程是 init 进程，是所有进程的父进程。主机上的进程出现问题时，init 进程可以帮我们回收这些问题进程。
-docker-init 作为1号进程，帮你管理容器内子进程，例如回收僵尸进程等。
+docker-init 作为 1 号进程，帮你管理容器内子进程，例如回收僵尸进程等。
+
 ```
 docker run -it --init busybox sh
 ```
+
 ### docker-proxy
+
 docker-proxy 主要是用来做端口映射的。当我们使用 docker run 命令启动容器时，如果使用了 -p 参数，docker-proxy 组件就会把容器内相应的端口映射到主机上来，底层是依赖于 iptables 实现的。
+
 ```
 // 启动一个 nginx 容器并把容器的 80 端口映射到主机的 8080 端口
 docker run --name=nginx -d -p 8080:80 nginx
 ```
-##  containerd 相关的组件
+
+## containerd 相关的组件
+
 containerd、containerd-shim 和 ctr
 
 ### containerd
+
 containerd 不仅负责容器生命周期的管理，而且负责以下命令。
 镜像的管理，例如容器运行前从镜像仓库拉取镜像到本地
 接收 dockerd 的请求，通过适当的参数调用 runc 启动容器
 管理存储相关资源
 管理网络相关资源
 
-
 ### containerd-shim
+
 containerd-shim 的意思是垫片，类似于拧螺丝时夹在螺丝和螺母之间的垫片。containerd-shim 的主要作用是将 containerd 和真正的容器进程解耦，使用 containerd-shim 作为容器进程的父进程，从而实现重启 containerd 不影响已经启动的容器进程。
 
 ### ctr
+
 ctr 实际上是 containerd-ctr，它是 containerd 的客户端，主要用来开发和调试，在没有 dockerd 的环境中，ctr 可以充当 docker 客户端的部分角色，直接向 containerd 守护进程发送操作容器的请求。
-##  容器运行时相关的组件 runc
+
+## 容器运行时相关的组件 runc
 
 runc 是一个标准的 OCI 容器运行时的实现，它是一个命令行工具，可以直接用来创建和运行容器。
 
+# 网络模型
 
+Docker 团队把网络功能从 Docker 中剥离出来，成为独立的项目 libnetwork，它通过插件的形式为 Docker 提供网络功能。
+
+## CNM (Container Network Model)
+
+Docker 定义的网络模型标准称之为 CNM (Container Network Model) 。
+
+## CNM 定义的网络标准包含三个重要元素
+
+### 沙箱（Sandbox）
+
+沙箱代表了一系列网络堆栈的配置，其中包含路由信息、网络接口等网络资源的管理，沙箱的实现通常是 Linux 的 Net Namespace，但也可以通过其他技术来实现，比如 FreeBSD jail 等。
+
+### 接入点（Endpoint）
+
+接入点将沙箱连接到网络中，代表容器的网络接口，接入点的实现通常是 Linux 的 veth 设备对。
+
+### 网络（Network）
+
+网络是一组可以互相通信的接入点，它将多接入点组成一个子网，并且多个接入点之间可以相互通信。
+
+## Libnetwork 常见网络模式
+
+### null 空网络模式
+
+可以帮助我们构建一个没有网络接入的容器环境，以保障数据安全。
+使用 Docker 创建 null 空网络模式的容器时，容器拥有自己独立的 Net Namespace，但是此时的容器并没有任何网络配置。
+
+```
+docker run --net=none -it busybox
+```
+
+### bridge 桥接模式（默认模式）
+
+Docker 的 bridge 网络是启动容器时默认的网络模式，使用 bridge 网络可以实现容器与容器的互通，可以从一个容器直接通过容器 IP 访问到另外一个容器。同时使用 bridge 网络可以实现主机与容器的互通，我们在容器内启动的业务，可以从主机直接请求。
+veth 是 Linux 中的虚拟设备接口，veth 都是成对出现的，它在容器中，通常充当一个桥梁。veth 可以用来连接虚拟网络设备，例如 veth 可以用来连通两个 Net Namespace，从而使得两个 Net Namespace 之间可以互相访问。
+
+### host 主机网络模式
+
+容器内的网络并不是希望永远跟主机是隔离的，有些基础业务需要创建或更新主机的网络配置，我们的程序必须以主机网络模式运行才能够修改主机网络，这时候就需要用到 Docker 的 host 主机网络模式。
+
+```
+docker run -it --net=host busybox
+```
+
+### container 网络模式
+
+container 网络模式允许一个容器共享另一个容器的网络命名空间。当两个容器需要共享网络，但其他资源仍然需要隔离时就可以使用 container 网络模式，例如我们开发了一个 http 服务，但又想使用 nginx 的一些特性，让 nginx 代理外部的请求然后转发给自己的业务，这时我们使用 container 网络模式将自己开发的服务和 nginx 服务部署到同一个网络命名空间中。
+
+```
+// 启动一个 busybox1 容器
+docker run -d --name=busybox1 busybox sleep 3600
+// 使用 docker exec 命令进入到 centos 容器中查看一下网络配置
+docker exec -it busybox1 sh
+// 再启动一个 busybox2 容器，通过 container 网络模式连接到 busybox1 的网络
+docker run -it --net=container:busybox1 --name=busybox2 busybox sh
+// 此时，busybox2 共享了 busybox1 的网络
+```
 
 # 工作原理
 
