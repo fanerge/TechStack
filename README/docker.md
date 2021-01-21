@@ -72,7 +72,9 @@ cgroups 功能的实现依赖于三个核心概念：子系统、控制组、层
 联合文件系统，又叫 UnionFS，是一种通过创建文件层进程操作的文件系统，因此，联合文件系统非常轻快。Docker 使用联合文件系统为容器提供构建层，使得容器可以实现写时复制以及镜像的分层构建和存储。常用的联合文件系统有 AUFS、Overlay 和 Devicemapper 等。
 它可以把多个目录内容联合挂载到同一目录下，从而形成一个单一的文件系统，这种特性可以让使用者像是使用一个目录一样使用联合文件系统。
 
-### 如何配置 Docker 的 AUFS 模式
+### AUFS 模式
+
+#### 如何配置 Docker 的 AUFS 模式
 
 AUFS 是联合文件系统，意味着它在主机上使用多层目录存储，每一个目录在 AUFS 中都叫作分支，而在 Docker 中则称之为层（layer），但最终呈现给用户的则是一个普通单层的文件系统，我们把多层以单一层的方式呈现出来的过程叫作联合挂载。
 
@@ -86,6 +88,51 @@ grep aufs /proc/filesystems
 // restart
 sudo systemctl restart docker
 docker info
+```
+
+### Devicemapper
+
+Devicemapper 是一种映射块设备的技术框架，其提供了一种将物理块设备映射到虚拟块设备的机制。
+
+映射设备通过映射表关联到具体的物理目标设备。事实上，映射设备不仅可以通过映射表关联到物理目标设备，也可以关联到虚拟目标设备，然后虚拟目标设备再通过映射表关联到物理目标设备。
+
+#### 如何在 Docker 中配置 Devicemapper
+
+Docker 的 Devicemapper 模式有两种：第一种是 loop-lvm 模式，该模式主要用来开发和测试使用；第二种是 direct-lvm 模式，该模式推荐在生产环境中使用。
+
+```
+// 配置 loop-lvm 模式
+sudo systemctl stop docker
+// 编辑 /etc/docker/daemon.json 文件
+{
+  "storage-driver": "devicemapper"
+}
+// 启动 Docker
+sudo systemctl start docker
+// 验证
+docker info
+Storage Driver: devicemapper
+
+// 配置 direct-lvm 模式
+// 停止已经运行的 Docker
+sudo systemctl stop docker
+// 编辑 /etc/docker/daemon.json
+{
+  "storage-driver": "devicemapper",
+  "storage-opts": [
+    "dm.directlvm_device=/dev/xdf", // 把 /dev/xdf 设备作为我的 Docker 存储盘
+    "dm.thinp_percent=95",
+    "dm.thinp_metapercent=1",
+    "dm.thinp_autoextend_threshold=80",
+    "dm.thinp_autoextend_percent=20",
+    "dm.directlvm_device_force=false"
+  ]
+}
+// 启动 Docker
+sudo systemctl start docker
+// 验证
+docker info
+Storage Driver: devicemapper
 ```
 
 # 核心概念
