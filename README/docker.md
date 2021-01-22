@@ -135,6 +135,31 @@ docker info
 Storage Driver: devicemapper
 ```
 
+### OverlayFS 文件系统
+
+#### 原理
+
+overlay2 和 AUFS 类似，它将所有目录称之为层（layer），overlay2 的目录是镜像和容器分层的基础，而把这些层统一展现到同一的目录下的过程称为联合挂载（union mount）。overlay2 把目录的下一层叫作 lowerdir，上一层叫作 upperdir，联合挂载后的结果叫作 merged。
+
+#### Docker 中配置 overlay2
+
+```
+// 停止已经运行的 Docker
+sudo systemctl stop docker
+// 备份 /var/lib/docker 目录
+sudo cp -au /var/lib/docker /var/lib/docker.back
+// /etc/docker 目录下创建 daemon.json 文件
+{
+  "storage-driver": "overlay2",
+  "storage-opts": [
+    "overlay2.size=20G",
+    "overlay2.override_kernel_check=true"
+  ]
+}
+sudo systemctl start docker
+docker info
+```
+
 # 核心概念
 
 OCI 全称为开放容器标准（Open Container Initiative），它是一个轻量级、开放的治理结构，目前主要有两个标准文档：容器运行时标准 （runtime spec）和容器镜像标准（image spec）。
