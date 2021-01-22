@@ -233,6 +233,11 @@ docker start [OPTIONS] CONTAINER [CONTAINER...]
 docker start busybox
 
 docker run -it --name=busybox busybox // create + start
+    -t:在新容器内指定一个伪终端或终端。
+    -i:允许你对容器内的标准输入 (STDIN) 进行交互。
+    -d:后台模式运行容器。
+    -P:将容器内部使用的网络端口映射到我们使用的主机上。
+    -p:是容器内部端口绑定到指定的主机端口。
 docker restart [OPTIONS] CONTAINER [CONTAINER...]
 docker restart busybox
 
@@ -598,131 +603,7 @@ docker run -v /data:/usr/local/data -it busybox
 Docker 容器的文件系统不是一个真正的文件系统，而是通过联合文件系统实现的一个伪文件系统，而 Docker 卷则是直接利用主机的某个文件或者目录，它可以绕过联合文件系统，直接挂载主机上的文件或目录到容器中，这就是它的工作原理。
 Docker 卷的实现原理是在主机的 /var/lib/docker/volumes 目录下，根据卷的名称创建相应的目录，然后在每个卷的目录下创建 \_data 目录，在容器启动时如果使用 --mount 参数，Docker 会把主机上的目录直接映射到容器的指定目录下，实现数据持久化。
 
-# 工作原理
-
-Docker 的底层核心原理是利用了 Linux 内核的 namespace 以及 cgroup 特性，其中 namespace 进行资源隔离，cgroup 进行资源配额。
-
-## namespace
-
-其中 Linux 内核中一共有 6 种 namespace。
-
-```
-Namespace	系统调用函数	隔离内容
-UTS	CLONE_NEWUTS	主机与域名
-IPC	CLONE_NEWIPC	信号量、消息队列和共享内存
-PID	CLONE_NEWPID	进程编号
-Network	CLONE_NEWNET	网络设备、网络栈、端口等
-Mount	CLONE_NEWNS	挂载点(文件系统)
-User	CLONE_NEWUSER	用户和用户组
-```
-
-## cgroup
-
-cgroups 是 Linux 内核提供的一种可以限制单个进程或者多个进程所使用资源的机制，可以对 cpu，内存等资源实现精细化的控制，目前越来越火的轻量级容器 Docker 就使用了 cgroups 提供的资源限制能力来完成 cpu，内存等部分的资源控制。
-
-# Docker 架构
-
-## Client
-
-我们通过 docker 命令与 Docker deamon 来进行交互。<br>
-docker build<br>
-docker pull<br>
-docker run<br>
-
-## Docker daemon
-
-### Images
-
-### Containers
-
-## Registry
-
-远端仓库
-
-# 常见命令
-
-## Images/镜像
-
-docker search [imageName] // 搜索镜像<br>
-docker images // 列出本地镜像<br>
-docker pull // 拉取 images 从镜像仓库中拉取或者更新指定镜像<br>
-docker rmi // 删除本地一个或多少镜像<br>
-docker tag [镜像 ID] // 为镜像添加一个新的标签<br>
-
-### Dockerfile
-
-通过编写简单的文件自创 docker 镜像<br>
-Dockerfile 中每一行都产生一个新层<br>
-为什么要分层，很多层可以共享<br>
-
-```
-    FROM // base image
-    RUN // 执行命令
-    ADD // 添加文件
-    COPY // 拷贝文件
-    CMD // 执行命令
-    EXPOSE // 暴露端口
-    WORKDIR // 指定路径
-    MAINTAINER // 维护者
-    ENV // 设定环境变量
-    ENTRYPOINT // 容器入口
-    USER // 指定用户
-    VOLUME // mount point
-```
-
-docker build // 用于使用 Dockerfile 创建镜像
-
-## Containers/容器
-
-docker ps // 列出所有在运行的容器信息（常用容器 id）<br>
-
-```
-    -l:查询最后一次创建的容器。
-```
-
-docker run // 创建一个新的容器并运行一个命令<br>
-
-```
-    -t:在新容器内指定一个伪终端或终端。
-    -i:允许你对容器内的标准输入 (STDIN) 进行交互。
-    -d:后台模式运行容器。
-    -P:将容器内部使用的网络端口映射到我们使用的主机上。
-    -p:是容器内部端口绑定到指定的主机端口。
-```
-
-docker restart [容器 ID|容器名] // 正在运行的容器，我们可以使用 docker restart 命令来重启<br>
-docker start [容器 ID|容器名] // 已经停止的容器，我们可以使用命令 docker start 来启动。 <br>
-docker stop [容器 ID|容器名] // 停止容器 ID 运行<br>
-docker rm [容器 ID|容器名] // 删除一个或多个容器 ID<br>
-docker commit // 从容器创建一个新的镜像<br>
-docker port [容器 ID|容器名] // 查看容器的某个确定端口映射到宿主机的端口号<br>
-docker top [容器 ID|容器名] // 查看容器内部运行的进程<br>
-docker inspect [容器 ID|容器名] // 查看 Docker 的底层信息（配置和状态信息）<br>
-docker logs [容器 ID|容器名] // 查看容器内的标准输出<br>
-
-```
-    -f: 让 docker logs 像使用 tail -f 一样来输出容器内部的标准输出
-```
-
-通过运行 exit 命令或者使用 CTRL+D 来退出容器<br>
-
-## Registry
-
-镜像仓库<br>
-docker search [imageName] <br>
-docker pull [imageName] <br>
-docker push [imageName] <br>
-
-## 其他
-
-docker // 来查看到 Docker 客户端的所有命令选项<br>
-docker [command] --help // 来查看指定的 Docker 命令使用方法<br>
-docker cp // 用于容器与主机之间的数据拷贝<br>
-docker tag [oldTag] [newTag] // oldTag 复制一个 newTag<br>
-docker login<br>
-
-Volume<br>
-提供独立于容器之外的持久化存储<br>
+---
 
 ## docker-compose
 
