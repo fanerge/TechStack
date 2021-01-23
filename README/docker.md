@@ -91,7 +91,7 @@ cgroups 功能的实现依赖于三个核心概念：子系统、控制组、层
 
 ## 联合文件系统
 
-联合文件系统，又叫 UnionFS，是一种通过创建文件层进程操作的文件系统，因此，联合文件系统非常轻快。Docker 使用联合文件系统为容器提供构建层，使得容器可以实现写时复制以及镜像的分层构建和存储。常用的联合文件系统有 AUFS、Overlay 和 Devicemapper 等。
+联合文件系统，又叫 UnionFS，是一种通过创建文件层进程操作的文件系统。因此，联合文件系统非常轻快。Docker 使用联合文件系统为容器提供构建层，使得容器可以实现写时复制以及镜像的分层构建和存储。常用的联合文件系统有 AUFS、Overlay 和 Devicemapper 等。
 它可以把多个目录内容联合挂载到同一目录下，从而形成一个单一的文件系统，这种特性可以让使用者像是使用一个目录一样使用联合文件系统。
 
 ### AUFS 模式
@@ -158,8 +158,6 @@ Storage Driver: devicemapper
 ```
 
 ### OverlayFS 文件系统
-
-#### 原理
 
 overlay2 和 AUFS 类似，它将所有目录称之为层（layer），overlay2 的目录是镜像和容器分层的基础，而把这些层统一展现到同一的目录下的过程称为联合挂载（union mount）。overlay2 把目录的下一层叫作 lowerdir，上一层叫作 upperdir，联合挂载后的结果叫作 merged。
 
@@ -427,8 +425,8 @@ docker run -it --cpus=1 -m=2048m --pids-limit=1000 busybox sh
 
 ## 使用 docker stats 命令
 
-docker stats nginx
 docker stats 命令可以很方便地看到主机上所有容器的 CPU、内存、网络 IO、磁盘 IO、PID 等资源的使用情况。
+// docker stats nginx
 
 ## cAdvisor
 
@@ -830,7 +828,7 @@ docker stack deploy -c docker-compose.yml wordpress
 
 
 
-##  Kubernetes（k8s）
+##  Kubernetes（k8s，更好的容器集群编排方案）
 
 ### k8s 组成
 Kubernetes 采用典型的主从架构，分为 Master 和 Node 两个角色。
