@@ -190,7 +190,7 @@ docker commit busybox busybox:hello
 ```
 
 ### Docker file 指令
-
+作用是构建镜像。
 Dockerfile 的每一行命令都会生成一个独立的镜像层，并且拥有唯一的 ID
 
 ```
@@ -771,6 +771,64 @@ unpause            恢复暂停的容器
 up                 创建并且启动服务
 version            打印版本信息并退出
 ```
+##  Docker Swarm（容器集群编排）
+### Swarm 优点
+
+分布式： Swarm 使用Raft（一种分布式一致性协议）协议来做集群间数据一致性保障，使用多个容器节点组成管理集群，从而避免单点故障。
+安全： Swarm 使用 TLS 双向认证来确保节点之间通信的安全，它可以利用双向 TLS 进行节点之间的身份认证，角色授权和加密传输，并且可以自动执行证书的颁发和更换。
+简单： Swarm 的操作非常简单，并且除 Docker 外基本无其他外部依赖，而且从 Docker 1.12 版本后， Swarm 直接被内置到了 Docker 中，可以说真正做到了开箱即用。
+
+### 搭建 Swarm 集群
+```
+// 初始化集群
+// advertise-addr 一般用于主机有多块网卡的情况，如果你的主机只有一块网卡，可以忽略此参数。
+docker swarm init --advertise-addr <YOUR-IP>
+// 初始化，并将当前节点设置为管理节点
+docker swarm init
+// 加入工作节点
+docker swarm join --token SWMTKN-1-1kal5b1iozbfmnnhx3kjfd3y6yqcjjjpcftrlg69pm2g8hw5vx-8j4l0t2is9ok9jwwc3tovtxbp 192.168.31.100:2377
+// 假如管理节点（一般管理节点个数为奇数）
+docker swarm join-token manager
+// 节点查看
+docker node ls
+```
+
+### 使用 Swarm
+
+```
+// 通过 docker service 命令创建服务
+docker service create --replicas 1 --name hello-world nginx
+docker service ls
+docker service rm hello-world
+// 生产环境中，我们推荐使用 docker-compose 模板文件来部署服务
+
+// 通过 docker stack 命令创建服务
+docker stack deploy -c docker-compose.yml wordpress
+```
 
 
+
+##  Kubernetes（k8s）
+
+### k8s 组成
+Kubernetes 采用典型的主从架构，分为 Master 和 Node 两个角色。
+Mater 是 Kubernetes 集群的控制节点，负责整个集群的管理和控制功能。
+Node 为工作节点，负责业务容器的生命周期管理。
+
+####    Master 节点
+Master 节点负责对集群中所有容器的调度，各种资源对象的控制，以及响应集群的所有请求。Master 节点包含三个重要的组件： kube-apiserver、kube-scheduler、kube-controller-manager。
+#####   kube-apiserver
+kube-apiserver 主要负责提供 Kubernetes 的 API 服务，所有的组件都需要与 kube-apiserver 交互获取或者更新资源信息，它是 Kubernetes Master 中最前端组件。
+#####   kube-scheduler
+kube-scheduler 用于监听未被调度的 Pod，然后根据一定调度策略将 Pod 调度到合适的 Node 节点上运行。
+####    kube-controller-manager
+kube-controller-manager 负责维护整个集群的状态和资源的管理。例如多个副本数量的保证，Pod 的滚动更新等。每种资源的控制器都是一个独立协程。kube-controller-manager 实际上是一系列资源控制器的总称。
+
+#### Node 节点
+Node 节点主要包含两个组件 ：kubelet 和 kube-proxy。
+#####   kubelet
+Kubelet 是在每个工作节点运行的代理，它负责管理容器的生命周期。Kubelet 通过监听分配到自己运行的主机上的 Pod 对象，确保这些 Pod 处于运行状态，并且负责定期检查 Pod 的运行状态，将 Pod 的运行状态更新到 Pod 对象中。
+
+#####   kube-proxy
+Kube-proxy 是在每个工作节点的网络插件，它实现了 Kubernetes 的 Service 的概念。Kube-proxy 通过维护集群上的网络规则，实现集群内部可以通过负载均衡的方式访问到后端的容器。
 
