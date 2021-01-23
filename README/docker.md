@@ -1,12 +1,22 @@
 # 工作原理
 
-Docker 是利用 Linux 的 Namespace 、Cgroups 和联合文件系统三大机制来保证实现的， 所以它的原理是使用 Namespace 做主机名、网络、PID 等资源的隔离，使用 Cgroups 对进程或者进程组做资源（例如：CPU、内存等）的限制，联合文件系统用于镜像构建和容器运行环境。
+Docker 是利用 Linux 的 Namespace 、Cgroups 和联合文件系统三大机制来保证实现。它的原理是使用 Namespace 做主机名、网络、PID 等资源的隔离，使用 Cgroups 对进程或者进程组做资源（例如：CPU、内存等）的限制，联合文件系统用于镜像构建和容器运行环境。
 
 ## Namespace
 
 Namespace 是 Linux 内核的一项功能，该功能对内核资源进行隔离，使得容器中的进程都可以在单独的命名空间中运行，并且只可以访问当前容器命名空间的资源。Namespace 可以隔离进程 ID、主机名、用户 ID、文件名、网络访问和进程间通信等相关资源。
+### 目前 Linux 已经有 8 种 namespace
+Namespace 名称	作用	内核版本
+Mount（mnt）	隔离挂载点	2.4.19
+Process ID (pid)	隔离进程 ID	2.6.24
+Network (net)	隔离网络设备，端口号等	2.6.29
+Interprocess Communication (ipc)	隔离 System V IPC 和 POSIX message queues	2.6.19
+UTS Namespace(uts)	隔离主机名和域名	2.6.19
+User Namespace (user)	隔离用户和用户组	3.8
+Control group (cgroup) Namespace	隔离 Cgroups 根目录	4.6
+Time Namespace	隔离系统时间
 
-### docker 目前使用了 linux 的 6 中 namespace
+### docker 目前使用了 linux 的 6 种 namespace
 
 unshare 是 util-linux 工具包中的一个工具。
 unshare 命令可以实现创建并访问不同类型的 Namespace。
@@ -14,38 +24,50 @@ unshare 命令可以实现创建并访问不同类型的 Namespace。
 #### Mount Namespace
 
 Mount Namespace 它可以用来隔离不同的进程或进程组看到的挂载点。通俗地说，就是可以实现在不同的进程中看到不同的挂载目录。
+```
 // 创建一个 bash 进程并且新建一个 Mount Namespace
 sudo unshare --mount --fork /bin/bash
+```
 
 #### PID Namespace
 
 PID Namespace 的作用是用来隔离进程。在不同的 PID Namespace 中，进程可以拥有相同的 PID 号，利用 PID Namespace 可以实现每个容器的主进程为 1 号进程，而容器内的进程在主机上却拥有不同的 PID。
+```
 // 创建一个 bash 进程，并且新建一个 PID Namespace
 sudo unshare --pid --fork --mount-proc /bin/bash
+```
 
 #### UTS Namespace
 
 UTS Namespace 主要是用来隔离主机名的，它允许每个 UTS Namespace 拥有一个独立的主机名。
+```
 // 创建一个 UTS Namespace
 sudo unshare --uts --fork /bin/bash
+```
 
 #### IPC Namespace
 
 IPC Namespace 主要是用来隔离进程间通信的。例如 PID Namespace 和 IPC Namespace 一起使用可以实现同一 IPC Namespace 内的进程彼此可以通信，不同 IPC Namespace 的进程却不能通信。
+```
 // 创建一个 IPC Namespace
 sudo unshare --ipc --fork /bin/bash
+```
 
 #### User Namespace
 
 User Namespace 主要是用来隔离用户和用户组的。一个比较典型的应用场景就是在主机上以非 root 用户运行的进程可以在一个单独的 User Namespace 中映射成 root 用户。
+```
 // 创建一个 User Namespace
 unshare --user -r /bin/bash
+```
 
 #### Net Namespace
 
 Net Namespace 是用来隔离网络设备、IP 地址和端口等信息的。Net Namespace 可以让每个进程拥有自己独立的 IP 地址，端口和网卡信息。
+```
 // 创建一个 Net Namespace
 sudo unshare --net --fork /bin/bash
+```
 
 ## Cgroups
 
