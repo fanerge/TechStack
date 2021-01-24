@@ -6,6 +6,7 @@ Docker 是利用 Linux 的 Namespace 、Cgroups 和联合文件系统三大机�
 
 Namespace 是 Linux 内核的一项功能，该功能对内核资源进行隔离，使得容器中的进程都可以在单独的命名空间中运行，并且只可以访问当前容器命名空间的资源。Namespace 可以隔离进程 ID、主机名、用户 ID、文件名、网络访问和进程间通信等相关资源。
 ### 目前 Linux 已经有 8 种 namespace
+```
 Namespace 名称	作用	内核版本
 Mount（mnt）	隔离挂载点	2.4.19
 Process ID (pid)	隔离进程 ID	2.6.24
@@ -15,6 +16,7 @@ UTS Namespace(uts)	隔离主机名和域名	2.6.19
 User Namespace (user)	隔离用户和用户组	3.8
 Control group (cgroup) Namespace	隔离 Cgroups 根目录	4.6
 Time Namespace	隔离系统时间
+```
 
 ### docker 目前使用了 linux 的 6 种 namespace
 
