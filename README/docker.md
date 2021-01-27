@@ -1,12 +1,22 @@
 # 工作原理
 
-Docker 是利用 Linux 的 Namespace 、Cgroups 和联合文件系统三大机制来保证实现的， 所以它的原理是使用 Namespace 做主机名、网络、PID 等资源的隔离，使用 Cgroups 对进程或者进程组做资源（例如：CPU、内存等）的限制，联合文件系统用于镜像构建和容器运行环境。
+Docker 是利用 Linux 的 Namespace 、Cgroups 和联合文件系统三大机制来保证实现。它的原理是使用 Namespace 做主机名、网络、PID 等资源的隔离，使用 Cgroups 对进程或者进程组做资源（例如：CPU、内存等）的限制，联合文件系统用于镜像构建和容器运行环境。
 
 ## Namespace
 
 Namespace 是 Linux 内核的一项功能，该功能对内核资源进行隔离，使得容器中的进程都可以在单独的命名空间中运行，并且只可以访问当前容器命名空间的资源。Namespace 可以隔离进程 ID、主机名、用户 ID、文件名、网络访问和进程间通信等相关资源。
+### 目前 Linux 已经有 8 种 namespace
+Namespace 名称	作用	内核版本
+Mount（mnt）	隔离挂载点	2.4.19
+Process ID (pid)	隔离进程 ID	2.6.24
+Network (net)	隔离网络设备，端口号等	2.6.29
+Interprocess Communication (ipc)	隔离 System V IPC 和 POSIX message queues	2.6.19
+UTS Namespace(uts)	隔离主机名和域名	2.6.19
+User Namespace (user)	隔离用户和用户组	3.8
+Control group (cgroup) Namespace	隔离 Cgroups 根目录	4.6
+Time Namespace	隔离系统时间
 
-### docker 目前使用了 linux 的 6 中 namespace
+### docker 目前使用了 linux 的 6 种 namespace
 
 unshare 是 util-linux 工具包中的一个工具。
 unshare 命令可以实现创建并访问不同类型的 Namespace。
@@ -14,38 +24,50 @@ unshare 命令可以实现创建并访问不同类型的 Namespace。
 #### Mount Namespace
 
 Mount Namespace 它可以用来隔离不同的进程或进程组看到的挂载点。通俗地说，就是可以实现在不同的进程中看到不同的挂载目录。
+```
 // 创建一个 bash 进程并且新建一个 Mount Namespace
 sudo unshare --mount --fork /bin/bash
+```
 
 #### PID Namespace
 
 PID Namespace 的作用是用来隔离进程。在不同的 PID Namespace 中，进程可以拥有相同的 PID 号，利用 PID Namespace 可以实现每个容器的主进程为 1 号进程，而容器内的进程在主机上却拥有不同的 PID。
+```
 // 创建一个 bash 进程，并且新建一个 PID Namespace
 sudo unshare --pid --fork --mount-proc /bin/bash
+```
 
 #### UTS Namespace
 
 UTS Namespace 主要是用来隔离主机名的，它允许每个 UTS Namespace 拥有一个独立的主机名。
+```
 // 创建一个 UTS Namespace
 sudo unshare --uts --fork /bin/bash
+```
 
 #### IPC Namespace
 
 IPC Namespace 主要是用来隔离进程间通信的。例如 PID Namespace 和 IPC Namespace 一起使用可以实现同一 IPC Namespace 内的进程彼此可以通信，不同 IPC Namespace 的进程却不能通信。
+```
 // 创建一个 IPC Namespace
 sudo unshare --ipc --fork /bin/bash
+```
 
 #### User Namespace
 
 User Namespace 主要是用来隔离用户和用户组的。一个比较典型的应用场景就是在主机上以非 root 用户运行的进程可以在一个单独的 User Namespace 中映射成 root 用户。
+```
 // 创建一个 User Namespace
 unshare --user -r /bin/bash
+```
 
 #### Net Namespace
 
 Net Namespace 是用来隔离网络设备、IP 地址和端口等信息的。Net Namespace 可以让每个进程拥有自己独立的 IP 地址，端口和网卡信息。
+```
 // 创建一个 Net Namespace
 sudo unshare --net --fork /bin/bash
+```
 
 ## Cgroups
 
@@ -69,7 +91,7 @@ cgroups 功能的实现依赖于三个核心概念：子系统、控制组、层
 
 ## 联合文件系统
 
-联合文件系统，又叫 UnionFS，是一种通过创建文件层进程操作的文件系统，因此，联合文件系统非常轻快。Docker 使用联合文件系统为容器提供构建层，使得容器可以实现写时复制以及镜像的分层构建和存储。常用的联合文件系统有 AUFS、Overlay 和 Devicemapper 等。
+联合文件系统，又叫 UnionFS，是一种通过创建文件层进程操作的文件系统。因此，联合文件系统非常轻快。Docker 使用联合文件系统为容器提供构建层，使得容器可以实现写时复制以及镜像的分层构建和存储。常用的联合文件系统有 AUFS、Overlay 和 Devicemapper 等。
 它可以把多个目录内容联合挂载到同一目录下，从而形成一个单一的文件系统，这种特性可以让使用者像是使用一个目录一样使用联合文件系统。
 
 ### AUFS 模式
@@ -137,8 +159,6 @@ Storage Driver: devicemapper
 
 ### OverlayFS 文件系统
 
-#### 原理
-
 overlay2 和 AUFS 类似，它将所有目录称之为层（layer），overlay2 的目录是镜像和容器分层的基础，而把这些层统一展现到同一的目录下的过程称为联合挂载（union mount）。overlay2 把目录的下一层叫作 lowerdir，上一层叫作 upperdir，联合挂载后的结果叫作 merged。
 
 #### Docker 中配置 overlay2
@@ -190,7 +210,7 @@ docker commit busybox busybox:hello
 ```
 
 ### Docker file 指令
-
+作用是构建镜像。
 Dockerfile 的每一行命令都会生成一个独立的镜像层，并且拥有唯一的 ID
 
 ```
@@ -405,8 +425,8 @@ docker run -it --cpus=1 -m=2048m --pids-limit=1000 busybox sh
 
 ## 使用 docker stats 命令
 
-docker stats nginx
 docker stats 命令可以很方便地看到主机上所有容器的 CPU、内存、网络 IO、磁盘 IO、PID 等资源的使用情况。
+// docker stats nginx
 
 ## cAdvisor
 
@@ -603,26 +623,232 @@ docker run -v /data:/usr/local/data -it busybox
 Docker 容器的文件系统不是一个真正的文件系统，而是通过联合文件系统实现的一个伪文件系统，而 Docker 卷则是直接利用主机的某个文件或者目录，它可以绕过联合文件系统，直接挂载主机上的文件或目录到容器中，这就是它的工作原理。
 Docker 卷的实现原理是在主机的 /var/lib/docker/volumes 目录下，根据卷的名称创建相应的目录，然后在每个卷的目录下创建 \_data 目录，在容器启动时如果使用 --mount 参数，Docker 会把主机上的目录直接映射到容器的指定目录下，实现数据持久化。
 
----
+#   容器编排
 
-## docker-compose
-
-多容器 app<br>
-docker-compose.yml // 多应用配置文件
+我们的业务越来越复杂时，需要多个容器相互配合，容器编排工具可以帮助我们批量地创建、调度和管理容器，帮助我们解决规模化容器的部署问题。
+Docker 三种常用的编排工具：Docker Compose、Docker Swarm 和 Kubernetes。
+[wordpress + mysql 开发环境搭建](./docker-compose.yml)
+##  Docker Compose（单机编排工具）
+Docker Compose 文件主要分为三部分： services（服务）、networks（网络） 和 volumes（数据卷）。
+docker-compose.yml
+### 编写 services（配置）
+services（服务）：服务定义了容器启动的各项配置，就像我们执行docker run命令时传递的容器启动的参数一样，指定了容器应该如何启动，例如容器的启动参数，容器的镜像和环境变量等。
 
 ```
-    version // 指定docker-compose语法版本
-    build // 本地创建镜像
-    command // 覆盖缺省命令
-    depends_on // 链接容器
-    ports // 暴露端口
-    volumes // 卷
-    image // pull镜像
+// build： 用于构建 Docker 镜像，类似于docker build命令，build 可以指定 Dockerfile 文件路径，然后根据 Dockerfile 命令来构建文件。
+build:
+  ## 构建执行的上下文目录
+  context: .
+  ## Dockerfile 名称
+  dockerfile: Dockerfile-name
+// cap_add、cap_drop： 指定容器可以使用到哪些内核能力（capabilities）。
+cap_add:
+  - NET_ADMIN
+cap_drop:
+  - SYS_ADMIN
+// command： 用于覆盖容器默认的启动命令，它和 Dockerfile 中的 CMD 用法类似，也有两种使用方式：
+command: sleep 3000
+command: ["sleep", "3000"]
+// container_name： 用于指定容器启动时容器的名称。
+container_name: nginx
+// depends_on： 用于指定服务间的依赖关系，这样可以先启动被依赖的服务。(例如 my-web 服务依赖 db 服务)
+services:
+  my-web:
+    build: .
+    depends_on:
+      - db
+  db:
+    image: mysql
+// devices： 挂载主机的设备到容器中。
+devices:
+  - "/dev/sba:/dev/sda"
+// dns： 自定义容器中的 dns 配置。
+dns:
+  - 8.8.8.8
+  - 114.114.114.114
+// dns_search： 配置 dns 的搜索域。
+dns_search:
+  - svc.cluster.com
+  - svc1.cluster.com
+// entrypoint： 覆盖容器的 entrypoint 命令。
+entrypoint: sleep 3000
+// env_file： 指定容器的环境变量文件，启动时会把该文件中的环境变量值注入容器中。
+env_file:
+  - ./dbs.env
+env 文件的内容格式如下：
+KEY_ENV=values
+// environment： 指定容器启动时的环境变量。
+environment:
+  - KEY_ENV=values
+// image： 指定容器镜像的地址。
+image: busybox:latest
+// pid： 共享主机的进程命名空间，像在主机上直接启动进程一样，可以看到主机的进程信息。
+pid: "host"
+// ports： 暴露端口信息，使用格式为 HOST:CONTAINER，前面填写要映射到主机上的端口，后面填写对应的容器内的端口。
+ports:
+  - "8080:80"
+// networks： 这是服务要使用的网络名称，对应顶级的 networks 中的配置。
+services:
+  my-service:
+    networks:
+     - hello-network
+// volumes： 不仅可以挂载主机数据卷到容器中，也可以直接挂载主机的目录到容器中，使用方式类似于使用docker run启动容器时添加 -v 参数。
+version: "3"
+services:
+  db:
+    image: mysql:5.6
+    volumes:
+      - type: volume
+        source: /var/lib/mysql
+        target: /var/lib/mysql    
 ```
 
-docker-compose build // 更改配置，需重新构建镜像<br>
-docker-compose up // 启动服务<br>
-docker-compose stop // 停止服务<br>
-docker-compose rm // 删除服务中的各个容器<br>
-docker-compose logs // 观察各个容器的日志<br>
-docker-compose ps // 列出服务相关的容器<br>
+### 编写 Network 配置
+networks（网络）：网络定义了容器的网络配置，就像我们执行docker network create命令创建网络配置一样。
+```
+// 例如你想声明一个自定义 bridge 网络配置，并且在服务中使用它，使用格式如下：
+version: "3"
+services:
+  web:
+    networks:
+      mybridge: 
+        ipv4_address: 172.16.1.11
+networks:
+  mybridge:
+    driver: bridge
+    ipam: 
+      driver: default
+      config:
+        subnet: 172.16.1.0/24
+      
+```
+
+### 编写 Volume 配置
+volumes（数据卷）：数据卷定义了容器的卷配置，就像我们执行docker volume create命令创建数据卷一样。
+```
+// 如果你想在多个容器间共享数据卷，则需要在外部声明数据卷，然后在容器里声明使用数据卷。例如我想在两个服务间共享日志目录，则使用以下配置：
+version: "3"
+services:
+  my-service1:
+    image: service:v1
+    volumes:
+      - type: volume
+        source: logdata
+        target: /var/log/mylog
+  my-service2:
+    image: service:v2
+    volumes:
+      - type: volume
+        source: logdata
+        target: /var/log/mylog
+volumes:
+  logdata:
+
+```
+
+### Docker Compose 操作命令
+docker-compose 的参数
+```
+  -f, --file FILE             指定 docker-compose 文件，默认为 docker-compose.yml
+  -p, --project-name NAME     指定项目名称，默认使用当前目录名称作为项目名称
+  --verbose                   输出调试信息
+  --log-level LEVEL           日志级别 (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+  -v, --version               输出当前版本并退出
+  -H, --host HOST             指定要连接的 Docker 地址
+  --tls                       启用 TLS 认证
+  --tlscacert CA_PATH         TLS CA 证书路径
+  --tlscert CLIENT_CERT_PATH  TLS 公钥证书问价
+  --tlskey TLS_KEY_PATH       TLS 私钥证书文件
+  --tlsverify                 使用 TLS 校验对端
+  --skip-hostname-check       不校验主机名
+  --project-directory PATH    指定工作目录，默认是 Compose 文件所在路径。
+```
+docker-compose 支持的命令
+```
+build              构建服务
+config             校验和查看 Compose 文件
+create             创建服务
+down               停止服务，并且删除相关资源
+events             实时监控容器的时间信息
+exec               在一个运行的容器中运行指定命令
+help               获取帮助
+images             列出镜像
+kill               杀死容器
+logs               查看容器输出
+pause              暂停容器
+port               打印容器端口所映射出的公共端口
+ps                 列出项目中的容器列表
+pull               拉取服务中的所有镜像
+push               推送服务中的所有镜像
+restart            重启服务
+rm                 删除项目中已经停止的容器
+run                在指定服务上运行一个命令
+scale              设置服务运行的容器个数
+start              启动服务
+stop               停止服务
+top                限制服务中正在运行中的进程信息
+unpause            恢复暂停的容器
+up                 创建并且启动服务
+version            打印版本信息并退出
+```
+##  Docker Swarm（容器集群编排）
+### Swarm 优点
+
+分布式： Swarm 使用Raft（一种分布式一致性协议）协议来做集群间数据一致性保障，使用多个容器节点组成管理集群，从而避免单点故障。
+安全： Swarm 使用 TLS 双向认证来确保节点之间通信的安全，它可以利用双向 TLS 进行节点之间的身份认证，角色授权和加密传输，并且可以自动执行证书的颁发和更换。
+简单： Swarm 的操作非常简单，并且除 Docker 外基本无其他外部依赖，而且从 Docker 1.12 版本后， Swarm 直接被内置到了 Docker 中，可以说真正做到了开箱即用。
+
+### 搭建 Swarm 集群
+```
+// 初始化集群
+// advertise-addr 一般用于主机有多块网卡的情况，如果你的主机只有一块网卡，可以忽略此参数。
+docker swarm init --advertise-addr <YOUR-IP>
+// 初始化，并将当前节点设置为管理节点
+docker swarm init
+// 加入工作节点
+docker swarm join --token SWMTKN-1-1kal5b1iozbfmnnhx3kjfd3y6yqcjjjpcftrlg69pm2g8hw5vx-8j4l0t2is9ok9jwwc3tovtxbp 192.168.31.100:2377
+// 假如管理节点（一般管理节点个数为奇数）
+docker swarm join-token manager
+// 节点查看
+docker node ls
+```
+
+### 使用 Swarm
+
+```
+// 通过 docker service 命令创建服务
+docker service create --replicas 1 --name hello-world nginx
+docker service ls
+docker service rm hello-world
+// 生产环境中，我们推荐使用 docker-compose 模板文件来部署服务
+
+// 通过 docker stack 命令创建服务
+docker stack deploy -c docker-compose.yml wordpress
+```
+
+
+
+##  Kubernetes（k8s，更好的容器集群编排方案）
+
+### k8s 组成
+Kubernetes 采用典型的主从架构，分为 Master 和 Node 两个角色。
+Mater 是 Kubernetes 集群的控制节点，负责整个集群的管理和控制功能。
+Node 为工作节点，负责业务容器的生命周期管理。
+
+####    Master 节点
+Master 节点负责对集群中所有容器的调度，各种资源对象的控制，以及响应集群的所有请求。Master 节点包含三个重要的组件： kube-apiserver、kube-scheduler、kube-controller-manager。
+#####   kube-apiserver
+kube-apiserver 主要负责提供 Kubernetes 的 API 服务，所有的组件都需要与 kube-apiserver 交互获取或者更新资源信息，它是 Kubernetes Master 中最前端组件。
+#####   kube-scheduler
+kube-scheduler 用于监听未被调度的 Pod，然后根据一定调度策略将 Pod 调度到合适的 Node 节点上运行。
+####    kube-controller-manager
+kube-controller-manager 负责维护整个集群的状态和资源的管理。例如多个副本数量的保证，Pod 的滚动更新等。每种资源的控制器都是一个独立协程。kube-controller-manager 实际上是一系列资源控制器的总称。
+
+#### Node 节点
+Node 节点主要包含两个组件 ：kubelet 和 kube-proxy。
+#####   kubelet
+Kubelet 是在每个工作节点运行的代理，它负责管理容器的生命周期。Kubelet 通过监听分配到自己运行的主机上的 Pod 对象，确保这些 Pod 处于运行状态，并且负责定期检查 Pod 的运行状态，将 Pod 的运行状态更新到 Pod 对象中。
+
+#####   kube-proxy
+Kube-proxy 是在每个工作节点的网络插件，它实现了 Kubernetes 的 Service 的概念。Kube-proxy 通过维护集群上的网络规则，实现集群内部可以通过负载均衡的方式访问到后端的容器。
+
