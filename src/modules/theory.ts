@@ -55,14 +55,13 @@ export function myBind() {
   if (!thisArg) {
       //context 为 null 或者是 undefined
       thisArg = typeof window === 'undefined' ? global : window;
+      // thisArg = globalThis;
   }
   let that = this;
 
   return function(...rest: any[]) {
-      // 防止第二次调用 func 是，该func已经被delete了，需要重新赋值 
-      if(!thisArg.func) {
-        thisArg.func = that;
-      }
+      thisArg.func = that;
+
       let result = thisArg.func(...args, ...rest);
       // thisArg原本没有func方法
       delete thisArg.func;
