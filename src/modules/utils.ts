@@ -128,6 +128,7 @@ export function fmoney(num: number){
     // 参考：https://www.cnblogs.com/lvmylife/p/8287247.html
     let [integer, decimal] = String(num).split('.');
     let regExp = /\d{1,3}(?=(\d{3})+$)/g;
+    // integer.replace(/(\d{1,3})(?=(\d{3})+$)/g, '$1,')
     integer = integer.replace(regExp, '$&,');
     return `${integer}${decimal === undefined ? '': '.'+decimal}`;
     // 正则解释
@@ -143,14 +144,22 @@ export function fmoney(num: number){
     /* Intl.NumberFormat().format(number)实现 */
     // Intl.NumberFormat().format(number)
     // return Intl.NumberFormat('en').format(num);
+}
 
-    // reduce 方案
-    // let arr = String(num).split('.');
-    // let char = arr[0].split('').reverse();   
-    // let IntStr = char.reduce((acc, value, index) => {
-    //     return `${index % 3 === 0 ? String(value)+',' : String(value)}${acc}`;
-    // }, '').slice(0, -1);
-    // return `${IntStr}${arr[1]? '.'+arr[1] : '' }`;
+function formatMoney1(num: Number) {
+  let [int, dec] = String(num).split('.');
+  let list = [...int];
+  let len = list.length;
+  int = list.reduceRight((acc, item, index) => {
+    // reduceRight 的 index 也是正序的 index
+    let num = len - index;
+    if(num % 3 === 0) {
+      acc += `,${item}`
+    }
+    return acc;
+  }, '');
+  dec = dec ? `.${dec}` : ''
+  return `${int}${dec}`
 }
 
 // reverse money
