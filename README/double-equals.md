@@ -1,9 +1,22 @@
-1.  字符串与布尔值比较，也都要转换为数字。
-// false == ‘0’ true ==> 0 == 0
-// true == ‘true’ false ==> 1 == NaN
-2.  对于非原始值（非Number、String、Boolean、Symbol、BigInt）拆箱转换会尝试调用 valueOf 和 toString 来获得拆箱后的基本类型。
-// 拆箱转换会尝试调用 valueOf 和 toString 来获得拆箱后的基本类型。
-3.  对象如果转换成了 primitive 类型跟等号另一边类型恰好相同，则不需要转换成数字。
-// [] == '' true ==> [].toString() / '' == ''
-// [] == 0 true ==> [].toString() 为'', Number('') == 0
-// [] == false true ==> [].toString() 为'', Number('') == 0, Number(false)
+# '==' 的隐式类型转换规则
+
+1.	如果类型相同，无须进行类型转换；
+2.	如果其中一个操作值是 null 或者 undefined，那么另一个操作符必须为 null 或者 undefined，才会返回 true，否则都返回 false；
+3.	如果其中一个是 Symbol 类型，那么返回 false；
+4.	两个操作值如果为 string 和 number 类型，那么就会将字符串转换为 number；
+5.	如果一个操作值是 boolean，那么转换成 number；
+6.	如果一个操作值为 object 且另一方为 string、number 或者 symbol，就会把 object 转为原始类型再进行判断（若有Symbol.toPrimitive 方法则先调用、否则调用 object 的 valueOf/toString 方法进行转换）。
+
+```
+== 中一边为 null 或者 undefined，则另一边也必须是 null 或者 undefined 才为 true
+parseInt('') // NaN
+{}+10 // 10
+10 + {} // 10[object Object]
+Number(undefined) // NaN
+
+// ！可将变量转换成boolean类型，null、undefined、NaN以及空字符串('')取反都为true，其余都为false。
+[] == ![] // true
+[] == ![]   ->   [] == false  ->  [] == 0  ->   '' == 0   ->  0 == 0   ->  true
+{} == !{} // false 
+// {} == !{}   ->   {} == false  ->  {} == 0  ->   NaN == 0    ->  false
+```
