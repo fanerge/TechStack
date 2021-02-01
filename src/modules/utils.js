@@ -94,38 +94,6 @@ async function sequential2 (tasks) {
 // var demo = sequential([p1, p2, p3]);
 // console.log(demo);
 
-// [{id: 0, pid: -1}, {id: 1, pid: 0}, {id: 2, pid: 0}, {id: 3, pid: 1}]
-// 转化为tree（约定pid为-1是根节点） {id: 0, children: [{id: 1, children: [{id: 3, children: []}]}, {id: 2, children: []}]}
-var testTreeData = [
-  {id: 1, pid: 0, name: '一级1'}, 
-  {id: 2, pid: 0, name: '一级2'}, 
-  {id: 6, pid: 2, name: '一级2-1'}, 
-  {id: 7, pid: 2, name: '一级2-1'}, 
-  {id: 3, pid: 1, name: '一级1-1'}, 
-  {id: 4, pid: 3, name: '一级1-1-1'}, 
-  {id: 5, pid: 3, name: '一级1-1-2'},
-  {id: 0, pid: -1, name: '根'}, 
-];
-function dataToTree(data) {
-  let result = [];
-  let map = {};
-  data.forEach((item, index) => {
-    map[item.id] = item;
-  });
-  data.forEach(item => {
-    // debugger
-    let parent = map[item.pid];
-    if(parent) {
-      // 其他节点处理
-      (parent.children || (parent.children = [])).push(item);
-    }else{
-      // 根节点处理
-      result.push(item);
-    }
-  });
-
-  return result;
-}
 
 // 递归过滤不显示的节点（常见菜单需求）
 const testFilterMenuData = [
