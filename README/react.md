@@ -635,6 +635,11 @@ function Counter({initialCount}) {
 
 [React Hooks](https://juejin.im/post/5d754dbde51d4561cd2466bf)
 
+# React Router
+
+React Router 路由的基础实现原理分为两种，如果是切换 Hash 的方式，那么依靠浏览器 Hash 变化即可；如果是切换网址中的 Path，就要用到 HTML5 History API 中的 pushState、replaceState 等。在使用这个方式时，还需要在服务端完成 historyApiFallback 配置(如树下心浏览器，服务端需要帮忙将 404 重定向到 index.html)。
+通过 Context API 完成数据共享，第一类是  Context 容器，比如 Router 与 MemoryRouter。第二类是消费者组件，用以匹配路由，主要有 Route、Redirect、Switch 等。
+
 # redux
 
 ## 三大原则

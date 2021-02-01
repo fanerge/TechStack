@@ -16,6 +16,11 @@ SourceMap、
 代码组织：multirepo 和 monorepo
 Mock：Mock.js 和 Faker.js、YApi 和 Apifox
 
+## 代码组织：multirepo 和 monorepo
+
+multrepo：将项目分化成为多个模块，并针对每一个模块单独的开辟一个 reporsitory 来进行管理。
+monorepo：是将所有的模块统一的放在一个主干分支之中管理。不进行分库存储，当有特定的需要的时候进行分支，但是问题修改还是在主干上操作，并有专门人员合并到分支内容上，在特定需求完结的时候，分支也将会被废弃。
+
 ## git ssh 相关
 
 // 生成 ssh 密钥
