@@ -132,7 +132,7 @@ CSRF 攻击对象是用户，SSRF 攻击对象是服务器。
 1.  采用白名单限制，只允许访问特定的 IP 或域名
 2.  禁用一些不必要的协议，比如 file://、gopher://、dict://
 
-# 点击劫持（C lickJacking ）
+# 点击劫持（ClickJacking）
 
 ## 原理
 
@@ -171,3 +171,6 @@ SELECT username, password FROM users WHERE username=''or'1'='1' and password=''o
 3.  WAF（Web 防火墙）：能够抵挡住大部分的攻击，几乎是当前各网站必备的安全产品。但它也不是无懈可击的，难免会被绕过。不过安全本身就是为了不断提高攻击成本而设立的，并不是为了完全、绝对地解决入侵问题。
 4.  RASP（Runtime Application Self-Protection）是一项运行时应用程序自我保护的安全技术，通过搜集和分析应用运行时的相关信息来检测和阻止针对应用本身的攻击，利用 RASP 对 WAF 进行有效的补充，可以构建更加完善的安全防御体系。
 ```
+
+# XXE XML External Entity，XML 外部实体注入
+是当允许引用外部实体时，通过构造恶意内容，导致读取任意文件、执行系统命令、内网探测与攻击等危害的一类漏洞。
