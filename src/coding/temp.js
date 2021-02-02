@@ -1,3 +1,72 @@
+// deepClone
+// 1. 针对能够遍历对象的不可枚举属性以及 Symbol 类型，我们可以使用 Reflect.ownKeys 方法；
+// 2. 当参数为 Date、RegExp 类型，则直接生成一个新的实例返回；
+// 3. 利用 Object 的 getOwnPropertyDescriptors 方法可以获得对象的所有属性，以及对应的特性，顺便结合 Object 的 create 方法创建一个新对象，并继承传入原对象的原型链；
+// 4. 利用 WeakMap 类型作为 Hash 表，因为 WeakMap 是弱引用类型，可以有效防止内存泄漏（你可以关注一下 Map 和 weakMap 的关键区别，这里要用 weakMap），作为检测循环引用很有帮助，如果存在循环，则引用直接返回 WeakMap 存储的值。
+
+let obj = {
+  num: 0,
+  str: '',
+  boolean: true,
+  unf: undefined,
+  nul: null,
+  obj: { name: '我是一个对象', id: 1 },
+  arr: [0, 1, 2],
+  func: function () { console.log('我是一个函数') },
+  date: new Date(0),
+  reg: new RegExp('/我是一个正则/ig'),
+  [Symbol('1')]: 1,
+};
+Object.defineProperty(obj, 'innumerable', {
+  enumerable: false, value: '不可枚举属性' }
+);
+obj = Object.create(obj, Object.getOwnPropertyDescriptors(obj))
+obj.loop = obj    // 设置loop成循环引用的属性
+
+function isComplexType(val) {
+  return (typeof val === 'object' && val !== null) || (typeof val === 'function')
+}
+function deepClone(oldVal, hash = new WeakMap()) {
+  // 基本类型
+  if(!isComplexType(oldVal)) {
+    return oldVal;
+  }
+
+  // 引用类型
+  let constructor = oldVal.constructor
+  // Date
+  if(constructor === Date) {
+    return new Date(oldVal)
+  }
+  // RegExp
+  if(constructor === RegExp) {
+    return new RegExp(oldVal)
+  }
+  // Function 
+  if(constructor === Function) {
+    // 闭包原理
+    return new Function(`return ${oldVal.toString()}`)()
+  }
+  if(hash.has(oldVal)) {
+    return hash.get(oldVal)
+  }
+  let newVal = new constructor()
+  Object.setPrototypeOf(newVal, Object.getPrototypeOf(oldVal))
+  hash.set(oldVal, newVal);
+  
+  // Object.getOwnPropertyNames\Object.getOwnPropertySymbols
+  Reflect.ownKeys(oldVal).forEach(item => {
+    if(isComplexType(oldVal[item])) {
+      newVal[item] = deepClone(oldVal[item], hash)
+    }else{
+      Object.defineProperty(newVal, item, Object.getOwnPropertyDescriptor(oldVal, item))
+    }
+  });
+
+  return newVal;
+}
+
+// bind
 Function.prototype.myBind = function (ctx, ...args) {
   if (!ctx) {
     ctx = typeof window === "undefined" ? global : window;
@@ -13,6 +82,54 @@ Function.prototype.myBind = function (ctx, ...args) {
   };
 };
 
+// 函数节流
+function throttle(func, ms, immediate) {
+  let last = null;
+
+  return function inner(...args) {
+    let now = Date.now();
+    if (last === null && immediate) {
+      func.apply(this, args);
+      last = Date.now();
+      return;
+    }
+    if (last === null) {
+      last = Date.now();
+      return;
+    }
+    if (now - last >= ms) {
+      func.apply(this, args);
+      last = Date.now();
+      return;
+    }
+  };
+}
+
+// 函数防抖
+function debounce(func, ms, immediate) {
+  let timerId = null;
+  // 用于占位 timerId
+  let backId = 111;
+
+  return function inner(...args) {
+    if (timerId === null && immediate) {
+      func.apply(this, args);
+      timerId = backId;
+      return;
+    }
+    if (timerId && timerId !== backId) {
+      clearTimeout(timerId);
+      // 必须要先 clear 再将 timerId = null
+      timerId = backId;
+    }
+    timerId = setTimeout(() => {
+      func.apply(this, args);
+      timerId = backId;
+    }, ms);
+  };
+}
+
+// 模拟加法
 function bitSum(a, b) {
   if (a === 0) return b;
   if (b === 0) return a;
@@ -20,8 +137,7 @@ function bitSum(a, b) {
   return bitSum(a ^ b, (a & b) << 1);
 }
 
-// 0012
-// 1212
+// 大数相加
 function bigNumSum(a, b) {
   a = String(a);
   b = String(b);
@@ -117,76 +233,6 @@ function find(list, target) {
 // var b = find([7, 7, 8, 9, 1, 2, 5, 6, 7, 7], 4);
 // var c = find([7, 7, 8, 9, 1, 2, 5, 6, 7, 7], 8);
 // console.log(a, b, c);
-
-// 1. 针对能够遍历对象的不可枚举属性以及 Symbol 类型，我们可以使用 Reflect.ownKeys 方法；
-// 2. 当参数为 Date、RegExp 类型，则直接生成一个新的实例返回；
-// 3. 利用 Object 的 getOwnPropertyDescriptors 方法可以获得对象的所有属性，以及对应的特性，顺便结合 Object 的 create 方法创建一个新对象，并继承传入原对象的原型链；
-// 4. 利用 WeakMap 类型作为 Hash 表，因为 WeakMap 是弱引用类型，可以有效防止内存泄漏（你可以关注一下 Map 和 weakMap 的关键区别，这里要用 weakMap），作为检测循环引用很有帮助，如果存在循环，则引用直接返回 WeakMap 存储的值。
-
-// 下面是验证代码
-let obj = {
-  num: 0,
-  str: '',
-  boolean: true,
-  unf: undefined,
-  nul: null,
-  obj: { name: '我是一个对象', id: 1 },
-  arr: [0, 1, 2],
-  func: function () { console.log('我是一个函数') },
-  date: new Date(0),
-  reg: new RegExp('/我是一个正则/ig'),
-  [Symbol('1')]: 1,
-};
-Object.defineProperty(obj, 'innumerable', {
-  enumerable: false, value: '不可枚举属性' }
-);
-obj = Object.create(obj, Object.getOwnPropertyDescriptors(obj))
-obj.loop = obj    // 设置loop成循环引用的属性
-
-
-// deepClone
-function isComplexType(val) {
-  return (typeof val === 'object' && val !== null) || (typeof val === 'function')
-}
-function deepClone(oldVal, hash = new WeakMap()) {
-  // 基本类型
-  if(!isComplexType(oldVal)) {
-    return oldVal;
-  }
-
-  // 引用类型
-  let constructor = oldVal.constructor
-  // Date
-  if(constructor === Date) {
-    return new Date(oldVal)
-  }
-  // RegExp
-  if(constructor === RegExp) {
-    return new RegExp(oldVal)
-  }
-  // Function 
-  if(constructor === Function) {
-    // 闭包原理
-    return new Function(`return ${oldVal.toString()}`)()
-  }
-  if(hash.has(oldVal)) {
-    return hash.get(oldVal)
-  }
-  let newVal = new constructor()
-  Object.setPrototypeOf(newVal, Object.getPrototypeOf(oldVal))
-  hash.set(oldVal, newVal);
-  
-  // Object.getOwnPropertyNames\Object.getOwnPropertySymbols
-  Reflect.ownKeys(oldVal).forEach(item => {
-    if(isComplexType(oldVal[item])) {
-      newVal[item] = deepClone(oldVal[item], hash)
-    }else{
-      Object.defineProperty(newVal, item, Object.getOwnPropertyDescriptor(oldVal, item))
-    }
-  });
-
-  return newVal;
-}
 
 // flatArray
 // es flat
@@ -306,10 +352,6 @@ function lensProp(path, obj = {}) {
     } else {
       obj = obj[propList[i]];
     }
-  }
-
-  function isObject(val) {
-    return Object.prototype.toString.call(val).slice(8, -1) === "Object";
   }
 
   return obj;
@@ -437,6 +479,7 @@ function reFormateMoney(str) {
 }
 reFormateMoney("¥1,231");
 
+// backTrack
 // 无序不相等正数组中，选取 N 个数，使其和为 M
 function findSumList(list, N, M) {
   let res = [];
@@ -609,10 +652,10 @@ function repeat(func, times, ms, immediate) {
   return inner;
 }
 // const repeatFunc = repeat(console.log, 4, 3000);
-// repeatFunc("hellworld"); //会打印4次 helloworld，每次间隔3秒
+// repeatFunc("hello world"); //会打印4次 helloworld，每次间隔3秒
 
 const repeatFunc = repeat(console.log, 4, 3000, true);
-repeatFunc("hellworld"); //先立即打印一个hellworld，然后每个三秒打印三个hellworld
+repeatFunc("hello world"); //先立即打印一个hellworld，然后每个三秒打印三个hello world
 
 // 周期执行某个函数 n 次
 function repeat1(func, times, ms, immediate) {
@@ -671,52 +714,6 @@ function strReverse2(str) {
   return `${strReverse(str.slice(1))}${str[0]}`;
 }
 
-// 函数节流
-function throttle(func, ms, immediate) {
-  let last = null;
-
-  return function inner(...args) {
-    let now = Date.now();
-    if (last === null && immediate) {
-      func.apply(this, args);
-      last = Date.now();
-      return;
-    }
-    if (last === null) {
-      last = Date.now();
-      return;
-    }
-    if (now - last >= ms) {
-      func.apply(this, args);
-      last = Date.now();
-      return;
-    }
-  };
-}
-
-// 函数防抖
-function debounce(func, ms, immediate) {
-  let timerId = null;
-  // 用于占位 timerId
-  let backId = 111;
-
-  return function inner(...args) {
-    if (timerId === null && immediate) {
-      func.apply(this, args);
-      timerId = backId;
-      return;
-    }
-    if (timerId && timerId !== backId) {
-      clearTimeout(timerId);
-      // 必须要先 clear 再将 timerId = null
-      timerId = backId;
-    }
-    timerId = setTimeout(() => {
-      func.apply(this, args);
-      timerId = backId;
-    }, ms);
-  };
-}
 
 // 要求不用数学库，求 sqrt(2)精确到小数点后 10 位
 function sqrt(num, smallNum = 10) {
@@ -749,11 +746,11 @@ function isSubStr(subStr, str) {
   let subLen = subStr.length;
   let i = 0;
   while (i < str.length) {
-    let strat = i;
+    let start = i;
     let j = 0;
-    while (j < subLen && str[strat] === subStr[j]) {
+    while (j < subLen && str[start] === subStr[j]) {
       j++;
-      strat++;
+      start++;
     }
     if (j === subLen) {
       return true;
@@ -994,3 +991,46 @@ function findParent(dom, path = '') {
 
 // 获取页面所有的 tagname
 // [...new Set([...document.querySelectorAll('*')].map(item => item.tagName.toLowerCase()))]
+
+// JS实现一个带并发限制的异步调度器Scheduler，保证同时运行的任务最多有两个
+// http://blog.mapplat.com/public/javascript/%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8Epromise%E7%9A%84%E9%97%AE%E9%A2%98/
+class Scheduler {
+  constructor(num) {
+    this.size = num;
+    this.awaitArr = [];
+    this.curNum = 0;
+  }
+
+  async add(promiseCreator) { 
+    if(this.curNum >= this.size) {
+      await new Promise((resolve, reject) => {
+        this.awaitArr.push(resolve);
+      })
+    }
+    // 1
+    this.curNum++;
+    let res = await promiseCreator()
+    this.curNum--;
+    if(this.awaitArr.length > 0) {
+      // resolve() 调用后，代码将从1开始继续执行
+      this.awaitArr.shift()();
+    }
+    return res;
+   }
+}
+
+const timeout = (time) => new Promise(resolve => {
+  setTimeout(resolve, time)
+})
+
+const scheduler = new Scheduler(2)
+const addTask = (time, order) => {
+  scheduler.add(() => timeout(time))
+    .then(() => console.log(order))
+}
+
+addTask(1000, '1')
+addTask(500, '2')
+addTask(300, '3')
+addTask(400, '4')
+// output: 2 3 1 4
