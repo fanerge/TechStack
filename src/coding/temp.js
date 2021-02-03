@@ -259,7 +259,7 @@ addTask(300, '3')
 addTask(400, '4')
 // output: 2 3 1 4
 
-// mockStringify
+// mock JSON.stringify
 function jsonStringify(data, hash = new WeakSet()) {
   let type = typeof data;
   let funUndSym = ['function', 'undefined', 'symbol'];
@@ -298,7 +298,7 @@ function jsonStringify(data, hash = new WeakSet()) {
         }
       });
 
-      // 调用了数组的 toString 方法
+      // 隐式调用了数组的 toString 方法
       result = `[${result}]`
       return result.replace(/\'/g, '"')
     }else {
@@ -316,6 +316,11 @@ function jsonStringify(data, hash = new WeakSet()) {
       return `{${result}}`.replace(/'/g, '"')
     }
   }
+}
+
+// mock JSON.parse
+function jsonParse(str) {
+  return eval("(" + str + ")");
 }
 
 // 模拟加法
