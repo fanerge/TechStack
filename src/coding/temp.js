@@ -66,6 +66,24 @@ function deepClone(oldVal, hash = new WeakMap()) {
   return newVal;
 }
 
+// 自定义call
+export function myCall() {
+  let [thisArg, ...args] = Array.from(arguments);
+  if (!thisArg) {
+      //context 为 null 或者是 undefined
+      thisArg = typeof window === 'undefined' ? global : window;
+  }
+  // this 的指向的是当前函数 func (func.call)
+  // 为thisArg对象添加func方法，func方法又指向myCall，所以在func中this指向thisArg
+  thisArg.func = this;
+  // 执行函数
+  let result = thisArg.func(...args);
+  // let result = eval('thisArg.func(...args)');
+  // thisArg 上并没有 func 属性，因此需要移除
+  delete thisArg.func; 
+  return result;
+}
+
 // bind
 Function.prototype.myBind = function (ctx, ...args) {
   if (!ctx) {
@@ -129,40 +147,37 @@ function debounce(func, ms, immediate) {
   };
 }
 
-// 模拟加法
-function bitSum(a, b) {
-  if (a === 0) return b;
-  if (b === 0) return a;
-
-  return bitSum(a ^ b, (a & b) << 1);
+// mock new
+function mockNew(constructor, ...args) {
+  if(typeof constructor !== 'function') {
+    throw Error('constructor must be a function');
+  }
+  // 新建空对象
+  let obj = {}; // new Object()
+  // 继承原型链中的方法
+  Object.setPrototypeOf(obj, constructor.prototype);
+  let res = constructor.call(obj, ...args);
+  if(typeof res === 'object' && res !== null || typeof res === 'function') {
+    return res;
+  }
+  return obj;
 }
 
-// 大数相加
-function bigNumSum(a, b) {
-  a = String(a);
-  b = String(b);
-  let maxLen = Math.max(a.length, b.length);
-
-  let aPad = a.padStart(maxLen, "0");
-  let bPad = b.padStart(maxLen, "0");
-
-  let flag = 0;
-  let temp = [];
-  for (let i = maxLen - 1; i >= 0; i--) {
-    let cur = flag + +aPad[i] + +bPad[i];
-    if (cur > 9) {
-      flag = 1;
-    } else {
-      flag = 0;
-    }
-    temp.unshift(cur);
+// mock instanceof
+// Symbol.hasInstance 可以为自定义的类自定义 instanceof 行为
+function mockInstanceOf(left, right) {
+  // obj instanceOf Cons
+  if(typeof left !== 'object' || left === null) return false;
+  if(typeof right !== 'function') {
+    throw Error('right must be a function')
   }
-
-  if (flag === 1) {
-    temp.unshift(1);
+  let proto = Object.getPrototypeOf(left);
+  let prototype = right.prototype;
+  while(true) {
+    if(proto === null) return false;
+    if(proto === prototype) return true;
+    proto = Object.getPrototypeOf(proto);
   }
-
-  return temp.join("");
 }
 
 // curry
@@ -199,6 +214,85 @@ function pipe(...funcs) {
       return acc;
     }, args);
   };
+}
+
+// JS实现一个带并发限制的异步调度器Scheduler，保证同时运行的任务最多有两个
+// http://blog.mapplat.com/public/javascript/%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8Epromise%E7%9A%84%E9%97%AE%E9%A2%98/
+class Scheduler {
+  constructor(num) {
+    this.size = num;
+    this.awaitArr = [];
+    this.curNum = 0;
+  }
+
+  async add(promiseCreator) { 
+    if(this.curNum >= this.size) {
+      await new Promise((resolve, reject) => {
+        this.awaitArr.push(resolve);
+      })
+    }
+    // 1
+    this.curNum++;
+    let res = await promiseCreator()
+    this.curNum--;
+    if(this.awaitArr.length > 0) {
+      // resolve() 调用后，代码将从1开始继续执行
+      this.awaitArr.shift()();
+    }
+    return res;
+   }
+}
+
+const timeout = (time) => new Promise(resolve => {
+  setTimeout(resolve, time)
+})
+
+const scheduler = new Scheduler(2)
+const addTask = (time, order) => {
+  scheduler.add(() => timeout(time))
+    .then(() => console.log(order))
+}
+
+addTask(1000, '1')
+addTask(500, '2')
+addTask(300, '3')
+addTask(400, '4')
+// output: 2 3 1 4
+
+// 模拟加法
+function bitSum(a, b) {
+  if (a === 0) return b;
+  if (b === 0) return a;
+
+  return bitSum(a ^ b, (a & b) << 1);
+}
+
+// 大数相加
+function bigNumSum(a, b) {
+  a = String(a);
+  b = String(b);
+  let maxLen = Math.max(a.length, b.length);
+
+  let aPad = a.padStart(maxLen, "0");
+  let bPad = b.padStart(maxLen, "0");
+
+  let flag = 0;
+  let temp = [];
+  for (let i = maxLen - 1; i >= 0; i--) {
+    let cur = flag + +aPad[i] + +bPad[i];
+    if (cur > 9) {
+      flag = 1;
+    } else {
+      flag = 0;
+    }
+    temp.unshift(cur);
+  }
+
+  if (flag === 1) {
+    temp.unshift(1);
+  }
+
+  return temp.join("");
 }
 
 // 循环有序列表的查找
@@ -714,7 +808,6 @@ function strReverse2(str) {
   return `${strReverse(str.slice(1))}${str[0]}`;
 }
 
-
 // 要求不用数学库，求 sqrt(2)精确到小数点后 10 位
 function sqrt(num, smallNum = 10) {
   if (num < 0) return NaN;
@@ -991,46 +1084,3 @@ function findParent(dom, path = '') {
 
 // 获取页面所有的 tagname
 // [...new Set([...document.querySelectorAll('*')].map(item => item.tagName.toLowerCase()))]
-
-// JS实现一个带并发限制的异步调度器Scheduler，保证同时运行的任务最多有两个
-// http://blog.mapplat.com/public/javascript/%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8Epromise%E7%9A%84%E9%97%AE%E9%A2%98/
-class Scheduler {
-  constructor(num) {
-    this.size = num;
-    this.awaitArr = [];
-    this.curNum = 0;
-  }
-
-  async add(promiseCreator) { 
-    if(this.curNum >= this.size) {
-      await new Promise((resolve, reject) => {
-        this.awaitArr.push(resolve);
-      })
-    }
-    // 1
-    this.curNum++;
-    let res = await promiseCreator()
-    this.curNum--;
-    if(this.awaitArr.length > 0) {
-      // resolve() 调用后，代码将从1开始继续执行
-      this.awaitArr.shift()();
-    }
-    return res;
-   }
-}
-
-const timeout = (time) => new Promise(resolve => {
-  setTimeout(resolve, time)
-})
-
-const scheduler = new Scheduler(2)
-const addTask = (time, order) => {
-  scheduler.add(() => timeout(time))
-    .then(() => console.log(order))
-}
-
-addTask(1000, '1')
-addTask(500, '2')
-addTask(300, '3')
-addTask(400, '4')
-// output: 2 3 1 4
