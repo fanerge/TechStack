@@ -259,6 +259,65 @@ addTask(300, '3')
 addTask(400, '4')
 // output: 2 3 1 4
 
+// mockStringify
+function jsonStringify(data, hash = new WeakSet()) {
+  let type = typeof data;
+  let funUndSym = ['function', 'undefined', 'symbol'];
+  if(type !== 'object') {
+    // basic
+    if(type === 'bigint') {
+      throw TypeError('Do not know how to serialize a BigInt')
+    }
+    if(Number.isNaN(data) || data === Infinity || data === -Infinity) {
+      return 'null'
+    }else if(funUndSym.includes(type)) {
+      return undefined
+    }else if(type === 'string'){
+      return `"${data}"`;
+    }
+    return String(data)
+  }else if(type === 'object'){
+    if(data === null) {
+      return 'null'
+    }
+    // 循环引用检测
+    if(hash.has(data)) {
+      throw TypeError('Converting circular structure to JSON');
+    }
+    hash.add(data)
+    if(data.toJSON && typeof data.toJSON === 'function') {
+      // Date
+      return jsonStringify(data.toJSON(), hash);
+    }else if(data instanceof Array) {
+      let result = [];
+      data.forEach((item, index) => {
+        if(funUndSym.includes(typeof item)) {
+          result[index] = 'null'
+        }else{
+          result[index] = jsonStringify(item, hash)
+        }
+      });
+
+      // 调用了数组的 toString 方法
+      result = `[${result}]`
+      return result.replace(/\'/g, '"')
+    }else {
+      // 处理普通对象
+      let result = [];
+      Object.keys(data).forEach((item, index) => {
+        // 对象的 key 为 symbol 时直接忽略
+        if(typeof item !== 'symbol') {
+          if(!funUndSym.some(item1 => item1 === typeof data[item])) {
+            result.push(`"${item}":${jsonStringify(data[item], hash)}`)
+          }
+        } 
+      })
+
+      return `{${result}}`.replace(/'/g, '"')
+    }
+  }
+}
+
 // 模拟加法
 function bitSum(a, b) {
   if (a === 0) return b;
