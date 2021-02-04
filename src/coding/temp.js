@@ -259,6 +259,123 @@ addTask(300, '3')
 addTask(400, '4')
 // output: 2 3 1 4
 
+// 实现一个基本的EventEmitter
+class EventEmitter {
+  constructor() {
+    let map = new Map();
+    this.map = map;
+  }
+
+  on(name, func) {
+    const {map} = this;
+    if(name === undefined) {
+      throw Error('name 必填')
+    } 
+    if(typeof func !== 'function') {
+      throw Error('func 必须是一个函数')
+    }
+    let list = []
+    if(map.has(name)) {
+      list = map.get(name)
+    }
+    // 如果 func 已经存在，不需要重复添加
+    if(list.includes(func)) return;
+    list.push(func)
+    map.set(name, list)
+  }
+
+  // on 和 off 方法组合
+  once(name, func) {
+    let self = this;
+    if(name === undefined) {
+      throw Error('name 必填')
+    } 
+    if(typeof func !== 'function') {
+      throw Error('func 必须是一个函数')
+    }
+    // **重点**
+    // 改造 func 方法
+    function tempFunc(...args) {
+      func(...args);
+      // 执行万后移除即可
+      self.off(name, tempFunc)
+    }
+    this.on(name, tempFunc)
+  }
+
+  off(name, func) {
+    const {map} = this;
+    if(name === undefined) {
+      throw Error('name 必填')
+    }
+    if(func === undefined) {
+      // clear all
+      map.delete(name);
+    }else{
+      let list = map.get(name) || []
+      let index = list.findIndex(f => func === f);
+      index >= 0 && list.splice(index, 1);
+      if(list.length === 0) {
+        map.delete(name);
+      }else{
+        map.set(name, list)
+      }
+    }
+  }
+
+  emit(name, func, ...args) {
+    const {map} = this;
+    if(name === undefined) {
+      throw Error('name 必填')
+    }
+    let list = map.get(name) || []
+    if(typeof func !== 'function') {
+      // 所有函数都执行一遍
+      list.forEach(f => {
+        f(...args)
+      });
+    }else{
+      let f = list.find(f => func === f);
+      typeof f === 'function' && f(...args);
+    }
+  }
+}
+
+// LRUCache
+class LRUCache{
+  constructor(size) {
+    this.map = new Map();
+    this.size = size;
+  }
+
+  set(key, val) {
+    const {map, size} = this;
+    if(map.has(key)) {
+      map.delete(key)
+      map.set(key, val)
+    } else if(map.size < size) {
+      map.set(key, val)
+    }else{
+      // 空间不够删掉第一个
+      let firstKey = map.keys().next().value;
+      map.delete(firstKey);
+      map.set(key, val)
+    }
+  }
+
+  get(key) {
+    const {map} = this;
+    let oldVal;
+    if(map.has(key)) {
+      oldVal = map.get(key)
+      map.delete(key)
+      map.set(key, oldVal)
+    }
+    return oldVal;
+  }
+}
+
+
 // mock JSON.stringify
 function jsonStringify(data, hash = new WeakSet()) {
   let type = typeof data;
@@ -1144,7 +1261,6 @@ function findParent(dom, path = '') {
   path = `${tagName}[${index}]${path}`
   return findParent(parentNode, path)
 }
-
 
 // 获取页面所有的 tagname
 // [...new Set([...document.querySelectorAll('*')].map(item => item.tagName.toLowerCase()))]

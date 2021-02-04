@@ -10,6 +10,13 @@ Jenkins、CircleCI、Github Actions、Gitlab CI
 
 npm、yarn、pnpm
 
+## 资源压缩（图片）
+
+[tinypng-支持 png 和 jpg](https://tinypng.com/)
+[imagemin](https://www.npmjs.com/package/imagemin)
+[imagemin-jpegtran](https://www.npmjs.com/package/imagemin-jpegtran)
+[imagemin-pngquant](https://www.npmjs.com/package/imagemin-pngquant)
+
 ## 项目组织方案
 
 SourceMap、
