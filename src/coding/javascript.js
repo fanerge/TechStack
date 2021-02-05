@@ -526,7 +526,7 @@ function flatArray(list, res = [], n) {
 }
 
 // getUrlParams
-function urlParmams2Map(href) {
+function urlParams2Map(href) {
   let map = new Map();
   // http://lucifer.ren?a=1&b=2&a=3
   let queryIndex = href.indexOf("?");
@@ -551,6 +551,7 @@ function urlParmams2Map(href) {
 
   return map;
 }
+
 
 // 用 reduce 实现 map
 function map(list, func, ctx = null) {
@@ -593,6 +594,16 @@ class Queue {
   get size() {
     return this.inStack.length;
   }
+}
+
+// 时针和分针的夹角？
+function calcAngle(h, m) {
+  // 分别计算与0的夹角
+  // 1小时 30 度，1分钟再走 0.5 度。
+  let mAngle = m * (360 / 60);
+  let hAngle = Math.abs(h % 12 + m / 60) * (360 / 12)
+
+  return Math.abs(hAngle - mAngle)
 }
 
 // 判断是否是完全二叉树 fix
