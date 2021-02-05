@@ -17,6 +17,35 @@ npm、yarn、pnpm
 [imagemin-jpegtran](https://www.npmjs.com/package/imagemin-jpegtran)
 [imagemin-pngquant](https://www.npmjs.com/package/imagemin-pngquant)
 
+### 合理利用 git hook
+
+如帮 UI 团队在 commit 时压缩图片（团队小伙伴实现）
+思路，每次 commit 之前执行一段 shell 脚本，该脚本作用，找出本次提交且在‘/assets/(.\*).png’的文件，
+新建 target 文件夹放压缩后的文件，然后循环执行压缩图片命令再将压缩产出的图片重定向到 target 文件。
+
+```
+install.sh
+chmod +x pngquant
+cp ./pre-commit.sh .git/hooks/pre-commit
+
+// pre-commit.sh
+#!/bin/bash
+files=($(git diff --cached --name-only | grep -Ei "assets/(.*)/.png"))
+for((i=0; i<${#files[@]};i++))
+do
+	source=${files[$i]}
+	echo $source
+	target=$(echo $source | sed 's/\/assets\/compress/')
+	path=$(dirname $target)
+	echo "processing: $source"
+	mkdir -p "$path"
+	#pngquant 为可执行的二进制文件
+	./pngquant - < $source > $target
+	echo "compressed $target"
+done
+
+```
+
 ## 项目组织方案
 
 SourceMap、
