@@ -42,6 +42,7 @@ homebrew 安装
 
 ## 常用的 npm 包
 
+```
 数字格式化：numeral
 数字计算精度问题：Math.js/decimal.js/big.js/BigNumber.js
 时间格式化：moment/dayjs
@@ -51,18 +52,22 @@ process.env 动态添加配置：dotenv
 请求库（client & server）：isomorphic-unfetch
 捕获错误信息：@sentry/browser、@sentry/node
 表单验证库（支持异步验证）：async-validator
-分步引导库： driver.js
+分步引导库（操作引导）： driver.js
+实现拖拽：react-dnd 和 react-draggable
+预览 PDF：react-pdf-viewer 
+播放视频：Video-React
+列表问题的解决（虚拟滚动）：react-window 和 react-virtualized
 随机数：uuid
 前端状态机（流程开发）：xstate
 web 黏贴板：clipboard
 代码格式化：prettier
-操作引导：driver.js
 代理配置（开发环境）：http-proxy-middleware
 富文本编辑器：Quill、tinymce
 元素尺寸改变监听：element-resize-event、iframe-resizer
 polyfill（兼容）：stickyfilljs
 git hook：husky
 移动端调试：vConsole、eruda
+```
 
 ## react 系列
 
