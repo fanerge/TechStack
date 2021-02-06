@@ -27,6 +27,7 @@ export function myCall() {
   thisArg.func = this;
   // 执行函数
   let result = thisArg.func(...args);
+  // let result = eval('thisArg.func(...args)');
   // thisArg 上并没有 func 属性，因此需要移除
   delete thisArg.func; 
   return result;
@@ -44,6 +45,7 @@ export function myApply() {
   thisArg.func = this;
   // 执行函数
   let result = thisArg.func(...args);
+  // let result = eval('thisArg.func(...args)');
   // thisArg 上并没有 func 属性，因此需要移除
   delete thisArg.func; 
   return result;
