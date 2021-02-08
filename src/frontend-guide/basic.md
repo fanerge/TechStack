@@ -71,7 +71,7 @@ Yarn 在安装依赖时会自动执行 dedupe 命令
 
 ### npm 多源镜像
 
-1.  使用 preinstall hook，来管理多源
+1.  使用 preinstall hook，写脚本来管理多源
 2.  [nrm](https://www.npmjs.com/package/nrm)
 3.  私服，现在社区上主要有 3 种工具来搭建 npm 私服：nexus、verdaccio 以及 cnpm。
 
