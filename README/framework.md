@@ -91,7 +91,7 @@ process.env 动态添加配置：dotenv
 表单验证库（支持异步验证）：async-validator
 分步引导库（操作引导）： driver.js
 实现拖拽：react-dnd 和 react-draggable
-预览 PDF：react-pdf-viewer 
+预览 PDF：react-pdf-viewer
 播放视频：Video-React
 列表问题的解决（虚拟滚动）：react-window 和 react-virtualized
 随机数：uuid
@@ -104,6 +104,7 @@ web 黏贴板：clipboard
 polyfill（兼容）：stickyfilljs
 git hook：husky
 移动端调试：vConsole、eruda
+menu-aim: react-menu-aim、es6-menu-aim
 ```
 
 ## react 系列
