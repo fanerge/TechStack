@@ -60,8 +60,41 @@ npm unlink npm-package-1
 1.  npx 可以自动去当前项目的 node_modules/.bin 路径和环境变量 $PATH 里面检查命令是否存在
 2.  npx 执行模块时会优先安装依赖，但是在安装执行后便删除此依赖，这就避免了全局安装模块带来的问题
 
-## npm 多源镜像
+### npm dedupe
+
+```
+// 重新计算依赖关系，然后将包结构整理得更合理，调整 node_modules 内文件结构
+npm dedupe
+npm ddp
+Yarn 在安装依赖时会自动执行 dedupe 命令
+```
+
+### npm 多源镜像
 
 1.  使用 preinstall hook，来管理多源
 2.  [nrm](https://www.npmjs.com/package/nrm)
 3.  私服，现在社区上主要有 3 种工具来搭建 npm 私服：nexus、verdaccio 以及 cnpm。
+
+# yarn
+##  Yarn 缓存
+```
+// 查看缓存内容
+yarn cache dir
+```
+##  Yarn 安装机制
+Yarn 的安装过程主要有以下 5 大步骤
+
+检测（checking）→ 解析包（Resolving Packages） → 获取包（Fetching Packages）→ 链接包（Linking Packages）→ 构建包（Building Packages）
+```
+// 检测包（checking）
+这一步主要是检测项目中是否存在一些 npm 相关文件，比如 package-lock.json 等。如果有，会提示用户注意：这些文件的存在可能会导致冲突。在这一步骤中，也会检查系统 OS、CPU 等信息。
+// 解析包（Resolving Packages）
+首先获取当前项目中 package.json 定义的 dependencies、devDependencies、optionalDependencies 的内容，这属于首层依赖。
+先采用遍历首层依赖的方式获取依赖包的版本信息，再递归获取版本信息，使用 Set 数据结构来存储（保证不会重复）。
+// 获取包（Fetching Packages）
+这一步我们首先需要检查缓存中是否存在当前的依赖包，同时将缓存中不存在的依赖包下载到缓存目录（维护一个队列，家在某个依赖包）。
+// 链接包（Linking Packages）
+上一步是将依赖下载到缓存目录，这一步是将项目中的依赖复制到项目 node_modules 下，同时遵循扁平化原则。
+// 构建包（Building Packages）
+如果依赖包中存在二进制包需要进行编译，会在这一步进行。
+```
