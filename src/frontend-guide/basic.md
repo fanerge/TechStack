@@ -63,7 +63,7 @@ npm unlink npm-package-1
 ### npm dedupe
 
 ```
-// 重新计算依赖关系，然后将包结构整理得更合理，调整 node_modules 内文件结构
+// 重新计算依赖关系，然后将包结构整理得更合理，调整 node_modules 内文件结构，Reduce duplication
 npm dedupe
 npm ddp
 Yarn 在安装依赖时会自动执行 dedupe 命令
@@ -76,15 +76,20 @@ Yarn 在安装依赖时会自动执行 dedupe 命令
 3.  私服，现在社区上主要有 3 种工具来搭建 npm 私服：nexus、verdaccio 以及 cnpm。
 
 # yarn
-##  Yarn 缓存
+
+## Yarn 缓存
+
 ```
 // 查看缓存内容
 yarn cache dir
 ```
-##  Yarn 安装机制
+
+## Yarn 安装机制
+
 Yarn 的安装过程主要有以下 5 大步骤
 
 检测（checking）→ 解析包（Resolving Packages） → 获取包（Fetching Packages）→ 链接包（Linking Packages）→ 构建包（Building Packages）
+
 ```
 // 检测包（checking）
 这一步主要是检测项目中是否存在一些 npm 相关文件，比如 package-lock.json 等。如果有，会提示用户注意：这些文件的存在可能会导致冲突。在这一步骤中，也会检查系统 OS、CPU 等信息。
@@ -98,3 +103,28 @@ Yarn 的安装过程主要有以下 5 大步骤
 // 构建包（Building Packages）
 如果依赖包中存在二进制包需要进行编译，会在这一步进行。
 ```
+
+# 工具
+
+```
+// 查看所有 npm config
+npm config ls
+// 设置某个 name
+npm config set [name] [value]
+// 列出过时的 package
+npm outdated
+// 移除无关的 package
+npm prune
+// package 文档
+npm docs [name]
+// package 仓库
+npm repo [name] // npm home
+```
+
+[列出 package.json scripts-ntl](https://www.npmjs.com/package/wait-on)
+[并行运行脚本-npm-run-all](https://www.npmjs.com/package/npm-run-all)
+[并行运行脚本-Concurrently](https://www.npmjs.com/package/concurrently)
+[npmrc-管理相关配置](https://www.npmjs.com/package/npmrc)
+[npm 源管理-nrm](https://github.com/Pana/nrm)<br>
+[node 版本管理-nvm/mac](https://github.com/nvm-sh/nvm)<br>
+[node 版本管理-n/mac](https://github.com/tj/n)
