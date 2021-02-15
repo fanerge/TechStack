@@ -2,6 +2,15 @@
 
 [图片无版权](https://unsplash.com/)
 
+# HTML 相关
+
+[Front-End-Checklist](https://github.com/thedaviddias/Front-End-Checklist)
+[HTML/Head 详细说明](https://github.com/joshbuchea/HEAD)
+
+# W3C-Validator
+
+[css-validator](https://jigsaw.w3.org/css-validator)
+
 ## 代码部署工具
 
 Jenkins、CircleCI、Github Actions、Gitlab CI
@@ -10,13 +19,14 @@ Jenkins、CircleCI、Github Actions、Gitlab CI
 
 npm、yarn、pnpm
 
-## 资源压缩（图片）
+## 资源压缩（图片/SVG）
 
 [tinypng-支持 png 和 jpg](https://tinypng.com/)
 [pngquant](https://pngquant.org/)
 [imagemin](https://www.npmjs.com/package/imagemin)
 [imagemin-jpegtran](https://www.npmjs.com/package/imagemin-jpegtran)
 [imagemin-pngquant](https://www.npmjs.com/package/imagemin-pngquant)
+[压缩-svg](https://github.com/svg/svgo)
 
 ### 合理利用 git hook
 
