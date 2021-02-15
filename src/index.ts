@@ -42,8 +42,8 @@ require("./algorithm/template.js");
 import "./algorithm/floodfill";
 import "./algorithm/heap"
 import "./utils/promise"
-import "./javascript"
 import "./test"
+import "./coding/javascript"
 
 // 栈
 // const stack: Stack = new Stack();

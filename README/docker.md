@@ -186,9 +186,13 @@ docker info
 
 OCI 全称为开放容器标准（Open Container Initiative），它是一个轻量级、开放的治理结构，目前主要有两个标准文档：容器运行时标准 （runtime spec）和容器镜像标准（image spec）。
 
+![](../img/docker-workflow.png)
+
 ## 镜像（images）
 
 它是一个只读的文件和文件夹组合，它包含了容器运行时所需要的所有基础文件和配置信息，是容器启动的基础。
+
+![](../img/docker/docker-images.png)
 
 ### 镜像操作
 
@@ -242,6 +246,8 @@ docker system prune -f
 ## 容器（container）
 
 容器是基于镜像创建的可运行实例，并且单独存在，一个镜像可以创建出多个容器。运行容器化环境时，实际上是在容器内部创建该文件系统的读写副本。 这将添加一个容器层，该层允许修改镜像的整个副本。
+
+![](../img/docker/docker-container.png)
 
 ### 容器的生命周期
 

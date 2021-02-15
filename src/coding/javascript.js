@@ -18,7 +18,8 @@ let obj = {
   [Symbol('1')]: 1,
 };
 Object.defineProperty(obj, 'innumerable', {
-  enumerable: false, value: '不可枚举属性' }
+  enumerable: false, value: '不可枚举属性'
+}
 );
 obj = Object.create(obj, Object.getOwnPropertyDescriptors(obj))
 obj.loop = obj    // 设置loop成循环引用的属性
@@ -28,37 +29,37 @@ function isComplexType(val) {
 }
 function deepClone(oldVal, hash = new WeakMap()) {
   // 基本类型
-  if(!isComplexType(oldVal)) {
+  if (!isComplexType(oldVal)) {
     return oldVal;
   }
 
   // 引用类型
   let constructor = oldVal.constructor
   // Date
-  if(constructor === Date) {
+  if (constructor === Date) {
     return new Date(oldVal)
   }
   // RegExp
-  if(constructor === RegExp) {
+  if (constructor === RegExp) {
     return new RegExp(oldVal)
   }
   // Function 
-  if(constructor === Function) {
+  if (constructor === Function) {
     // 闭包原理
     return new Function(`return ${oldVal.toString()}`)()
   }
-  if(hash.has(oldVal)) {
+  if (hash.has(oldVal)) {
     return hash.get(oldVal)
   }
   let newVal = new constructor()
   Object.setPrototypeOf(newVal, Object.getPrototypeOf(oldVal))
   hash.set(oldVal, newVal);
-  
+
   // Object.getOwnPropertyNames\Object.getOwnPropertySymbols
   Reflect.ownKeys(oldVal).forEach(item => {
-    if(isComplexType(oldVal[item])) {
+    if (isComplexType(oldVal[item])) {
       newVal[item] = deepClone(oldVal[item], hash)
-    }else{
+    } else {
       Object.defineProperty(newVal, item, Object.getOwnPropertyDescriptor(oldVal, item))
     }
   });
@@ -70,8 +71,8 @@ function deepClone(oldVal, hash = new WeakMap()) {
 export function myCall() {
   let [thisArg, ...args] = Array.from(arguments);
   if (!thisArg) {
-      //context 为 null 或者是 undefined
-      thisArg = typeof window === 'undefined' ? global : window;
+    //context 为 null 或者是 undefined
+    thisArg = typeof window === 'undefined' ? global : window;
   }
   // this 的指向的是当前函数 func (func.call)
   // 为thisArg对象添加func方法，func方法又指向myCall，所以在func中this指向thisArg
@@ -80,7 +81,7 @@ export function myCall() {
   let result = thisArg.func(...args);
   // let result = eval('thisArg.func(...args)');
   // thisArg 上并没有 func 属性，因此需要移除
-  delete thisArg.func; 
+  delete thisArg.func;
   return result;
 }
 
@@ -149,7 +150,7 @@ function debounce(func, ms, immediate) {
 
 // mock new
 function mockNew(constructor, ...args) {
-  if(typeof constructor !== 'function') {
+  if (typeof constructor !== 'function') {
     throw Error('constructor must be a function');
   }
   // 新建空对象
@@ -157,7 +158,7 @@ function mockNew(constructor, ...args) {
   // 继承原型链中的方法
   Object.setPrototypeOf(obj, constructor.prototype);
   let res = constructor.call(obj, ...args);
-  if(typeof res === 'object' && res !== null || typeof res === 'function') {
+  if (typeof res === 'object' && res !== null || typeof res === 'function') {
     return res;
   }
   return obj;
@@ -167,15 +168,15 @@ function mockNew(constructor, ...args) {
 // Symbol.hasInstance 可以为自定义的类自定义 instanceof 行为
 function mockInstanceOf(left, right) {
   // obj instanceOf Cons
-  if(typeof left !== 'object' || left === null) return false;
-  if(typeof right !== 'function') {
+  if (typeof left !== 'object' || left === null) return false;
+  if (typeof right !== 'function') {
     throw Error('right must be a function')
   }
   let proto = Object.getPrototypeOf(left);
   let prototype = right.prototype;
-  while(true) {
-    if(proto === null) return false;
-    if(proto === prototype) return true;
+  while (true) {
+    if (proto === null) return false;
+    if (proto === prototype) return true;
     proto = Object.getPrototypeOf(proto);
   }
 }
@@ -225,8 +226,8 @@ class Scheduler {
     this.curNum = 0;
   }
 
-  async add(promiseCreator) { 
-    if(this.curNum >= this.size) {
+  async add(promiseCreator) {
+    if (this.curNum >= this.size) {
       await new Promise((resolve, reject) => {
         this.awaitArr.push(resolve);
       })
@@ -235,12 +236,12 @@ class Scheduler {
     this.curNum++;
     let res = await promiseCreator()
     this.curNum--;
-    if(this.awaitArr.length > 0) {
+    if (this.awaitArr.length > 0) {
       // resolve() 调用后，代码将从1开始继续执行
       this.awaitArr.shift()();
     }
     return res;
-   }
+  }
 }
 
 const timeout = (time) => new Promise(resolve => {
@@ -253,10 +254,10 @@ const addTask = (time, order) => {
     .then(() => console.log(order))
 }
 
-addTask(1000, '1')
-addTask(500, '2')
-addTask(300, '3')
-addTask(400, '4')
+// addTask(1000, '1')
+// addTask(500, '2')
+// addTask(300, '3')
+// addTask(400, '4')
 // output: 2 3 1 4
 
 // 实现一个基本的EventEmitter
@@ -267,19 +268,19 @@ class EventEmitter {
   }
 
   on(name, func) {
-    const {map} = this;
-    if(name === undefined) {
+    const { map } = this;
+    if (name === undefined) {
       throw Error('name 必填')
-    } 
-    if(typeof func !== 'function') {
+    }
+    if (typeof func !== 'function') {
       throw Error('func 必须是一个函数')
     }
     let list = []
-    if(map.has(name)) {
+    if (map.has(name)) {
       list = map.get(name)
     }
     // 如果 func 已经存在，不需要重复添加
-    if(list.includes(func)) return;
+    if (list.includes(func)) return;
     list.push(func)
     map.set(name, list)
   }
@@ -287,10 +288,10 @@ class EventEmitter {
   // on 和 off 方法组合
   once(name, func) {
     let self = this;
-    if(name === undefined) {
+    if (name === undefined) {
       throw Error('name 必填')
-    } 
-    if(typeof func !== 'function') {
+    }
+    if (typeof func !== 'function') {
       throw Error('func 必须是一个函数')
     }
     // **重点**
@@ -304,37 +305,37 @@ class EventEmitter {
   }
 
   off(name, func) {
-    const {map} = this;
-    if(name === undefined) {
+    const { map } = this;
+    if (name === undefined) {
       throw Error('name 必填')
     }
-    if(func === undefined) {
+    if (func === undefined) {
       // clear all
       map.delete(name);
-    }else{
+    } else {
       let list = map.get(name) || []
       let index = list.findIndex(f => func === f);
       index >= 0 && list.splice(index, 1);
-      if(list.length === 0) {
+      if (list.length === 0) {
         map.delete(name);
-      }else{
+      } else {
         map.set(name, list)
       }
     }
   }
 
   emit(name, func, ...args) {
-    const {map} = this;
-    if(name === undefined) {
+    const { map } = this;
+    if (name === undefined) {
       throw Error('name 必填')
     }
     let list = map.get(name) || []
-    if(typeof func !== 'function') {
+    if (typeof func !== 'function') {
       // 所有函数都执行一遍
       list.forEach(f => {
         f(...args)
       });
-    }else{
+    } else {
       let f = list.find(f => func === f);
       typeof f === 'function' && f(...args);
     }
@@ -342,20 +343,20 @@ class EventEmitter {
 }
 
 // LRUCache
-class LRUCache{
+class LRUCache {
   constructor(size) {
     this.map = new Map();
     this.size = size;
   }
 
   set(key, val) {
-    const {map, size} = this;
-    if(map.has(key)) {
+    const { map, size } = this;
+    if (map.has(key)) {
       map.delete(key)
       map.set(key, val)
-    } else if(map.size < size) {
+    } else if (map.size < size) {
       map.set(key, val)
-    }else{
+    } else {
       // 空间不够删掉第一个
       let firstKey = map.keys().next().value;
       map.delete(firstKey);
@@ -364,9 +365,9 @@ class LRUCache{
   }
 
   get(key) {
-    const {map} = this;
+    const { map } = this;
     let oldVal;
-    if(map.has(key)) {
+    if (map.has(key)) {
       oldVal = map.get(key)
       map.delete(key)
       map.set(key, oldVal)
@@ -380,37 +381,37 @@ class LRUCache{
 function jsonStringify(data, hash = new WeakSet()) {
   let type = typeof data;
   let funUndSym = ['function', 'undefined', 'symbol'];
-  if(type !== 'object') {
+  if (type !== 'object') {
     // basic
-    if(type === 'bigint') {
+    if (type === 'bigint') {
       throw TypeError('Do not know how to serialize a BigInt')
     }
-    if(Number.isNaN(data) || data === Infinity || data === -Infinity) {
+    if (Number.isNaN(data) || data === Infinity || data === -Infinity) {
       return 'null'
-    }else if(funUndSym.includes(type)) {
+    } else if (funUndSym.includes(type)) {
       return undefined
-    }else if(type === 'string'){
+    } else if (type === 'string') {
       return `"${data}"`;
     }
     return String(data)
-  }else if(type === 'object'){
-    if(data === null) {
+  } else if (type === 'object') {
+    if (data === null) {
       return 'null'
     }
     // 循环引用检测
-    if(hash.has(data)) {
+    if (hash.has(data)) {
       throw TypeError('Converting circular structure to JSON');
     }
     hash.add(data)
-    if(data.toJSON && typeof data.toJSON === 'function') {
+    if (data.toJSON && typeof data.toJSON === 'function') {
       // Date
       return jsonStringify(data.toJSON(), hash);
-    }else if(data instanceof Array) {
+    } else if (data instanceof Array) {
       let result = [];
       data.forEach((item, index) => {
-        if(funUndSym.includes(typeof item)) {
+        if (funUndSym.includes(typeof item)) {
           result[index] = 'null'
-        }else{
+        } else {
           result[index] = jsonStringify(item, hash)
         }
       });
@@ -418,16 +419,16 @@ function jsonStringify(data, hash = new WeakSet()) {
       // 隐式调用了数组的 toString 方法
       result = `[${result}]`
       return result.replace(/\'/g, '"')
-    }else {
+    } else {
       // 处理普通对象
       let result = [];
       Object.keys(data).forEach((item, index) => {
         // 对象的 key 为 symbol 时直接忽略
-        if(typeof item !== 'symbol') {
-          if(!funUndSym.some(item1 => item1 === typeof data[item])) {
+        if (typeof item !== 'symbol') {
+          if (!funUndSym.some(item1 => item1 === typeof data[item])) {
             result.push(`"${item}":${jsonStringify(data[item], hash)}`)
           }
-        } 
+        }
       })
 
       return `{${result}}`.replace(/'/g, '"')
@@ -763,7 +764,7 @@ function reFormateMoney(str) {
   // return str.replace(/,/g, '').replace(/^[^\d]*/, '')
   return str.replace(/[^\d\.]/g, "");
 }
-reFormateMoney("¥1,231");
+// reFormateMoney("¥1,231");
 
 // backTrack
 // 无序不相等正数组中，选取 N 个数，使其和为 M
@@ -916,6 +917,47 @@ function mergeSort(ary) {
     mergeSort(ary.slice(mid))
   );
 }
+
+// heapSort
+// 大根堆
+function heapSort(arr) {
+  let len = arr.length;
+  // 交互
+  function swap(i, j) {
+    let temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+  // 调整堆
+  function maxHeapify(start, end) {
+    let dad = start;
+    // 左孩子为 start * 2 + 1；右孩子为 start * 2 + 2；
+    let son = start * 2 + 1;
+    // 做孩子不能越界
+    if (son >= end) return;
+    // 右孩子也不能越界且左孩子小于右孩子
+    if (son + 1 < end && arr[son] < arr[son + 1]) {
+      son++;
+    }
+    // 若有孩子大于父节点则交换且调整堆
+    if (arr[dad] <= arr[son]) {
+      swap(dad, son);
+      maxHeapify(son, end);
+    }
+  }
+  // 处理父节点的顺序
+  for (let i = Math.floor(len / 2) - 1; i >= 0; i--) {
+    maxHeapify(i, len);
+  }
+  // 根据父节点和叶子节点的大小对比，进行堆的调整
+  for (let j = len - 1; j > 0; j--) {
+    swap(0, j);
+    maxHeapify(0, j);
+  }
+  return arr;
+}
+var heapList = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
+console.log(heapSort(heapList));
 
 function repeat(func, times, ms, immediate) {
   let count = 0;
@@ -1260,13 +1302,13 @@ function getXPath(dom) {
 }
 
 function findParent(dom, path = '') {
-  if(dom === document.body) {
+  if (dom === document.body) {
     return path === '' ? 'body' : `body>${path}`
   }
   let parentNode = dom.parentNode;
   let tagName = dom.tagName.toLowerCase();
   let index = [...parentNode.children].findIndex(item => item === dom)
-  if(path !== '') {
+  if (path !== '') {
     path = `>${path}`
   }
   path = `${tagName}[${index}]${path}`
