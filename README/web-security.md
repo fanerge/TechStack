@@ -3,11 +3,11 @@
 ```
 Burp Suite：集成化的 Web 应用测试工具 // Chrome 上的插件“Proxy SwitchyOmega”来快速切换代理
 Acunetix WVS（Web Vulnerability Scanner）
-Xray：Web 漏洞扫描器
-Goby：基于网络空间测绘的漏洞扫描器
+Xray：Web 漏洞扫描器 // https://docs.xray.cool/
+Goby：基于网络空间测绘的漏洞扫描器 // https://cn.gobies.org/index.html
 SQLMap：SQL 注入检测与利用
-Nmap：网络扫描与主机检测
-Postman：模拟发包工具
+Nmap：网络扫描与主机检测 // https://nmap.org/book/toc.html
+Postman：模拟发包工具 // https://learning.postman.com/docs/getting-started/introduction/
 HackBar：安全测试插件
 NC（NetCat）：网络瑞士军刀
 Metasploit：渗透测试平台
