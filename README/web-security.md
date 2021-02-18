@@ -13,63 +13,75 @@ NC（NetCat）：网络瑞士军刀
 Metasploit：渗透测试平台
 ```
 
-# 信息收集实践
+# 信息收集工具
+
+主要对渗透目标进行子域名与 IP 收集、端口服务探测、网站指纹识别、旁站与 C 段查询、WAF 探测和敏感信息收集。
+[漏洞奖励域名/bounty-targets-data](https://github.com/arkadiyt/bounty-targets-data)
 
 ## 子域名与 IP 收集
 
-bounty-targets-data\OneForAll、subDomainsBrute、subfinder、ESD、Amass、DNSDumpster 和 Subdomain Finder。
+[OneForAll](https://github.com/shmilylty/OneForAll)、
+[subDomainsBrute](https://github.com/lijiejie/subDomainsBrute)、
+[subfinder](https://github.com/projectdiscovery/subfinder)、
+[ESD](https://github.com/FeeiCN/ESD)、
+[Amass](https://github.com/OWASP/Amass)、
+[DNSDumpster](https://dnsdumpster.com/)、
+[Subdomain Finder](https://subdomainfinder.c99.nl/)
 
 ## 端口服务探测
 
+[Nmap：网络扫描与主机检测](https://nmap.org/book/toc.html)
 Nmap -A lagou.com
 
 ## 网站指纹识别
 
-Wappalyzer
+[chrome Wappalyzer](https://www.wappalyzer.com/)
+[在线检测网站](https://scan.top15.cn/)
+其他检测指纹的工具还有 WhatWeb、WPScan、JoomScan 等
 
 ## 旁站与 C 段查询
 
 旁站即同一服务器上的其他域名网站，如果你能攻下该旁站，就有机会间接拿到目标网站的权限。
-//
-https://www.webscan.cc/
-// ip 查询
-https://chapangzhan.com/
+[WebScan](https://www.webscan.cc/)
+[ip 查询](https://chapangzhan.com/)
 
 ## WAF 探测
 
 当网站开启 WAF（Web 防火墙）时，很多测试请求都会被拦截，导致无法正常扫描。
-SQLMap\TScan
+SQLMap
+[TScan](https://scan.top15.cn/web/)
 
 ## 敏感信息收集
 
-Recon-NG 是一款被动信息收集工具，它可以通过搜索获取 IP 地址、地理位置、用户、邮件地址、密码泄露或者其他敏感信息，最终生成一份完整报告。
+收集 GitHub 相关的敏感信息
+[Gitrob](https://github.com/michenriksen/gitrob)、
+[码小六](https://github.com/4x99/code6)、
+[GitMonitor](https://github.com/Talkaboutcybersecurity/GitMonitor)
+
+制作字典用来猜解一些相关账号和密码
+[Wordhound](https://github.com/kurobeats/wordhound)、
+[BruteScrape](https://github.com/cheetz/brutescrape)、
+
+其他途径
+[Recon-NG 是一款被动信息收集工具，它可以通过搜索获取 IP 地址、地理位置、用户、邮件地址、密码泄露或者其他敏感信息，最终生成一份完整报告。](https://github.com/lanmaster53/recon-ng)
+[社交平台上收集信息](https://github.com/kennbroorg/iKy)
+[discover 综合工具](https://github.com/leebaird/discover)
 
 # 靶场
 
-```
-sqli-labs 靶场
-sqli-labs 是一款用于学习 SQL 注入的靶场平台，覆盖了各种类型的 SQL 注入，题目共 75 道
-DVWA 靶场
-DVWA（Damn Vulnerable Web Application）是一款比较著名的漏洞靶场，很多 Web 安全的初学者都会拿它来练习
-Pikachu 靶场
-Pikachu 也是一款 Web 漏洞靶场，涵盖各种 Web 漏洞类型的练习，也是基于 PHP+MySQL 搭建的平台，是由国人开发的。
+[sqli-labs 是一款用于学习 SQL 注入的靶场平台，覆盖了各种类型的 SQL 注入，题目共 75 道](https://github.com/Audi-1/sqli-labs)、
+[DVWA（Damn Vulnerable Web Application）很多 Web 安全的初学者都会拿它来练习](https://github.com/digininja/DVWA)、
+[Pikachu 靶场](https://github.com/zhuifengshaonianhanlu/pikachu)
+
 CTF 赛题练习
 CTF（Capture The Flag）夺旗赛，在网络安全领域中指的是网络安全技术人员之间进行技术竞技的一种比赛形式。
-XCTF 攻防世界
-https://adworld.xctf.org.cn
-SQL 注入挑战平台
-http://redtiger.labs.overthewire.org
-韩国 Web 安全挑战平台
-https://webhacking.kr/
-Websec CTF 练习平台
-http://www.websec.fr/
-网络信息安全攻防学习平台
-http://hackinglab.cn/index.php
-国外的 XSS 挑战平台
-http://prompt.ml/
-VulHub 真实漏洞靶场
-https://github.com/vulhub/vulhub
-```
+[XCTF 攻防世界](https://adworld.xctf.org.cn)、
+[SQL 注入挑战平台](http://redtiger.labs.overthewire.org)、
+[韩国 Web 安全挑战平台](https://webhacking.kr/)、
+[Websec CTF 练习平台](http://www.websec.fr/)、
+[网络信息安全攻防学习平台](http://hackinglab.cn/index.php)、
+[国外的 XSS 挑战平台](http://prompt.ml/)、
+[VulHub 真实漏洞靶场](https://github.com/vulhub/vulhub)
 
 # 跨站脚本（Cross Site Scripting，XSS）
 
@@ -173,4 +185,5 @@ SELECT username, password FROM users WHERE username=''or'1'='1' and password=''o
 ```
 
 # XXE XML External Entity，XML 外部实体注入
+
 是当允许引用外部实体时，通过构造恶意内容，导致读取任意文件、执行系统命令、内网探测与攻击等危害的一类漏洞。
