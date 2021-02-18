@@ -108,7 +108,10 @@ Content-Security-Policy: script-src 'self'; object-src 'none';style-src cdn.exam
 // 通过网页的<meta>标签设置
 <meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:">
 ```
-
+[XSS 攻击框架 BeEF](https://github.com/beefproject/beef)
+[XSS 漏洞扫描的开源工具/XSStrike](https://github.com/s0md3v/XSStrike)
+[批量扫描/NoXss](https://github.com/lwzSoviet/NoXss)
+[自动化源码审计工具/Kunlun-M](https://github.com/LoRexxar/Kunlun-M)
 # 跨站请求伪造（Cross-site Request Forgery，CSRF/XSRF）
 
 ## 原理
