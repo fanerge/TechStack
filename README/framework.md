@@ -7,6 +7,10 @@
 [Front-End-Checklist](https://github.com/thedaviddias/Front-End-Checklist)
 [HTML/Head 详细说明](https://github.com/joshbuchea/HEAD)
 
+# 分支管理策略
+
+Feature Flag VS Feature Branches
+
 # W3C-Validator
 
 [css-validator](https://jigsaw.w3.org/css-validator)
