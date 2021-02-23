@@ -309,4 +309,5 @@ GOAWAY 帧指示可能已经处理的最高流号码。因此，数量较多的�
 REFUSED_STREAM 错误代码可以包含在 RST_STREAM 帧中，以指示在发生任何处理之前流正在关闭。可以安全地重试在重置流上发送的任何请求。
 
 > 参考文档：
-> [规范](https://httpwg.org/specs/rfc7540.html) > [规范](https://quafoo.gitbooks.io/http2-rfc7540-zh-cn-en) > [TTP/2 协议规范](https://blog.csdn.net/u010129119/article/details/79361949)
+> [规范](https://httpwg.org/specs/rfc7540.html)
+> [规范](https://quafoo.gitbooks.io/http2-rfc7540-zh-cn-en) > [TTP/2 协议规范](https://blog.csdn.net/u010129119/article/details/79361949)

@@ -7,9 +7,42 @@
 [Front-End-Checklist](https://github.com/thedaviddias/Front-End-Checklist)
 [HTML/Head 详细说明](https://github.com/joshbuchea/HEAD)
 
-# 分支管理策略
+# git
+
+## git ssh 相关
+
+// 生成 ssh 密钥
+ssh-keygen -t rsa -C "your_email@example.com"
+// 将密钥添加到 ssh-agent 服务
+ssh-add ~/.ssh/id_rsa
+// 测试是否成功
+ssh -T git@github.com
+
+## 分支管理策略
 
 Feature Flag VS Feature Branches
+
+## rebase vs merge
+
+Git merge 和 rebase 的目的是一样的，它们都是将多个分支合并成一个，但这两种方法实现的方式是不同的。
+
+### merge
+
+1. fast-forward 方式就是当条件允许的时候，git 直接把 HEAD 指针指向合并分支的头，完成合并（不产生一个新的 commit）。
+2. git merge --no-ff // 关闭 fast-forward 方式
+3. git merge --squash // 可以对 commit 进行压缩
+
+### rebase
+
+rebase 主要可以保证我们的 commit 历史呈线性的，始终把我们的代码放在最前面（有一个线性且清晰的 commit 历史记录）。
+rebase 通常是发生在自己的个人 branch 上的，在主分之上 rebase 容易出 bug（如多个人在主分支上 rebase 会产生多个 HEAD，这时再 push 的会出问题）。
+
+```
+如果有冲突，处理冲突
+git add
+git rebase --continue
+it rebase —-abort
+```
 
 # W3C-Validator
 
@@ -71,15 +104,6 @@ Mock：Mock.js 和 Faker.js、YApi 和 Apifox
 
 multrepo：将项目分化成为多个模块，并针对每一个模块单独的开辟一个 reporsitory 来进行管理。
 monorepo：是将所有的模块统一的放在一个主干分支之中管理。不进行分库存储，当有特定的需要的时候进行分支，但是问题修改还是在主干上操作，并有专门人员合并到分支内容上，在特定需求完结的时候，分支也将会被废弃。
-
-## git ssh 相关
-
-// 生成 ssh 密钥
-ssh-keygen -t rsa -C "your_email@example.com"
-// 将密钥添加到 ssh-agent 服务
-ssh-add ~/.ssh/id_rsa
-// 测试是否成功
-ssh -T git@github.com
 
 ## 提高效率的 VScode 插件
 

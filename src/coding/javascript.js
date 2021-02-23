@@ -124,6 +124,30 @@ function throttle(func, ms, immediate) {
   };
 }
 
+// proxy throttle
+function proxyThrottle(func, ms, immediate) {
+  let last = null
+  return new Proxy(func, {
+    apply(target, thisArg, argumentsList) {
+      let now = Date.now()
+      if (last === null && immediate) {
+        target.apply(thisArg, argumentsList)
+        last = Date.now()
+        return
+      }
+      if (last === null) {
+        last = Date.now()
+        return
+      }
+      if (now - last >= ms) {
+        target.apply(thisArg, argumentsList)
+        last = Date.now()
+        return
+      }
+    }
+  })
+}
+
 // 函数防抖
 function debounce(func, ms, immediate) {
   let timerId = null;
