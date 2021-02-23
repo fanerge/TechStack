@@ -148,6 +148,36 @@ function proxyThrottle(func, ms, immediate) {
   })
 }
 
+// AOP 面向切面编程：动态地将代码切入到类的指定方法、指定位置上的编程思想就是面向切面的编程。
+Function.prototype.before = function(fn) {
+  return (...args) => {
+    // 执行原函数前，需要执行的函数 fn
+    fn.apply(this, args)
+    return this.apply(this, args)
+  }
+}
+Function.prototype.after = function(fn) {
+  return (...args) => {
+    // 执行原函数后，需要执行的函数 fn
+    const result = this.apply(this, args)
+    fn.apply(this, args)
+    return result
+  }
+}
+const validate = function(){
+  // 表单验证逻辑
+}
+const formSubmit = function() {
+  // 表单提交逻辑
+  ajax( 'http:// xxx.com/login', param )
+}
+// AOP 运用
+const submitBtn = 'submitBtn'
+submitBtn.onclick = function() {
+  // 将会在提交之前验证表单
+  formSubmit.before( validate )
+}
+
 // 函数防抖
 function debounce(func, ms, immediate) {
   let timerId = null;
@@ -206,6 +236,7 @@ function mockInstanceOf(left, right) {
 }
 
 // curry
+// 理解为提前接收部分参数，延迟执行，不立即输出结果，而是返回一个接受剩余参数的函数。
 function curry(func) {
   const ctx = this;
 
@@ -215,7 +246,28 @@ function curry(func) {
       ? func.call(ctx, ...args)
       : (...rest) => inner.call(ctx, ...args, ...rest);
   };
+
+  // (...rest) => inner.call(ctx, ...args, ...rest) 也可以使用 Function.prototype.bind 来预置参数
+  // curry(func.bind(ctx,...args), len)
 }
+
+// 反 curry 化在于扩大函数的适用性，使本来作为特定对象所拥有的功能函数可以被任意对象使用(依赖于上下文环境)。
+// const unCurry = fn => (...args) => fn.call(...args)
+function unCurry(fn) {
+  return function(...args) {
+    const ctx = args.shift();
+    return fn.apply(ctx, args);
+  }
+}
+Function.prototype.unCurrying = function(){
+  return (...args) => {
+      return Function.prototype.call.apply(this, args);
+  }
+}
+// 反curry 运用
+// var toString = Object.prototype.toString.unCurry();
+// toString('12') === '[object Number]'
+
 
 // compose right -> left
 function compose(...funcs) {
