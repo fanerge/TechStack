@@ -7,6 +7,12 @@
 [Front-End-Checklist](https://github.com/thedaviddias/Front-End-Checklist)
 [HTML/Head 详细说明](https://github.com/joshbuchea/HEAD)
 
+# shell
+
+## shellCheck
+
+[shellCheck](https://www.shellcheck.net/)
+
 # git
 
 ## git ssh 相关
