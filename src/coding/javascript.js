@@ -268,6 +268,17 @@ Function.prototype.unCurrying = function(){
 // var toString = Object.prototype.toString.unCurry();
 // toString('12') === '[object Number]'
 
+// thunk 函数
+// 它的基本思路都是接收一定的参数，会生产出定制化的函数，最后使用定制化的函数去完成想要实现的功能。
+let isType = (type) => {
+  return (obj) => {
+    return Object.prototype.toString.call(obj) === `[object ${type}]`;
+  }
+}
+let isString = isType('String');
+let isNumber = isType('Number');
+isString('str') // true
+
 
 // compose right -> left
 function compose(...funcs) {
