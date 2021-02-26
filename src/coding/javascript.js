@@ -613,6 +613,52 @@ function flatArray(list, res = [], n) {
   return res;
 }
 
+// lazyman
+class LazyMan {
+  constructor(name) {
+    this.name = name;
+    this.todoQueue = [];
+    console.log(`Hi I am ${name}`);
+    setTimeout(() => {
+      this.next();
+    }, 0);
+  }
+  next() {
+    let fn = this.todoQueue.shift();
+    fn && typeof fn === 'function' && fn();
+  }
+  sleep(s) {
+    let fn = () => {
+      setTimeout(() => {
+        console.log(`睡${s}秒钟`);
+        this.next();
+      }, s*1000)
+    }
+    this.todoQueue.push(fn)
+    return this;
+  }
+  sleepFirst(s) {
+    let fn = () => {
+      setTimeout(() => {
+        console.log(`睡${s}秒钟`);
+        this.next();
+      }, s*1000)
+    }
+    this.todoQueue.unshift(fn)
+    return this;
+  }
+  eat(food) {
+    let fn = () => {
+      console.log(`吃${food}`)
+      this.next();
+    }
+    this.todoQueue.push(fn)
+
+    return this;
+  }
+}
+// var lazy = new LazyMan('yzf').sleep(1).eat('yu').sleep(2).eat('fan').sleepFirst(3)
+
 // getUrlParams
 function urlParams2Map(href) {
   let map = new Map();
