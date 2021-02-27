@@ -182,6 +182,27 @@ sudo systemctl start docker
 docker info
 ```
 
+# 搭建开发环境
+使用 docker 搭建开发环境
+```
+1.  书写Dockerfile文件
+Dockerfile
+2.  Build an image from a Dockerfile
+imageName 为你构建的镜像名（可加tag），dirName为Dockerfile所在目录
+docker image build -t imageName dirName
+3.  镜像产出到容器（create + start || run）
+docker create [OPTIONS] IMAGE [COMMAND] [ARG...]
+docker start [OPTIONS] CONTAINER [CONTAINER...]
+docker container run -it --name=busybox busybox // create + start
+```
+##  更好的方式
+```
+简化 Dockerfile ，在系统上安装必须的依赖如 git node 等
+不要把项目代码打包到镜像，通过docker提供了挂载点，可以让容器访问我们本机的文件系统
+来实现修改本地代码，docker 对应挂载文件对应代码也更新
+// /Users/yuzhenfan/Desktop/coding/techStack 为项目地址
+docker container run -p 8888:8888 -v /Users/yuzhenfan/Desktop/coding/techStack:/project -it --name=teach-stack teach-stack /bin/bash 
+```
 # 核心概念
 
 OCI 全称为开放容器标准（Open Container Initiative），它是一个轻量级、开放的治理结构，目前主要有两个标准文档：容器运行时标准 （runtime spec）和容器镜像标准（image spec）。
@@ -213,11 +234,15 @@ docker image rm busybox
 // 将当前运行的 busybox commit 为一个 busybox tag 为hello 的镜像
 docker commit busybox busybox:hello
 // 2.   使用docker build命令从 Dockerfile 构建镜像。
+// docker build [OPTIONS] PATH | URL | -
+// docker image build 
 ```
 
 ### Docker file 指令
+[Dockerfile书写实践](./书写规范Dockerfile.md)
 作用是构建镜像。
 Dockerfile 的每一行命令都会生成一个独立的镜像层，并且拥有唯一的 ID
+docker build  // 使用 Dockerfile 创建镜像
 
 ```
 Dockerfile 指令 指令简介

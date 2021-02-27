@@ -20,12 +20,12 @@ module.exports = {
         // hotOnly: true
     },
     resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ]
+        extensions: ['.tsx', '.ts', '.js']
     },
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-                title: '开发环境'
+            title: '开发环境'
         }),
         new webpack.HotModuleReplacementPlugin()
     ],
