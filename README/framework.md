@@ -50,6 +50,11 @@ git rebase --continue
 it rebase —-abort
 ```
 
+# Node.js
+
+Node 版本管理，nvm、n
+npm 源管理，nrm
+
 # W3C-Validator
 
 [css-validator](https://jigsaw.w3.org/css-validator)
