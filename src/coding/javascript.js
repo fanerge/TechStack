@@ -149,14 +149,14 @@ function proxyThrottle(func, ms, immediate) {
 }
 
 // AOP 面向切面编程：动态地将代码切入到类的指定方法、指定位置上的编程思想就是面向切面的编程。
-Function.prototype.before = function(fn) {
+Function.prototype.before = function (fn) {
   return (...args) => {
     // 执行原函数前，需要执行的函数 fn
     fn.apply(this, args)
     return this.apply(this, args)
   }
 }
-Function.prototype.after = function(fn) {
+Function.prototype.after = function (fn) {
   return (...args) => {
     // 执行原函数后，需要执行的函数 fn
     const result = this.apply(this, args)
@@ -164,18 +164,18 @@ Function.prototype.after = function(fn) {
     return result
   }
 }
-const validate = function(){
+const validate = function () {
   // 表单验证逻辑
 }
-const formSubmit = function() {
+const formSubmit = function () {
   // 表单提交逻辑
-  ajax( 'http:// xxx.com/login', param )
+  ajax('http:// xxx.com/login', param)
 }
 // AOP 运用
 const submitBtn = 'submitBtn'
-submitBtn.onclick = function() {
+submitBtn.onclick = function () {
   // 将会在提交之前验证表单
-  formSubmit.before( validate )
+  formSubmit.before(validate)
 }
 
 // 函数防抖
@@ -254,14 +254,14 @@ function curry(func) {
 // 反 curry 化在于扩大函数的适用性，使本来作为特定对象所拥有的功能函数可以被任意对象使用(依赖于上下文环境)。
 // const unCurry = fn => (...args) => fn.call(...args)
 function unCurry(fn) {
-  return function(...args) {
+  return function (...args) {
     const ctx = args.shift();
     return fn.apply(ctx, args);
   }
 }
-Function.prototype.unCurrying = function(){
+Function.prototype.unCurrying = function () {
   return (...args) => {
-      return Function.prototype.call.apply(this, args);
+    return Function.prototype.call.apply(this, args);
   }
 }
 // 反curry 运用
@@ -632,7 +632,7 @@ class LazyMan {
       setTimeout(() => {
         console.log(`睡${s}秒钟`);
         this.next();
-      }, s*1000)
+      }, s * 1000)
     }
     this.todoQueue.push(fn)
     return this;
@@ -642,7 +642,7 @@ class LazyMan {
       setTimeout(() => {
         console.log(`睡${s}秒钟`);
         this.next();
-      }, s*1000)
+      }, s * 1000)
     }
     this.todoQueue.unshift(fn)
     return this;
@@ -1093,10 +1093,15 @@ var heapList = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
 console.log(heapSort(heapList));
 
 // 0.1+0.2 !== 0.3 IEEE756 64bit 表示数字
-// 数字的表示：1位符号位s，11为指数位e，52位尾数位f（-1^s*1.{f52}*2^e）
-// 1.进制转换和对阶运算会发生精度丢失
-// why进制转换？计算机硬件决定，只能进行2进制运算
-// why对阶运算？两个进行运算的浮点数必须阶码对齐（指数位数相同），才能进行尾数加减运算
+/**
+ * 符号位：决定正负，0为正，1为负(1位符号位)
+ * 阶码：指数位则为阶码-1023，决定了数值的大小(11位指数位)
+ * 尾数：有效数字，决定了精度(52位尾数位)
+ * 科学计数法：(-1^(符号位0/1)) 1.xxxxx(尾数位) 2^(指数位)
+ * 1.进制转换和对阶运算会发生精度丢失
+ * why进制转换？计算机硬件决定，只能进行2进制运算
+ * why对阶运算？两个进行运算的浮点数必须阶码对齐（指数位数相同），才能进行尾数加减运算
+ */
 
 function repeat(func, times, ms, immediate) {
   let count = 0;
