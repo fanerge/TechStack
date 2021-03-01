@@ -115,6 +115,8 @@ monorepo：是将所有的模块统一的放在一个主干分支之中管理。
 
 Code Spell Checker、Todo Tree、Bracket Pair Colorizer、draw.io
 
+Remote-Development、Remote-Containers、Remote-SSH
+
 ## mac 相关
 
 homebrew 安装
