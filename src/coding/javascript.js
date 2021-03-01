@@ -1092,6 +1092,12 @@ function heapSort(arr) {
 var heapList = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
 console.log(heapSort(heapList));
 
+// 0.1+0.2 !== 0.3 IEEE756 64bit 表示数字
+// 数字的表示：1位符号位s，11为指数位e，52位尾数位f（-1^s*1.{f52}*2^e）
+// 1.进制转换和对阶运算会发生精度丢失
+// why进制转换？计算机硬件决定，只能进行2进制运算
+// why对阶运算？两个进行运算的浮点数必须阶码对齐（指数位数相同），才能进行尾数加减运算
+
 function repeat(func, times, ms, immediate) {
   let count = 0;
   const ctx = null;

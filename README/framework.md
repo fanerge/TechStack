@@ -50,6 +50,14 @@ git rebase --continue
 it rebase —-abort
 ```
 
+# Node.js
+
+```
+Node 版本管理：nvm、n
+npm 源管理：nrm
+daemon：forever、pm2、
+```
+
 # W3C-Validator
 
 [css-validator](https://jigsaw.w3.org/css-validator)
@@ -126,6 +134,7 @@ homebrew 安装
 ## 常用的 npm 包
 
 ```
+数字处理：Math.js、big.js
 数字格式化：numeral
 数字计算精度问题：Math.js/decimal.js/big.js/BigNumber.js
 时间格式化：moment/dayjs
