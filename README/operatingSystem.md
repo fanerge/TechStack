@@ -667,9 +667,9 @@ func mark(obj) {
 ```
 //
 process.memoryUsage()
-node --max-new-space-size = 1024 test.js //单位为kb
+node --max_new_space_size = 1024 test.js //单位为kb
 // 或者
-node --max-old-space-size=1700 test.js //单位为MB
+node --max_old_space_size=1700 test.js //单位为MB
 ```
 
 # 文件系统
