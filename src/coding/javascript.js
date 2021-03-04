@@ -173,10 +173,10 @@ const formSubmit = function () {
 }
 // AOP 运用
 const submitBtn = 'submitBtn'
-submitBtn.onclick = function () {
-  // 将会在提交之前验证表单
-  formSubmit.before(validate)
-}
+// submitBtn.onclick = function () {
+//   // 将会在提交之前验证表单
+//   formSubmit.before(validate)
+// }
 
 // 函数防抖
 function debounce(func, ms, immediate) {
@@ -998,6 +998,21 @@ Promise.all = (promises) =>
 // );
 // p2.then(console.log).catch((...args) => console.log("fail", ...args));
 
+// Promise.prototype.finally
+Promise.prototype.finally = function(callback) {
+  // Promise
+  const P = this.constructor;
+  return this.then((value) => {
+    return P.resolve(callback()).then(() => {
+      return value;
+    })
+  }, (reason) => {
+    return P.resolve(callback()).then(() => {
+      throw reason;
+    })
+  })
+}
+
 // quickSort
 // 找一个基准点，比基准点小的放一个数组，比基准点大的放另一个数组。
 // [1, 3, 2, 9, 6, 5, 1, 0, -2, 10]
@@ -1090,7 +1105,7 @@ function heapSort(arr) {
   return arr;
 }
 var heapList = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
-console.log(heapSort(heapList));
+// console.log(heapSort(heapList));
 
 // 0.1+0.2 !== 0.3 IEEE756 64bit 表示数字
 /**
@@ -1102,6 +1117,83 @@ console.log(heapSort(heapList));
  * why进制转换？计算机硬件决定，只能进行2进制运算
  * why对阶运算？两个进行运算的浮点数必须阶码对齐（指数位数相同），才能进行尾数加减运算
  */
+
+// 随机生成一个长度为10的数组，将数组转化为对应的二维数组
+// 生成两个整数之前的整数包含两端
+function randomNum(min = 0, max = 30) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function genArray(len) {
+  let temp = new Array(len).fill(0).map(item => randomNum(0, 30))
+  return temp;
+}
+function toSolutionArray(ary) {
+  const num = 10;
+  ary.sort((a,b) => a-b);
+  let map = new Map();
+  ary.forEach(item => {
+    let key = +parseInt(item/num)
+    if(!map.has(key)) map.set(key, [])
+    let oldVals = map.get(key);
+    oldVals.push(item)
+    // map.set(key, [...oldVals, item])
+  })
+  return [...map.values()];
+}
+// console.log(toSolutionArray(genArray(10)))
+
+// 大小写反转
+function reverseCase(str) {
+  return [...str].reduce((acc, item, index) => {
+    let upperCase = item.toUpperCase()
+    item = item === upperCase ? item.toLowerCase() : upperCase;
+    return `${acc}${item}`
+  }, '');
+}
+
+// 字符串 S 中是否存在字符串 T 并返回最开始相同的 index
+function findSubStrIndex(str, subStr) {
+  // dp[i][j] 表示连续相等的字符个数
+  let strLen = str.length;
+  let subStrLen = subStr.length;
+  let dp = new Array(strLen+1)
+  for(let i=0; i<strLen+1; i++) {
+    dp[i] = new Array(subStrLen + 1).fill(0);
+  }
+
+  for(let i=1; i<strLen+1; i++) {
+    for(let j=1; j<subStrLen+1; j++) {
+      if(str[i-1] === subStr[j-1]) {
+        dp[i][j] = dp[i-1][j-1] + 1;
+      }else{
+        dp[i][j] = 0;
+      }
+      if(dp[i][j] === subStrLen ) {
+        return i-subStrLen;
+      }
+    }
+  }
+
+  return -1;
+}
+function findSubStrIndex2(str, subStr) {
+  let strLen = str.length;
+  let subStrLen = subStr.length;
+  if(strLen < subStrLen) return -1;
+
+  for(let i=0; i<strLen-subStrLen+1; i++) {
+    let temp = str.slice(i, i+subStrLen);
+    if(temp === subStr) {
+      console.log(i)
+      return i;
+    }
+  }
+  console.log(-1)
+  return -1;
+}
+// findSubStrIndex2('12312344', '1234')
 
 function repeat(func, times, ms, immediate) {
   let count = 0;
