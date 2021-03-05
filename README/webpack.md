@@ -1,12 +1,30 @@
-# 入口(entry)
+# Webpack 的基本工作流程（webpack4）
 
-入口起点(entry point)指示 webpack 应该使用哪个模块，来作为构建其内部依赖图的开始。
+# 添加配置智能提示
 
-# 出口(output)
+```
+// 在对应的 webpack.config.js中添加
+/** @type {import('webpack').Configuration} */
+```
 
-output 属性告诉 webpack 在哪里输出它所创建的 bundles，以及如何命名这些文件，默认值为 ./dist。
+## 原理
 
-# loader
+1.  VSCode 中的类型系统都是基于 TypeScript 的，所以可以直接按照这种方式使用。
+2.  @type 类型注释的方式是基于  JSDoc  实现的
+
+# webpack 的构建流程是什么?
+
+Webpack 的运行流程是一个串行的过程，从启动到结束会依次执行以下流程：
+初始化参数：从配置文件和 Shell 语句中读取与合并参数，得出最终的参数；
+开始编译：用上一步得到的参数初始化 Compiler 对象，加载所有配置的插件，执行对象的 run 方法开始执行编译；
+确定入口：根据配置中的 entry 找出所有的入口文件；
+编译模块：从入口文件出发，调用所有配置的 Loader 对模块进行翻译，再找出该模块依赖的模块，再递归本步骤直到所有入口依赖的文件都经过了本步骤的处理；
+完成模块编译：在经过第 4 步使用 Loader 翻译完所有模块后，得到了每个模块被翻译后的最终内容以及它们之间的依赖关系；
+输出资源：根据入口和模块之间的依赖关系，组装成一个个包含多个模块的 Chunk，再把每个 Chunk 转换成一个单独的文件加入到输出列表，这步是可以修改输出内容的最后机会；
+输出完成：在确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统。
+在以上过程中，Webpack 会在特定的时间点广播出特定的事件，插件在监听到感兴趣的事件后会执行特定的逻辑，并且插件可以调用 Webpack 提供的 API 改变 Webpack 的运行结果。
+
+# Loaders
 
 loader 让 webpack 能够去处理那些非 JavaScript 文件（webpack 自身只理解 JavaScript）。loader 可以将所有类型的文件转换为 webpack 能够处理的有效模块，然后你就可以利用 webpack 的打包能力，对它们进行处理。<br>
 loader 的本质其实就是一个方法，接收到的字符串，对字符串进行操作后输出字符串。<br>
@@ -35,7 +53,22 @@ module.exports = function (code) {
 }
 ```
 
-# 插件(plugins)
+## 常用 Loader 作用
+
+```
+sass-loader：加载 sass、scss 编译为 css
+css-loader：将css代码转化为js代码（数组）
+style-loader：将css注入到DOM中
+file-loader：在 JavaScript 代码里 import/require 一个文件时，会将该文件生成到输出目录，并且在 JavaScript 代码里返回该文件的地址
+url-loader：将文件转换为 base64 的url
+babel-loader：将ESnext转换为ES5代码
+ImageMinimizerPlugin.loader：通过 imagemin 来优化压缩图片资源
+postcss-loader：把 CSS 代码解析成抽象语法树结构（AST），再交由插件来进行处理（PostCSS如添加浏览器前缀、CSS模块解决命名冲突、stylelin检查css中语法）
+eslint-loader：EslintWebpackPlugin 检查js代码语法
+source-map-loader：从源文件 sourceMappingURL 中提取出 source map
+```
+
+# Plugins
 
 插件的范围包括，从打包优化和压缩，一直到重新定义环境中的变量。插件接口功能极其强大，可以用来处理各种各样的任务。<br>
 plugin 扩展 webpack 的功能来满足自己的需要，换句话说，loader 不能满足的时候，就需要 plugin 了。<br>
@@ -53,9 +86,328 @@ class ConsoleLogOnBuildWebpackPlugin {
 }
 ```
 
-# 模式
+## 有哪些常见的 Plugin？他们是解决什么问题的？
 
-通过选择 development 或 production 之中的一个，来设置 mode 参数，你可以启用相应模式下的 webpack 内置的优化。
+```
+define-plugin：定义环境变量
+commons-chunk-plugin：提取公共代码 //webpack4 移除了，用 optimization.splitChunks 和 optimization.runtimeChunk 来代替
+uglifyjs-webpack-plugin：通过 UglifyES 压缩 ES6 代码
+clean-webpack-plugin：删除打包文件
+happypack：实现多线程加速编译
+html-webpack-plugin 为 html 文件中引入的外部资源，可以生成创建 html 入口文件
+```
+
+# Loader 和 Plugin 的不同？
+
+## 编写 loader 或 plugin 的思路
+
+Loader 像一个"翻译官"把读到的源文件内容转义成新的文件内容，并且每个 Loader 通过链式操作，将源文件一步步翻译成想要的样子。
+编写 Loader 时要遵循单一原则，每个 Loader 只做一种"转义"工作。 每个 Loader 的拿到的是源文件内容（source），可以通过返回值的方式将处理后的内容输出，也可以调用 this.callback()方法，将内容返回给 webpack。 还可以通过 this.async()生成一个 callback 函数，再用这个 callback 将处理后的内容输出出去。 此外 webpack 还为开发者准备了开发 loader 的工具函数集——loader-utils。
+相对于 Loader 而言，Plugin 的编写就灵活了许多。 webpack 在运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
+
+## 不同的作用
+
+Loader 直译为"加载器"。Webpack 将一切文件视为模块，但是 webpack 原生是只能解析 js 文件，如果想将其他文件也打包的话，就会用到 loader。 所以 Loader 的作用是让 webpack 拥有了加载和解析非 JavaScript 文件的能力。
+Plugin 直译为"插件"。Plugin 可以扩展 webpack 的功能，让 webpack 具有更多的灵活性。 在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
+
+## 不同的用法
+
+Loader 在 module.rules 中配置，也就是说他作为模块的解析规则而存在。 类型为数组，每一项都是一个 Object，里面描述了对于什么类型的文件（test），使用什么加载(loader)和使用的参数（options）
+Plugin 在 plugins 中单独配置。 类型为数组，每一项是一个 plugin 的实例，参数都通过构造函数传入。
+
+# 热更新原理
+
+Webpack 监控文件状态，文件发生改变重新打包代码（通过 fs.watch 递归监控）<br>
+Express 建立服务，并和客户端见一个 EventSource http 链接，有打包更新通知客户端<br>
+客户端，收到服务器有打包更新的请求，客户端通过 ajax 请求，请求打包结果并解析。<br>
+[Webpack HMR 原理解析](https://zhuanlan.zhihu.com/p/30669007)
+
+```
+// js热更新配置（保存js状态）
+// module.hot.accept();
+```
+
+# 编译提效：如何为 Webpack 编译阶段提速？
+
+[统计项目构建过程中在编译阶段的耗时的插件](https://github.com/stephencookdev/speed-measure-webpack-plugin)
+[准备基于产物内容的分析工具](https://www.npmjs.com/package/webpack-bundle-analyzer)
+
+## 减少执行编译的模块
+
+### IgnorePlugin
+
+如 moment 只引入本国语言包
+
+```
+// 在构建模块时直接剔除那些需要被排除的模块
+new webpack.IgnorePlugin({
+  resourceRegExp: /^\.\/locale$/,
+  contextRegExp: /moment$/,
+})
+```
+
+### 按需引入类库模块
+
+如 lodash 中只引入使用的方法
+
+```
+import {cloneDeep} from 'lodash'
+// 或者babel-plugin-lodash 或 babel-plugin-import
+// Tree Shaking（1.依赖包使用 ES6 模块化，如lodash-es，2.Tree Shaking 并不能减少模块编译阶段的构建时间。）
+```
+
+### DllPlugin
+
+将项目依赖的框架等模块单独构建打包，与普通构建流程区分开
+利用 DllPlugin 和 DllReferencePlugin 预编译资源模块 通过 DllPlugin 来对那些我们引用但是绝对不会修改(react、jquery)的 npm 包来进行预编译，再通过 DllReferencePlugin 将预编译的模块加载进来。
+
+```
+// 如 jquery
+DllPlugin 和 DllReferencePlugin
+{
+  output: {
+    ...
+    library: '_dll_[name]'
+  },
+  plugins: [
+    // 使用插件 DllPlugin
+    new DllPlugin({
+      /*
+        该插件的name属性值需要和 output.library保存一致，该字段值，也就是输出的 manifest.json文件中name字段的值。
+        比如在jquery.manifest文件中有 name: '_dll_jquery'
+      */
+      name: '_dll_[name]',
+
+      /* 生成manifest文件输出的位置和文件名称 */
+      path: path.join(__dirname, 'dist', '[name].manifest.json')
+    }),
+    // 告诉webpack使用了哪些第三方库代码
+    new DllReferencePlugin({
+      // jquery 映射到json文件上去
+      manifest: require('./dist/jquery.manifest.json')
+    }),
+  ]
+}
+```
+
+### Externals
+
+externals 和 DllPlugin 都是将依赖的框架等模块从构建过程中移除。
+但有以下区别
+
+1.  externals 更简单，而 DllPlugin 需要独立的配置文件
+2.  DllPlugin 包含了依赖包的独立构建流程，而 externals 配置使用已传入 CDN 的依赖包
+3.  在引用依赖包的子模块时，DllPlugin 无须更改，而 externals 则会将子模块打入项目包中
+
+```
+// CDN
+<script
+  src="https://code.jquery.com/jquery-3.1.0.js"
+  integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
+  crossorigin="anonymous">
+</script>
+externals: {
+  jquery: 'jQuery'
+}
+// 使用时
+import $ from 'jquery';
+```
+
+## 提升单个模块构建的速度。
+
+### include/exclude
+
+并行构建以提升总体效率。
+include 只对符合条件的模块使用指定 Loader 进行转换处理。
+exclude 不对特定条件的模块使用该 Loader。
+如不使用 babel-loader 处理 node_modules 中的模块。
+
+### noParse
+
+module.noParse 则是在上述 include/exclude 的基础上，进一步省略了使用默认 js 模块编译器进行编译的时间
+
+```
+module: {
+  noParse: /jquery|lodash/,
+}
+```
+
+### Source Map
+
+根据项目实际情况判断是否开启 Source Map。
+在开启 Source Map 的情况下，优先选择与源文件分离的类型，例如 "source-map"。
+有条件也可以配合错误监控系统，将 Source Map 的构建和使用在线下监控后台中进行，以提升普通构建部署流程的速度。
+
+### TypeScript 编译优化
+
+在使用 ts-loader 时，由于 ts-loader 默认在编译前进行类型检查，因此编译时间往往比较慢。
+transpileOnly: true，可以在编译时忽略类型检查。
+单独使用这一功能就丧失了 TS 中重要的类型检查功能，因此在许多脚手架中往往配合 ForkTsCheckerWebpackPlugin 一同使用
+
+### Resolve
+
+Webpack 中的 resolve 配置制定的是在构建时指定查找模块文件的规则。
+resolve.modules：指定查找模块的目录范围。
+resolve.extensions：指定查找模块的文件类型范围。
+resolve.mainFields：指定查找模块的 package.json 中主文件的属性名。
+resolve.symlinks：指定在查找模块时是否处理软连接。
+
+## 并行构建以提升总体效率
+
+HappyPack 与 thread-loader
+这两种工具的本质作用相同，都作用于模块编译的 Loader 上，用于在特定 Loader 的编译过程中，以开启多进程的方式加速编译。
+parallel-webpack
+
+# 打包提效：如何为 Webpack 打包阶段提速？
+
+## 以提升当前任务工作效率为目标的方案
+
+### 面向 JS 的压缩工具
+
+TerserWebpackPlugin、UglifyJSWebpackPlugin
+
+```
+// TerserWebpackPlugin
+Cache 选项：使用缓存能够极大程度上提升再次构建时的工作效率
+Parallel 选项：并发选项在大多数情况下能够提升该插件的工作效率
+terserOptions 选项：即 Terser 工具中的 minify 选项集合。
+```
+
+### 面向 CSS 的压缩工具
+
+OptimizeCSSAssetsPlugin（在 Create-React-App 中使用）、OptimizeCSSNanoPlugin（在 VUE-CLI 中使用），以及 CSSMinimizerWebpackPlugin（2020 年 Webpack 社区新发布的 CSS 压缩插件）
+
+## 以提升后续环节工作效率为目标的方案
+
+### Split Chunks
+
+Split Chunks（分包）是指在 Chunk 生成之后，将原先以入口点来划分的 Chunks 根据一定的规则（例如异步引入或分离公共依赖等原则），分离出子 Chunk 的过程。
+Split Chunks 有诸多优点，例如有利于缓存命中、有利于运行时的持久化文件缓存等。
+
+```
+// Webpack 4 中内置的 SplitChunksPlugin，该插件在 production 模式下默认启用
+// chunks: 'async'，作用是分离动态引入的模块 (import('...'))，在处理动态引入的模块时能够自动分离其中的公共依赖。
+// 设置为 chunks: 'all'，则能够将所有的依赖情况都进行分包处理，从而减少了重复引入相同模块代码的情况。
+optimization: {
+  ...
+  splitChunks: {
+    chunks: 'all'
+  }
+}
+```
+
+### Tree Shaking
+
+Tree Shaking（摇树）是指在构建打包过程中，移除那些引入但未被使用的无效代码（Dead-code elimination）。
+因为 ES6 模块的依赖关系是确定的，因此可以进行不依赖运行时的静态分析，而 CommonJS 类型的模块则不能。
+
+Webpack 4 中 Tree Shaking 的触发条件有哪些？
+引入的模块需要是 ES6 类型的，CommonJS 类型的则不支持。
+引入方式不能使用 default。
+引用第三方依赖包的情况下，对应的 package.json 需要设置 sideEffects:false 来表明无副作用。
+使用 Babel 的情况下，需要注意不同版本 Babel 对于模块化的预设不同。
+
+# 缓存优化：那些基于缓存的优化方案?
+
+## 编译阶段的缓存优化
+
+编译过程的耗时点主要在使用不同加载器（Loader）来编译模块的过程。下面我们来分别看下几个典型 Loader 中的缓存处理：
+
+### Babel-loader
+
+Babel-loader 是绝大部分项目中会使用到的 JS/JSX/TS 编译器。在 Babel-loader 中，与缓存相关的设置主要有：
+
+```
+cacheDirectory：默认为 false，即不开启缓存。当值为 true 时开启缓存并使用默认缓存目录（./node_modules/.cache/babel-loader/），也可以指定其他路径值作为缓存目录。
+cacheIdentifier：用于计算缓存标识符。默认使用 Babel 相关依赖包的版本、babelrc 配置文件的内容，以及环境变量等与模块内容一起参与计算缓存标识符。如果上述内容发生变化，即使模块内容不变，也不能命中缓存。
+cacheCompression：默认为 true，将缓存内容压缩为 gz 包以减小缓存目录的体积。在设为 false 的情况下将跳过压缩和解压的过程，从而提升这一阶段的速度。
+```
+
+### Cache-loader
+
+需要将 cache-loader 添加到对构建效率影响较大的 Loader（如 babel-loader 等）之前，如下面的代码所示：
+
+```
+rules: [
+  {
+    test: /\.js$/,
+    use: ['cache-loader', 'babel-loader'],
+  },
+],
+```
+
+## 优化打包阶段的缓存优化
+
+### 生成 ChunkAsset 时的缓存优化
+
+在 Webpack 4 中，生成 ChunkAsset 过程中的缓存优化是受限制的：只有在 watch 模式下，且配置中开启 cache 时（development 模式下自动开启）才能在这一阶段执行缓存的逻辑，Webpack 5 无此问题。
+
+### 代码压缩时的缓存优化
+
+对于 JS 的压缩，TerserWebpackPlugin 和 UglifyJSPlugin 都是支持缓存设置的。而对于 CSS 的压缩，目前最新发布的 CSSMinimizerWebpackPlugin 支持且默认开启缓存，其他的插件如 OptimizeCSSAssetsPlugin 和 OptimizeCSSNanoPlugin 目前还不支持使用缓存。
+
+# 增量构建：Webpack 中的增量构建
+
+## 增量构建的影响因素
+
+### watch 配置
+
+在使用 devServer 的情况下，该选项会默认开启增量构建，生产环境下只开启 watch 配置后的再次构建并不能实现增量构建。
+
+### cache 配置
+
+启用 watch 和 cache 配置
+
+### 生产环境下使用增量构建的阻碍
+
+基于内存的缓存数据注定无法运用到生产环境中。要想在生产环境下提升构建速度，首要条件是将缓存写入到文件系统中。只有将文件系统中的缓存数据持久化，才能脱离对保持进程的依赖，你只需要在每次构建时将缓存数据读取到内存中进行处理即可。
+Webpack 4 中的 cache 配置只支持基于内存的缓存，并不支持文件系统的缓存，Webpack 5 中正式支持基于文件系统的持久化缓存（Persistent Cache）。
+
+# Webpack 5：Webpack 5 中的优化细节
+
+## Persistent Caching
+
+// 不再像 Webpack 4 中的 cache 配置只支持基于内存的缓存
+
+```
+cache: {
+  type: 'filesystem',
+  cacheLocation: path.resolve(__dirname, '.appcache'),
+  buildDependencies: {
+    config: [__filename],
+  },
+},
+// 参数说明
+cache.type：缓存类型。值为 'memory'或‘filesystem’，分别代表基于内存的临时缓存，以及基于文件系统的持久化缓存。在选择 filesystem 的情况下，下面介绍的其他属性生效。
+cache.cacheDirectory：缓存目录。默认目录为 node_modules/.cache/webpack。
+cache.name：缓存名称。同时也是 cacheDirectory 中的子目录命名，默认值为 Webpack 的 ${config.name}-${config.mode}。
+cache.cacheLocation：缓存真正的存放地址。默认使用的是上述两个属性的组合：path.resolve(cache.cacheDirectory, cache.name)。该属性在赋值情况下将忽略上面的 cacheDirectory 和 name 属性。
+```
+
+## Tree Shaking
+
+### Nested Tree Shaking
+
+Webpack 5 增加了对嵌套模块的导出跟踪功能，能够找到那些嵌套在最内层而未被使用的模块属性。
+
+### Inner Module Tree Shaking
+
+Webpack 5 中还增加了分析模块中导出项与导入项的依赖关系的功能。通过 optimization.innerGraph（生产环境下默认开启）选项，Webpack 5 可以分析特定类型导出项中对导入项的依赖关系，从而找到更多未被使用的导入模块并加以移除。
+
+### CommonJS Tree Shaking
+
+Webpack 5 中增加了对一些 CommonJS 风格模块代码的静态分析功功能：
+
+```
+支持 exports.xxx、this.exports.xxx、module.exports.xxx 语法的导出分析。
+支持 object.defineProperty(exports, "xxxx", ...) 语法的导出分析。
+支持 require('xxxx').xxx 语法的导入分析。
+```
+
+## Logs
+
+Webpack 5 构建输出的日志要丰富完整得多。通过这些日志能够很好地反映构建各阶段的处理过程、耗费时间，以及缓存使用的情况。
+它增加了许多内部处理过程的日志，可以通过 stats.logging 来访问。
 
 # package.json
 
@@ -92,313 +444,3 @@ class ConsoleLogOnBuildWebpackPlugin {
 ```
 
 [package.json 文件](http://javascript.ruanyifeng.com/nodejs/packagejson.html)
-
-# 热更新原理
-
-Webpack 监控文件状态，文件发生改变重新打包代码（通过 fs.watch 递归监控）<br>
-Express 建立服务，并和客户端见一个 EventSource http 链接，有打包更新通知客户端<br>
-客户端，收到服务器有打包更新的请求，客户端通过 ajax 请求，请求打包结果并解析。<br>
-[Webpack HMR 原理解析](https://zhuanlan.zhihu.com/p/30669007)
-
-```
-// js热更新配置（保存js状态）
-// module.hot.accept();
-```
-
-# plugins
-
-## 按需加载
-
-[babel-plugin-import](https://github.com/ant-design/babel-plugin-import)
-// 支持基于 ES modules 的 tree shaking
-
-# webpack 理论
-
-## 有哪些常见的 Loader？他们是解决什么问题的？
-
-file-loader：把文件输出到一个文件夹中，在代码中通过相对 URL 去引用输出的文件
-url-loader：和 file-loader 类似，但是能在文件很小的情况下以 base64 的方式把文件内容注入到代码中去
-source-map-loader：加载额外的 Source Map 文件，以方便断点调试
-image-loader：加载并且压缩图片文件
-babel-loader：把 ES6 转换成 ES5
-css-loader：加载 CSS，支持模块化、压缩、文件导入等特性
-style-loader：把 CSS 代码注入到 JavaScript 中，通过 DOM 操作去加载 CSS
-eslint-loader：通过 ESLint 检查 JavaScript 代码
-
-## 有哪些常见的 Plugin？他们是解决什么问题的？
-
-define-plugin：定义环境变量
-commons-chunk-plugin：提取公共代码 //webpack4 移除了，用 optimization.splitChunks 和 optimization.runtimeChunk 来代替
-uglifyjs-webpack-plugin：通过 UglifyES 压缩 ES6 代码
-clean-webpack-plugin：删除打包文件
-happypack：实现多线程加速编译
-html-webpack-plugin 为 html 文件中引入的外部资源，可以生成创建 html 入口文件
-
-## Loader 和 Plugin 的不同？
-
-### 不同的作用
-
-Loader 直译为"加载器"。Webpack 将一切文件视为模块，但是 webpack 原生是只能解析 js 文件，如果想将其他文件也打包的话，就会用到 loader。 所以 Loader 的作用是让 webpack 拥有了加载和解析非 JavaScript 文件的能力。
-Plugin 直译为"插件"。Plugin 可以扩展 webpack 的功能，让 webpack 具有更多的灵活性。 在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
-
-### 不同的用法
-
-Loader 在 module.rules 中配置，也就是说他作为模块的解析规则而存在。 类型为数组，每一项都是一个 Object，里面描述了对于什么类型的文件（test），使用什么加载(loader)和使用的参数（options）
-Plugin 在 plugins 中单独配置。 类型为数组，每一项是一个 plugin 的实例，参数都通过构造函数传入。
-
-## webpack 的构建流程是什么?
-
-Webpack 的运行流程是一个串行的过程，从启动到结束会依次执行以下流程：
-初始化参数：从配置文件和 Shell 语句中读取与合并参数，得出最终的参数；
-开始编译：用上一步得到的参数初始化 Compiler 对象，加载所有配置的插件，执行对象的 run 方法开始执行编译；
-确定入口：根据配置中的 entry 找出所有的入口文件；
-编译模块：从入口文件出发，调用所有配置的 Loader 对模块进行翻译，再找出该模块依赖的模块，再递归本步骤直到所有入口依赖的文件都经过了本步骤的处理；
-完成模块编译：在经过第 4 步使用 Loader 翻译完所有模块后，得到了每个模块被翻译后的最终内容以及它们之间的依赖关系；
-输出资源：根据入口和模块之间的依赖关系，组装成一个个包含多个模块的 Chunk，再把每个 Chunk 转换成一个单独的文件加入到输出列表，这步是可以修改输出内容的最后机会；
-输出完成：在确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统。
-在以上过程中，Webpack 会在特定的时间点广播出特定的事件，插件在监听到感兴趣的事件后会执行特定的逻辑，并且插件可以调用 Webpack 提供的 API 改变 Webpack 的运行结果。
-
-## 描述一下编写 loader 或 plugin 的思路？
-
-Loader 像一个"翻译官"把读到的源文件内容转义成新的文件内容，并且每个 Loader 通过链式操作，将源文件一步步翻译成想要的样子。
-编写 Loader 时要遵循单一原则，每个 Loader 只做一种"转义"工作。 每个 Loader 的拿到的是源文件内容（source），可以通过返回值的方式将处理后的内容输出，也可以调用 this.callback()方法，将内容返回给 webpack。 还可以通过 this.async()生成一个 callback 函数，再用这个 callback 将处理后的内容输出出去。 此外 webpack 还为开发者准备了开发 loader 的工具函数集——loader-utils。
-相对于 Loader 而言，Plugin 的编写就灵活了许多。 webpack 在运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
-
-## 如何利用 webpack 来优化前端性能？
-
-压缩代码。删除多余的代码、注释、简化代码的写法等等方式。可以利用 webpack 的 UglifyJsPlugin 来压缩 JS 文件， 利用 cssnano（css-loader?minimize）来压缩 css
-利用 CDN 加速。在构建过程中，将引用的静态资源路径修改为 CDN 上对应的路径。可以利用 webpack 对于 output 参数和各 loader 的 publicPath 参数来修改资源路径
-Tree Shaking，使用 ESModule 来实现按需加载。
-
-## 如何提高 webpack 的构建速度？
-
-多入口情况下，使用 CommonsChunkPlugin 来提取公共代码
-通过 externals 配置来提取常用库
-利用 DllPlugin 和 DllReferencePlugin 预编译资源模块 通过 DllPlugin 来对那些我们引用但是绝对不会修改的 npm 包来进行预编译，再通过 DllReferencePlugin 将预编译的模块加载进来。
-使用 Happypack 实现多线程加速编译
-使用 webpack-uglify-parallel 来提升 uglifyPlugin 的压缩速度。 原理上 webpack-uglify-parallel 采用了多核并行压缩来提升压缩速度
-使用 Tree-shaking 和 Scope Hoisting 来剔除多余代码
-
-## 怎么配置单页应用？怎么配置多页应用？
-
-单页应用可以理解为 webpack 的标准模式，直接在 entry 中指定单页应用的入口即可。
-多页应用的话，可以使用 webpack 的 AutoWebPlugin 来完成简单自动化的构建，但是前提是项目的目录结构必须遵守他预设的规范。 多页应用中要注意的是：
-
-# webpack 编译优化
-
-## 按需引入类库模块
-
-### IgnorePlugin
-
-如 moment 构建时会取消自动引入其 locale 目录下的多国语言包
-
-```
-new webpack.IgnorePlugin({
-    resourceRegExp: /^\.\/locale$/,
-    contextRegExp: /moment$/,
-})
-```
-
-### 按需引入类库模块
-
-如项目中只使用了 lodash 几个方法
-babel-plugin-lodash 或 babel-plugin-import 等插件。
-Tree Shaking 必须为 ES6 模块化。
-
-### DllPlugin
-
-DllPlugin 是另一类减少构建模块的方式，它的核心思想是将项目依赖的框架等模块单独构建打包，与普通构建流程区分开。
-DllPlugin 和 DllReferencePlugin
-
-### Externals
-
-Webpack 配置中的 externals 和 DllPlugin 解决的是同一类问题：将依赖的框架等模块从构建过程中移除。
-
-## 提升单个模块构建的速度
-
-### include/exclude
-
-include 的用途是只对符合条件的模块使用指定 Loader 进行转换处理。而 exclude 则相反，不对特定条件的模块使用该 Loader（例如不使用 babel-loader 处理 node_modules 中的模块）。
-
-### noParse
-
-Webpack 配置中的 module.noParse 则是在上述 include/exclude。
-
-### TypeScript 编译优化
-
-Webpack 中编译 TS 有两种方式：使用 ts-loader 或使用 babel-loader。
-由于 ts-loader 默认在编译前进行类型检查，通过加上配置项 transpileOnly: true，可以在编译时忽略类型检查，从而大大提升 TS 模块的编译速度
-
-### Resolve
-
-Webpack 中的 resolve 配置制定的是在构建时指定查找模块文件的规则
-resolve.modules：指定查找模块的目录范围。
-resolve.extensions：指定查找模块的文件类型范围。
-resolve.mainFields：指定查找模块的 package.json 中主文件的属性名。
-resolve.symlinks：指定在查找模块时是否处理软连接。
-
-# Webpack 打包阶段优化
-
-## JS 的压缩
-
-TerserWebpackPlugin、UglifyJSWebpackPlugin
-
-## CSS 的压缩
-
-OptimizeCSSAssetsPlugin（在 Create-React-App 中使用）、OptimizeCSSNanoPlugin（在 VUE-CLI 中使用），以及 CSSMinimizerWebpackPlugin（2020 年 Webpack 社区新发布的 CSS 压缩插件）。
-
-## Split Chunks
-
-Split Chunks（分包）是指在 Chunk 生成之后，将原先以入口点来划分的 Chunks 根据一定的规则（例如异步引入或分离公共依赖等原则），分离出子 Chunk 的过程。
-
-## Tree Shaking
-
-Tree Shaking（摇树）是指在构建打包过程中，移除那些引入但未被使用的无效代码（Dead-code elimination）。
-只有 ES6 类型的模块才能进行 Tree Shaking。因为 ES6 模块的依赖关系是确定的，因此可以进行不依赖运行时的静态分析，而 CommonJS 类型的模块则不能。
-
-# Webpack 缓存优化
-
-## 缓存优化的基本原理
-
-Webpack 4 内置了压缩插件 TerserWebpackPlugin，且默认开启了缓存参数。在初次构建的压缩代码过程中，就将这一阶段的结果写入了缓存目录（node_modules/.cache/terser-webpack-plugin/）中，当再次构建进行到压缩代码阶段时，即可对比读取已有缓存。
-
-## 编译阶段的缓存优化
-
-编译过程的耗时点主要在使用不同加载器（Loader）来编译模块的过程。
-
-### Babel-loader
-
-```
-cacheDirectory：默认为 false，即不开启缓存。当值为 true 时开启缓存并使用默认缓存目录（./node_modules/.cache/babel-loader/），也可以指定其他路径值作为缓存目录。
-cacheIdentifier：用于计算缓存标识符。
-cacheCompression：默认为 true，将缓存内容压缩为 gz 包以减小缓存目录的体积。
-```
-
-### Cache-loader
-
-在编译过程中利用缓存的第二种方式是使用 Cache-loader。在使用时，需要将 cache-loader 添加到对构建效率影响较大的 Loader（如 babel-loader 等）之前。
-
-# 减少 Webpack 打包时间
-
-## 优化 Loader
-
-如 babel-loader
-
-```
-module.exports = {
-  module: {
-    rules: [
-      {
-        // js 文件才使用 babel
-        test: /\.js$/,
-        loader: 'babel-loader',
-        // 可以开启缓存
-        loader: 'babel-loader?cacheDirectory=true'
-        // 只在 src 文件夹下查找
-        include: [resolve('src')],
-        // 不会去查找的路径
-        exclude: /node_modules/
-      }
-    ]
-  }
-}
-```
-
-## HappyPack
-
-HappyPack 可以将 Loader 的同步执行转换为并行的，这样就能充分利用系统资源来加快打包效率
-
-```
-module: {
-  loaders: [
-    {
-      test: /\.js$/,
-      include: [resolve('src')],
-      exclude: /node_modules/,
-      // id 后面的内容对应下面
-      loader: 'happypack/loader?id=happybabel'
-    }
-  ]
-},
-plugins: [
-  new HappyPack({
-    id: 'happybabel',
-    loaders: ['babel-loader?cacheDirectory'],
-    // 开启 4 个线程
-    threads: 4
-  })
-]
-```
-
-## DllPlugin
-
-DllPlugin 可以将特定的类库提前打包然后引入。这种方式可以极大的减少打包类库的次数，只有当类库更新版本才有需要重新打包，并且也实现了将公共代码抽离成单独文件的优化方案。
-
-```
-// DllPlugin
-// 单独配置在一个文件中
-// webpack.dll.conf.js
-const path = require('path')
-const webpack = require('webpack')
-module.exports = {
-  entry: {
-    // 想统一打包的类库
-    vendor: ['react']
-  },
-  output: {
-    path: path.join(__dirname, 'dist'),
-    filename: '[name].dll.js',
-    library: '[name]-[hash]'
-  },
-  plugins: [
-    new webpack.DllPlugin({
-      // name 必须和 output.library 一致
-      name: '[name]-[hash]',
-      // 该属性需要与 DllReferencePlugin 中一致
-      context: __dirname,
-      path: path.join(__dirname, 'dist', '[name]-manifest.json')
-    })
-  ]
-}
-
-// DllReferencePlugin
-module.exports = {
-  // ...省略其他配置
-  plugins: [
-    new webpack.DllReferencePlugin({
-      context: __dirname,
-      // manifest 就是之前打包出来的 json 文件
-      manifest: require('./dist/vendor-manifest.json'),
-    })
-  ]
-}
-```
-
-## 代码压缩
-
-UglifyJS/
-webpack-parallel-uglify-plugin 来并行运行 UglifyJS，从而提高效率。
-
-```
-resolve.extensions：用来表明文件后缀列表，默认查找顺序是 ['.js', '.json']，如果你的导入文件没有添加后缀就会按照这个顺序查找文件。我们应该尽可能减少后缀列表长度，然后将出现频率高的后缀排在前面
-resolve.alias：可以通过别名的方式来映射一个路径，能让 Webpack 更快找到路径
-module.noParse：如果你确定一个文件下没有其他依赖，就可以使用该属性让 Webpack 不扫描该文件，这种方式对于大型的类库很有帮助
-```
-
-# 减少 Webpack 打包后的文件体积
-
-## 按需加载
-
-路由对应的页面按需加载、类库中方法按需家在、babel-plugin-import
-
-## Scope Hoisting
-
-Scope Hoisting 会分析出模块之间的依赖关系，尽可能的把打包出来的模块合并到一个函数中去。
-
-```
-module.exports = {
-  optimization: {
-    concatenateModules: true
-  }
-}
-```
