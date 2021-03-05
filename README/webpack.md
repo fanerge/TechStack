@@ -30,32 +30,10 @@ loader 让 webpack 能够去处理那些非 JavaScript 文件（webpack 自身�
 loader 的本质其实就是一个方法，接收到的字符串，对字符串进行操作后输出字符串。<br>
 同类型的文件（后缀名区分）通过 use 配置的 loader 处理<span style="color: red">顺序为从后向前</span>。<br>
 
-```
-// loader的大体结构，其实就是对特殊文件的一个预处理函数
-module.exports = function (code) {
-    // code 代表对应文件的代码及字符串
-    // 对字符串进行处理后
-    const result = doSometing(code);
-    // 输出处理后的值
-    return result;
-
-    // loader自带的返回函数
-    this.callback(err, result, SourceMap);
-
-    // 同步loader
-    return someSyncOperation(code);
-
-    // 异步loader
-    someAsyncOperation(code, (err, result, sourceMaps, ast) => {
-       this.callback(err, result, SourceMap);
-    });
-
-}
-```
-
-## 常用 Loader 作用
+## 常用 Loaders 作用
 
 ```
+html-loader：将 HTML 导出为字符串
 sass-loader：加载 sass、scss 编译为 css
 css-loader：将css代码转化为js代码（数组）
 style-loader：将css注入到DOM中
@@ -68,33 +46,61 @@ eslint-loader：EslintWebpackPlugin 检查js代码语法
 source-map-loader：从源文件 sourceMappingURL 中提取出 source map
 ```
 
+## 开发 Loader
+
+```
+// markdown-loader.js
+将 markdown 文件转化为 html
+// loader的大体结构，其实就是对特殊文件的一个预处理函数
+const marked = require('marked')
+module.exports = function (source) {
+    const html = marked(source);
+    // 也可以直接 return html 在 rules 中串联 html-loader
+    const code = `export default ${JSON.stringify(html)}`
+    return code
+}
+```
+
 # Plugins
 
 插件的范围包括，从打包优化和压缩，一直到重新定义环境中的变量。插件接口功能极其强大，可以用来处理各种各样的任务。<br>
 plugin 扩展 webpack 的功能来满足自己的需要，换句话说，loader 不能满足的时候，就需要 plugin 了。<br>
 webpack 插件是一个具有 apply 属性的 JavaScript 对象。apply 属性会被 webpack compiler 调用，并且 compiler 对象可在整个编译生命周期访问。
 
-```
-const pluginName = 'ConsoleLogOnBuildWebpackPlugin';
+## 常用 Plugins 作用
 
-class ConsoleLogOnBuildWebpackPlugin {
+```
+clean-webpack-plugin：实现自动在打包之前清除上次的打包结果
+html-webpack-plugin：用于生成 HTML 的插件（自动注入 Webpack 打包生成的 bundle）
+// 该插件的 template 属性还可以制定 html template，模板中动态的内容，可以使用 Lodash 模板语法，<%= htmlWebpackPlugin.options.title %>
+// 该插件还可以实现多页面应用，多个 HTML 文件（一个页面实例化一次 html-webpack-plugin 类 + Webpack 多入口打包）
+copy-webpack-plugin：用于复制文件的插件（不参与构建的静态文件）
+```
+
+## 开发插件
+
+```
+// 清除 webpack 打包后js文件前面的注释 /*****/
+const pluginName = 'RemoveCommentsPlugin';
+
+module.exports = class RemoveCommentsPlugin {
     apply(compiler) {
-        compiler.hooks.run.tap(pluginName, compilation => {
-            console.log("webpack 构建过程开始！");
-        });
+        compiler.hooks.emit.tap(pluginName, compilation => {
+          // compilation => 可以理解为此次打包的上下文
+          for(let name in compilation.assets) {
+            // 只处理 js 结尾的文件
+            if(name.endsWith('.js')) {
+              const contents = compilation.assets[name].source()
+              const noComments = contents.replace(/\/\*{2,}\/\s?/g, '')
+              compilation.assets[name] = {
+                source: () => noComments,
+                size: () => noComments.length
+              }
+            }
+          }
+        })
     }
 }
-```
-
-## 有哪些常见的 Plugin？他们是解决什么问题的？
-
-```
-define-plugin：定义环境变量
-commons-chunk-plugin：提取公共代码 //webpack4 移除了，用 optimization.splitChunks 和 optimization.runtimeChunk 来代替
-uglifyjs-webpack-plugin：通过 UglifyES 压缩 ES6 代码
-clean-webpack-plugin：删除打包文件
-happypack：实现多线程加速编译
-html-webpack-plugin 为 html 文件中引入的外部资源，可以生成创建 html 入口文件
 ```
 
 # Loader 和 Plugin 的不同？

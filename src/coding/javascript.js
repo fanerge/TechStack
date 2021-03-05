@@ -1195,6 +1195,40 @@ function findSubStrIndex2(str, subStr) {
 }
 // findSubStrIndex2('12312344', '1234')
 
+// 旋转数组
+function rotateArray(ary, k) {
+  let len = ary.length
+  let items = k % len;
+  if(items === 0) {
+    console.log(ary)
+    return ary
+  }
+  // 原地操作
+  // for(let i=0; i<items; i++) {
+  //   let last = ary.pop();
+  //   ary.unshift(last);
+  // }
+  // 需要额外空间
+  ary = ary.slice(-items).concat(ary.slice(0, len-items))
+  console.log(ary)
+  return ary;
+}
+// rotateArray([1, 2, 3, 4], 8)
+
+// 生成一个索引数组的方法
+// [...new Array(100).keys()]
+
+// 找出1000以内的对称数
+function findConNum(num) {
+  const temp =  [...new Array(num).keys()].filter(item => {
+    const str = item.toString();
+    return str.length >= 1 && str === str.split('').reverse().join('')
+  });
+  console.log(temp);
+  return temp;
+}
+// findConNum(1000)
+
 function repeat(func, times, ms, immediate) {
   let count = 0;
   const ctx = null;
