@@ -1,4 +1,4 @@
-# Webpack 的基本工作流程（webpack4）
+# Webpack 的基本工作流程（Webpack4）
 
 # 添加配置智能提示
 
@@ -12,7 +12,7 @@
 1.  VSCode 中的类型系统都是基于 TypeScript 的，所以可以直接按照这种方式使用。
 2.  @type 类型注释的方式是基于  JSDoc  实现的
 
-# webpack 的构建流程是什么?
+# Webpack 的构建流程是什么?
 
 Webpack 的运行流程是一个串行的过程，从启动到结束会依次执行以下流程：
 初始化参数：从配置文件和 Shell 语句中读取与合并参数，得出最终的参数；
@@ -32,7 +32,7 @@ process.env.NODE_ENV 第三方模块都是通过这个成员去判断运行环�
 // 第一个是 env，是我们通过 CLI 传递的环境名参数，第二个是 argv，是运行 CLI 过程中的所有参数。s
 module.exports = (env, argv) => {
   return {
-    // ... webpack 配置
+    // ... Webpack 配置
   }
 }
 ```
@@ -70,7 +70,7 @@ plugins: [
 ],
 optimization: {
   // 关于资源压缩的插件需要放这里
-  // 且当配置了 minimizer 会覆盖掉 Webpack 内部的 JS 压缩器就会被覆盖掉（webpack 默认只通过 TerserWebpackPlugin 插件压缩js，其余资源未压缩）
+  // 且当配置了 minimizer 会覆盖掉 Webpack 内部的 JS 压缩器就会被覆盖掉（Webpack 默认只通过 TerserWebpackPlugin 插件压缩js，其余资源未压缩）
   minimizer: [
     // js压缩被覆盖了，需要重新添加回来
     new TerserWebpackPlugin(),
@@ -83,7 +83,7 @@ optimization: {
 
 # Loaders
 
-loader 让 webpack 能够去处理那些非 JavaScript 文件（webpack 自身只理解 JavaScript）。loader 可以将所有类型的文件转换为 webpack 能够处理的有效模块，然后你就可以利用 webpack 的打包能力，对它们进行处理。<br>
+loader 让 Webpack 能够去处理那些非 JavaScript 文件（Webpack 自身只理解 JavaScript）。loader 可以将所有类型的文件转换为 Webpack 能够处理的有效模块，然后你就可以利用 Webpack 的打包能力，对它们进行处理。<br>
 loader 的本质其实就是一个方法，接收到的字符串，对字符串进行操作后输出字符串。<br>
 同类型的文件（后缀名区分）通过 use 配置的 loader 处理<span style="color: red">顺序为从后向前</span>。<br>
 
@@ -121,8 +121,8 @@ module.exports = function (source) {
 # Plugins
 
 插件的范围包括，从打包优化和压缩，一直到重新定义环境中的变量。插件接口功能极其强大，可以用来处理各种各样的任务。<br>
-plugin 扩展 webpack 的功能来满足自己的需要，换句话说，loader 不能满足的时候，就需要 plugin 了。<br>
-webpack 插件是一个具有 apply 属性的 JavaScript 对象。apply 属性会被 webpack compiler 调用，并且 compiler 对象可在整个编译生命周期访问。
+plugin 扩展 Webpack 的功能来满足自己的需要，换句话说，loader 不能满足的时候，就需要 plugin 了。<br>
+Webpack 插件是一个具有 apply 属性的 JavaScript 对象。apply 属性会被 Webpack compiler 调用，并且 compiler 对象可在整个编译生命周期访问。
 
 ## 常用 Plugins 作用
 
@@ -165,13 +165,13 @@ module.exports = class RemoveCommentsPlugin {
 ## 编写 loader 或 plugin 的思路
 
 Loader 像一个"翻译官"把读到的源文件内容转义成新的文件内容，并且每个 Loader 通过链式操作，将源文件一步步翻译成想要的样子。
-编写 Loader 时要遵循单一原则，每个 Loader 只做一种"转义"工作。 每个 Loader 的拿到的是源文件内容（source），可以通过返回值的方式将处理后的内容输出，也可以调用 this.callback()方法，将内容返回给 webpack。 还可以通过 this.async()生成一个 callback 函数，再用这个 callback 将处理后的内容输出出去。 此外 webpack 还为开发者准备了开发 loader 的工具函数集——loader-utils。
-相对于 Loader 而言，Plugin 的编写就灵活了许多。 webpack 在运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
+编写 Loader 时要遵循单一原则，每个 Loader 只做一种"转义"工作。 每个 Loader 的拿到的是源文件内容（source），可以通过返回值的方式将处理后的内容输出，也可以调用 this.callback()方法，将内容返回给 Webpack。 还可以通过 this.async()生成一个 callback 函数，再用这个 callback 将处理后的内容输出出去。 此外 Webpack 还为开发者准备了开发 loader 的工具函数集——loader-utils。
+相对于 Loader 而言，Plugin 的编写就灵活了许多。 Webpack 在运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
 
 ## 不同的作用
 
-Loader 直译为"加载器"。Webpack 将一切文件视为模块，但是 webpack 原生是只能解析 js 文件，如果想将其他文件也打包的话，就会用到 loader。 所以 Loader 的作用是让 webpack 拥有了加载和解析非 JavaScript 文件的能力。
-Plugin 直译为"插件"。Plugin 可以扩展 webpack 的功能，让 webpack 具有更多的灵活性。 在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
+Loader 直译为"加载器"。Webpack 将一切文件视为模块，但是 Webpack 原生是只能解析 js 文件，如果想将其他文件也打包的话，就会用到 loader。 所以 Loader 的作用是让 Webpack 拥有了加载和解析非 JavaScript 文件的能力。
+Plugin 直译为"插件"。Plugin 可以扩展 Webpack 的功能，让 Webpack 具有更多的灵活性。 在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
 
 ## 不同的用法
 
@@ -362,7 +362,7 @@ DllPlugin 和 DllReferencePlugin
       /* 生成manifest文件输出的位置和文件名称 */
       path: path.join(__dirname, 'dist', '[name].manifest.json')
     }),
-    // 告诉webpack使用了哪些第三方库代码
+    // 告诉Webpack使用了哪些第三方库代码
     new DllReferencePlugin({
       // jquery 映射到json文件上去
       manifest: require('./dist/jquery.manifest.json')
