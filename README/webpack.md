@@ -1,4 +1,4 @@
-# Webpack 的基本工作流程（webpack4）
+# Webpack 的基本工作流程（Webpack4）
 
 # 添加配置智能提示
 
@@ -12,7 +12,7 @@
 1.  VSCode 中的类型系统都是基于 TypeScript 的，所以可以直接按照这种方式使用。
 2.  @type 类型注释的方式是基于  JSDoc  实现的
 
-# webpack 的构建流程是什么?
+# Webpack 的构建流程是什么?
 
 Webpack 的运行流程是一个串行的过程，从启动到结束会依次执行以下流程：
 初始化参数：从配置文件和 Shell 语句中读取与合并参数，得出最终的参数；
@@ -24,9 +24,66 @@ Webpack 的运行流程是一个串行的过程，从启动到结束会依次执
 输出完成：在确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统。
 在以上过程中，Webpack 会在特定的时间点广播出特定的事件，插件在监听到感兴趣的事件后会执行特定的逻辑，并且插件可以调用 Webpack 提供的 API 改变 Webpack 的运行结果。
 
+# Webpack 配置
+process.env.NODE_ENV 第三方模块都是通过这个成员去判断运行环境，从而决定是否执行例如打印日志之类的操作
+##  不同环境下的配置
+```
+// ./webpack.config.js
+// 第一个是 env，是我们通过 CLI 传递的环境名参数，第二个是 argv，是运行 CLI 过程中的所有参数。s
+module.exports = (env, argv) => {
+  return {
+    // ... Webpack 配置
+  }
+}
+```
+##  不同环境的配置文件
+```
+// webpack-merge 三方包
+// ./webpack.common.js
+module.exports = {
+  // ... 公共配置
+}
+// ./webpack.prod.js
+const merge = require('webpack-merge')
+const common = require('./webpack.common')
+module.exports = merge(common, {
+  // 生产模式配置
+})
+// ./webpack.dev.jss
+const merge = require('webpack-merge')
+const common = require('./webpack.common')
+module.exports = merge(common, {
+  // 开发模式配置
+})
+```
+
+##  生产模式优化插件
+```
+plugins: [
+  // DefinePlugin 为我们代码中注入全局成员的
+  new webpack.DefinePlugin({
+    API_BASE_URL: JSON.stringify('https://***.com')
+  }),
+  // style-loader 处理 CSS 代码会内嵌到 JS 代码中
+  // mini-css-extract-plugin 是一个可以将 CSS 代码从打包结果中提取出来的插件（还需要更换loader/* MiniCssExtractPlugin.loader */）
+  new MiniCssExtractPlugin(),
+],
+optimization: {
+  // 关于资源压缩的插件需要放这里
+  // 且当配置了 minimizer 会覆盖掉 Webpack 内部的 JS 压缩器就会被覆盖掉（Webpack 默认只通过 TerserWebpackPlugin 插件压缩js，其余资源未压缩）
+  minimizer: [
+    // js压缩被覆盖了，需要重新添加回来
+    new TerserWebpackPlugin(),
+    // 压缩我们的样式文件
+    new OptimizeCssAssetsWebpackPlugin()
+  ]
+},
+```
+
+
 # Loaders
 
-loader 让 webpack 能够去处理那些非 JavaScript 文件（webpack 自身只理解 JavaScript）。loader 可以将所有类型的文件转换为 webpack 能够处理的有效模块，然后你就可以利用 webpack 的打包能力，对它们进行处理。<br>
+loader 让 Webpack 能够去处理那些非 JavaScript 文件（Webpack 自身只理解 JavaScript）。loader 可以将所有类型的文件转换为 Webpack 能够处理的有效模块，然后你就可以利用 Webpack 的打包能力，对它们进行处理。<br>
 loader 的本质其实就是一个方法，接收到的字符串，对字符串进行操作后输出字符串。<br>
 同类型的文件（后缀名区分）通过 use 配置的 loader 处理<span style="color: red">顺序为从后向前</span>。<br>
 
@@ -64,8 +121,8 @@ module.exports = function (source) {
 # Plugins
 
 插件的范围包括，从打包优化和压缩，一直到重新定义环境中的变量。插件接口功能极其强大，可以用来处理各种各样的任务。<br>
-plugin 扩展 webpack 的功能来满足自己的需要，换句话说，loader 不能满足的时候，就需要 plugin 了。<br>
-webpack 插件是一个具有 apply 属性的 JavaScript 对象。apply 属性会被 webpack compiler 调用，并且 compiler 对象可在整个编译生命周期访问。
+plugin 扩展 Webpack 的功能来满足自己的需要，换句话说，loader 不能满足的时候，就需要 plugin 了。<br>
+Webpack 插件是一个具有 apply 属性的 JavaScript 对象。apply 属性会被 Webpack compiler 调用，并且 compiler 对象可在整个编译生命周期访问。
 
 ## 常用 Plugins 作用
 
@@ -108,20 +165,89 @@ module.exports = class RemoveCommentsPlugin {
 ## 编写 loader 或 plugin 的思路
 
 Loader 像一个"翻译官"把读到的源文件内容转义成新的文件内容，并且每个 Loader 通过链式操作，将源文件一步步翻译成想要的样子。
-编写 Loader 时要遵循单一原则，每个 Loader 只做一种"转义"工作。 每个 Loader 的拿到的是源文件内容（source），可以通过返回值的方式将处理后的内容输出，也可以调用 this.callback()方法，将内容返回给 webpack。 还可以通过 this.async()生成一个 callback 函数，再用这个 callback 将处理后的内容输出出去。 此外 webpack 还为开发者准备了开发 loader 的工具函数集——loader-utils。
-相对于 Loader 而言，Plugin 的编写就灵活了许多。 webpack 在运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
+编写 Loader 时要遵循单一原则，每个 Loader 只做一种"转义"工作。 每个 Loader 的拿到的是源文件内容（source），可以通过返回值的方式将处理后的内容输出，也可以调用 this.callback()方法，将内容返回给 Webpack。 还可以通过 this.async()生成一个 callback 函数，再用这个 callback 将处理后的内容输出出去。 此外 Webpack 还为开发者准备了开发 loader 的工具函数集——loader-utils。
+相对于 Loader 而言，Plugin 的编写就灵活了许多。 Webpack 在运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
 
 ## 不同的作用
 
-Loader 直译为"加载器"。Webpack 将一切文件视为模块，但是 webpack 原生是只能解析 js 文件，如果想将其他文件也打包的话，就会用到 loader。 所以 Loader 的作用是让 webpack 拥有了加载和解析非 JavaScript 文件的能力。
-Plugin 直译为"插件"。Plugin 可以扩展 webpack 的功能，让 webpack 具有更多的灵活性。 在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
+Loader 直译为"加载器"。Webpack 将一切文件视为模块，但是 Webpack 原生是只能解析 js 文件，如果想将其他文件也打包的话，就会用到 loader。 所以 Loader 的作用是让 Webpack 拥有了加载和解析非 JavaScript 文件的能力。
+Plugin 直译为"插件"。Plugin 可以扩展 Webpack 的功能，让 Webpack 具有更多的灵活性。 在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
 
 ## 不同的用法
 
 Loader 在 module.rules 中配置，也就是说他作为模块的解析规则而存在。 类型为数组，每一项都是一个 Object，里面描述了对于什么类型的文件（test），使用什么加载(loader)和使用的参数（options）
 Plugin 在 plugins 中单独配置。 类型为数组，每一项是一个 plugin 的实例，参数都通过构造函数传入。
 
-# 热更新原理
+# SourceMap
+将生产环境中运行的代码转换为开发阶段编写的源代码，便于调试和定位bug
+生产环境需要注意 Source Map 文件的访问权限
+```
+devtool: 'source-map'
+// 会为打包的文件生成对应的 .map 文件
+// 会为打包的文件中末尾添加 //# sourceMappingURL=***.js.map
+eval('console.log(1) //# sourceURL=***.js') // 控制台现实来源位于***.js
+eval模式，通过在上面原理
+eval-source-map模式，生成了 map 文件，能定位到行和列
+cheap-eval-source-map模式，生成了 map 文件，只能定位到行（定位的源码是经过loader处理的）
+cheap-module-eval-source-map模式，生成了 map 文件，只能定位到行（不经过loader处理的）
+inline-source-map模式：sorce-map效果一样，不产生真是的map文件而是data URLs
+nosources-source-map模式：可以看见出现错误的行列位置，但点进去看不见源码（保护源码暴露）
+
+总结：
+// cheap 相当缩减版，只有行信息
+// module 定位到源码不经过loader处理
+// eval 通过 eval 执行代码 
+```
+
+# Webpack Dev Serve
+如 browser-sync 模块可以监听某个目录刷新浏览器
+为了提升效率，将打包放于内存中。
+```
+devServer: {
+  // 额外静态文件目录，开发环境一般不用
+  contentBase: 'public',
+  proxy: {
+    '/api': {
+      target: 'https://***.com/',
+      pathRewrite: {
+        // 替换掉代理地址中的/api
+        '^/api': ''
+      },
+      changeOrigin: true
+    }
+  },
+  port: 6666,
+  // 将请求的 host 重置为 https://***.com
+  compress: true
+}
+```
+
+# 热更新原理（HMR）
+
+```
+decServer: {
+  // 开启HMR，如果资源不支持则 fallback live reloading
+  hot: true,
+  // 开启HMR，如果资源不支持则不会 live reloading
+  hotOnly: true,
+},
+plugins: [
+  // HMR 需要的插件
+  new webpack.HotModuleReplacementPlugin()
+]
+// why css 更改直接生效，js却不能
+css 经过style loader 可以直接覆盖掉以前的样式
+// js 需要单独处理，需要对当前模块所依赖的模块执行 module.hot.accept 方法
+// 如图片热更新
+import background from './base.png'
+// ...
+if(module.hot) {
+  module.hot.accept('./base.png', () => {
+    // 当 base.png 更新后执行
+    img.src = background
+  });
+}
+```
 
 Webpack 监控文件状态，文件发生改变重新打包代码（通过 fs.watch 递归监控）<br>
 Express 建立服务，并和客户端见一个 EventSource http 链接，有打包更新通知客户端<br>
@@ -131,6 +257,55 @@ Express 建立服务，并和客户端见一个 EventSource http 链接，有打
 ```
 // js热更新配置（保存js状态）
 // module.hot.accept();
+```
+
+
+# Code Splitting
+Code Splitting 通过把项目中的资源模块按照我们设计的规则打包到不同的 bundle 中，从而降低应用的启动成本，提高响应速度。
+##  多入口打包（多页应用）
+```
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+module.exports = {
+  entry: {
+    index: './src/index.js',
+    about: './src/about.js'
+  },
+  output: {
+    // [name] 是入口名称
+    filename: '[name].bundle.js'
+  },
+  //...
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Multi Entry',
+      template: './src/index.html',
+      filename: 'index.html'
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Multi Entry',
+      template: './src/about.html',
+      filename: 'about.html'
+    })
+  ],
+  optimization: {
+    splitChunks: {
+      // 自动提取所有公共模块到单独 bundle
+      chunks: 'all'
+    }
+  }
+};
+```
+##  ESModules 的 Dynamic imports 动态导入
+指的是在应用运行过程中，需要某个资源模块时，才去加载这个模块。
+
+```
+// 动态导入需要的资源
+// 如果以默认成员导出，所以我们需要解构模块对象中的 default
+// 使用魔法注释，可以指定动态导入打包后的文件名
+// 如果多个模块 webpackChunkName 相同会打包到一起
+import(/* webpackChunkName: 'album' */'./album/album').then(({ default: album }) => {
+  mainElement.appendChild(album())
+})
 ```
 
 # 编译提效：如何为 Webpack 编译阶段提速？
@@ -187,7 +362,7 @@ DllPlugin 和 DllReferencePlugin
       /* 生成manifest文件输出的位置和文件名称 */
       path: path.join(__dirname, 'dist', '[name].manifest.json')
     }),
-    // 告诉webpack使用了哪些第三方库代码
+    // 告诉Webpack使用了哪些第三方库代码
     new DllReferencePlugin({
       // jquery 映射到json文件上去
       manifest: require('./dist/jquery.manifest.json')
@@ -312,6 +487,56 @@ Webpack 4 中 Tree Shaking 的触发条件有哪些？
 引入方式不能使用 default。
 引用第三方依赖包的情况下，对应的 package.json 需要设置 sideEffects:false 来表明无副作用。
 使用 Babel 的情况下，需要注意不同版本 Babel 对于模块化的预设不同。
+
+```
+optimization: {
+  // usedExports 模块仅导出被使用的成员 and 仅标记出 unused harmony
+  usedExports: true,
+  // 在压缩过程直接移除上面标记 unused harmony 代码
+  minimize: true,
+  // Scope Hoisting，也就是作用域提升，尽可能合并每一个模块到一个函数中
+  concatenateModules: true,
+  sideEffects: true
+}
+```
+
+####  babel-loader 会导致 Tree-shaking 失效？
+最新版本的 babel-loader（8.x） 并不会导致 Tree-shaking 失效，已经自动帮我们关闭了对 ES Modules 转换的插件（不会将其转换为 Common.js）
+```
+module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', { 
+                // 关闭对ES Modules 的转换
+                modules: false
+                }
+              ]
+            ]
+          }
+        }
+      }
+    ]
+  },
+```
+
+
+### sideEffects
+Tree-shaking 只能移除没有用到的代码成员，而想要完整移除没有用到的模块，那就需要开启 sideEffects 特性了。
+sideEffects 表明模块是否有副作用。
+模块的副作用是指模块执行的时候除了导出成员是否还做了其他事情（如原型链中添加方法等）。
+```
+optimization: {
+  // 开启 sideEffects 功能，在使用三方包是package.json 中的 sideEffects 用来标记该包代码是否有副作用 
+  sideEffects: true,
+  // 还可以标记出有副作用的文件
+  sideEffects: ['./src/extend.js', '*.css']
+}
+```
 
 # 缓存优化：那些基于缓存的优化方案?
 
