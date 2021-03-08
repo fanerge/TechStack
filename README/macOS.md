@@ -1,5 +1,24 @@
 本文用于记录 mac 操作技巧，主要为 shell 技巧
 
+# mac 软件
+```
+软件搜索网站：http://www.pc6.com/mac/113099.html
+视频三件套：Downie4 + Permute3 + INA
+电脑硬件信息监控软件：istatmenus
+最强防火墙：Little Snitch
+文件定制：Colorful Folders
+下载工具：Folx Go
+文件比对：Beyond Compare
+文件查找：ProFind
+清理软件：CleanMyMac x
+```
+##  fix文件不能安装
+```
+sudo spctl --master-disable
+// 拖动文件
+xattr -cr 
+```
+
 # mac 软件包的管理器 brew
 
 /usr/bin/ruby -e "\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
