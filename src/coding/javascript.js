@@ -1229,6 +1229,32 @@ function findConNum(num) {
 }
 // findConNum(1000)
 
+function moveZero(ary) {
+  // 额外空间
+  let len = ary.length;
+  let gt0Ary = ary.filter(item => item !== 0);
+  let temp = [...gt0Ary].concat(new Array(len-gt0Ary.length).fill(0))
+  console.log(temp);
+  return temp;
+}
+function moveZero1(ary) {
+  // 不需要额外空间
+  let len = ary.length;
+  let rmCount = 0;
+  for(let i=0; i< len; i++) {
+    if(ary[i] === 0 && i < len - rmCount) {
+      let rm = ary.splice(i,1)
+      ary.push(...rm);
+      ++rmCount;
+      --i;
+    }
+  }
+  console.log(ary);
+  return ary;
+}
+// moveZero1([1, 2, 3, 4, 0, 5, 6, 0, 0, 9])
+
+
 function repeat(func, times, ms, immediate) {
   let count = 0;
   const ctx = null;

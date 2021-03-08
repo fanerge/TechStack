@@ -148,7 +148,7 @@ function hotPotato(nameList: string[], num: number) {
 // test-throttle
 let body = document.querySelector("body");
 let fragment = document.createDocumentFragment();
-var browsers = ["Firefox", "Chrome", "Opera", "Safari", "Internet Explorer"];
+var browsers = ["----"];
 
 browsers.forEach(function (browser) {
   var h2 = document.createElement("h2");
