@@ -9,11 +9,12 @@
 
 ## 原理
 
-1.  VSCode 中的类型系统都是基于 TypeScript 的，所以可以直接按照这种方式使用。
+1.  VSCode 中的类型系统都是基于 TypeScript 的，所以可以直接按照这种方式使用
 2.  @type 类型注释的方式是基于  JSDoc  实现的
 
 # Webpack 的构建流程是什么?
 
+<pre>
 Webpack 的运行流程是一个串行的过程，从启动到结束会依次执行以下流程：
 初始化参数：从配置文件和 Shell 语句中读取与合并参数，得出最终的参数；
 开始编译：用上一步得到的参数初始化 Compiler 对象，加载所有配置的插件，执行对象的 run 方法开始执行编译；
@@ -23,20 +24,26 @@ Webpack 的运行流程是一个串行的过程，从启动到结束会依次执
 输出资源：根据入口和模块之间的依赖关系，组装成一个个包含多个模块的 Chunk，再把每个 Chunk 转换成一个单独的文件加入到输出列表，这步是可以修改输出内容的最后机会；
 输出完成：在确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统。
 在以上过程中，Webpack 会在特定的时间点广播出特定的事件，插件在监听到感兴趣的事件后会执行特定的逻辑，并且插件可以调用 Webpack 提供的 API 改变 Webpack 的运行结果。
+</pre>
 
 # Webpack 配置
+
 process.env.NODE_ENV 第三方模块都是通过这个成员去判断运行环境，从而决定是否执行例如打印日志之类的操作
-##  不同环境下的配置
+
+## 不同环境下的配置
+
 ```
 // ./webpack.config.js
-// 第一个是 env，是我们通过 CLI 传递的环境名参数，第二个是 argv，是运行 CLI 过程中的所有参数。s
+// 第一个是 env，是我们通过 CLI 传递的环境名参数，第二个是 argv，是运行 CLI 过程中的所有参数。
 module.exports = (env, argv) => {
   return {
     // ... Webpack 配置
   }
 }
 ```
-##  不同环境的配置文件
+
+## 不同环境的配置文件
+
 ```
 // webpack-merge 三方包
 // ./webpack.common.js
@@ -49,7 +56,7 @@ const common = require('./webpack.common')
 module.exports = merge(common, {
   // 生产模式配置
 })
-// ./webpack.dev.jss
+// ./webpack.dev.js
 const merge = require('webpack-merge')
 const common = require('./webpack.common')
 module.exports = merge(common, {
@@ -57,10 +64,12 @@ module.exports = merge(common, {
 })
 ```
 
-##  生产模式优化插件
+## 生产模式优化插件
+
 ```
 plugins: [
   // DefinePlugin 为我们代码中注入全局成员的
+  // 使用console.log(API_BASE_URL)
   new webpack.DefinePlugin({
     API_BASE_URL: JSON.stringify('https://***.com')
   }),
@@ -80,7 +89,6 @@ optimization: {
 },
 ```
 
-
 # Loaders
 
 loader 让 Webpack 能够去处理那些非 JavaScript 文件（Webpack 自身只理解 JavaScript）。loader 可以将所有类型的文件转换为 Webpack 能够处理的有效模块，然后你就可以利用 Webpack 的打包能力，对它们进行处理。<br>
@@ -98,7 +106,7 @@ file-loader：在 JavaScript 代码里 import/require 一个文件时，会将�
 url-loader：将文件转换为 base64 的url
 babel-loader：将ESnext转换为ES5代码
 ImageMinimizerPlugin.loader：通过 imagemin 来优化压缩图片资源
-postcss-loader：把 CSS 代码解析成抽象语法树结构（AST），再交由插件来进行处理（PostCSS如添加浏览器前缀、CSS模块解决命名冲突、stylelin检查css中语法）
+postcss-loader：把 CSS 代码解析成抽象语法树结构（AST），再交由插件来进行处理（PostCSS如添加浏览器前缀、CSS模块解决命名冲突、stylelint检查css中语法）
 eslint-loader：EslintWebpackPlugin 检查js代码语法
 source-map-loader：从源文件 sourceMappingURL 中提取出 source map
 ```
@@ -179,13 +187,15 @@ Loader 在 module.rules 中配置，也就是说他作为模块的解析规则�
 Plugin 在 plugins 中单独配置。 类型为数组，每一项是一个 plugin 的实例，参数都通过构造函数传入。
 
 # SourceMap
-将生产环境中运行的代码转换为开发阶段编写的源代码，便于调试和定位bug
+
+将生产环境中运行的代码转换为开发阶段编写的源代码，便于调试和定位 bug
 生产环境需要注意 Source Map 文件的访问权限
+
 ```
 devtool: 'source-map'
 // 会为打包的文件生成对应的 .map 文件
 // 会为打包的文件中末尾添加 //# sourceMappingURL=***.js.map
-eval('console.log(1) //# sourceURL=***.js') // 控制台现实来源位于***.js
+eval('console.log(1) //# sourceURL=***.js') // 控制台实现来源位于***.js
 eval模式，通过在上面原理
 eval-source-map模式，生成了 map 文件，能定位到行和列
 cheap-eval-source-map模式，生成了 map 文件，只能定位到行（定位的源码是经过loader处理的）
@@ -196,12 +206,14 @@ nosources-source-map模式：可以看见出现错误的行列位置，但点进
 总结：
 // cheap 相当缩减版，只有行信息
 // module 定位到源码不经过loader处理
-// eval 通过 eval 执行代码 
+// eval 通过 eval 执行代码
 ```
 
 # Webpack Dev Serve
+
 如 browser-sync 模块可以监听某个目录刷新浏览器
 为了提升效率，将打包放于内存中。
+
 ```
 devServer: {
   // 额外静态文件目录，开发环境一般不用
@@ -213,11 +225,11 @@ devServer: {
         // 替换掉代理地址中的/api
         '^/api': ''
       },
+      // 将请求的 host 重置为 https://***.com
       changeOrigin: true
     }
   },
   port: 6666,
-  // 将请求的 host 重置为 https://***.com
   compress: true
 }
 ```
@@ -252,17 +264,14 @@ if(module.hot) {
 Webpack 监控文件状态，文件发生改变重新打包代码（通过 fs.watch 递归监控）<br>
 Express 建立服务，并和客户端见一个 EventSource http 链接，有打包更新通知客户端<br>
 客户端，收到服务器有打包更新的请求，客户端通过 ajax 请求，请求打包结果并解析。<br>
-[Webpack HMR 原理解析](https://zhuanlan.zhihu.com/p/30669007)
-
-```
-// js热更新配置（保存js状态）
-// module.hot.accept();
-```
-
+[知乎-Webpack HMR 原理解析](https://zhuanlan.zhihu.com/p/30669007)
 
 # Code Splitting
+
 Code Splitting 通过把项目中的资源模块按照我们设计的规则打包到不同的 bundle 中，从而降低应用的启动成本，提高响应速度。
-##  多入口打包（多页应用）
+
+## 多入口打包（多页应用）
+
 ```
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
@@ -294,8 +303,16 @@ module.exports = {
     }
   }
 };
+
+chunks配置
+chunks:'initial' 将同步加载和异步加载分开处理
+chunks: 'all' 将满足条件的如 minSize 以及 import() 异步都将分 bundle
+chunks: 'async' 只将import() 异步加载分 bundle
+
 ```
-##  ESModules 的 Dynamic imports 动态导入
+
+## ESModules 的 Dynamic imports 动态导入
+
 指的是在应用运行过程中，需要某个资源模块时，才去加载这个模块。
 
 ```
@@ -306,6 +323,59 @@ module.exports = {
 import(/* webpackChunkName: 'album' */'./album/album').then(({ default: album }) => {
   mainElement.appendChild(album())
 })
+```
+
+# Webpack 中的 hash、chunkhash、contenthash
+
+## hash
+
+hash 是跟整个项目的构建相关，只要项目里有文件更改，整个项目构建的 hash 值都会更改，并且全部文件都共用相同的 hash 值
+
+```
+// 每次构建都会产生一个新的hash，这会导致之前浏览器加载的有用的文件失效，不利于浏览器缓存
+output:{
+    path: path.resolve(__dirname,'./dist'),
+    publicPath: '/dist/',
+    filename: '[name]-[hash].js'
+}
+```
+
+## chunkhash
+
+它根据不同的入口文件(Entry)进行依赖文件解析、构建对应的 chunk，生成对应的哈希值。
+
+```
+output:{
+    path:path.resolve(__dirname,'./dist'),
+    publicPath: '/dist/',
+    filename: '[name]-[chunkhash].js'
+}
+```
+
+但仍然存在一个问题，如果将一个 js 文件里面引入了 css 文件。这时要是我修改了 js，但没修改 css，也会导致 css 生成新的 chunkhash 文件 （可以使用下面 contenthash 来解决该问题）。
+
+## contenthash
+
+contenthash 是针对文件内容级别的，只有你自己模块的内容变了，那么 contenthash 值才改变。
+
+```
+module:{
+  rules:[
+    {
+      test: /\.css$/,
+      use:[
+          miniCssExtractPlugin.loader,
+          'css-loader'
+      ]
+    }
+  ]
+},
+plugins:[
+  // Webpack v4一下使用 extractTextPlugin
+  new miniCssExtractPlugin({
+      filename: '[name].[contenthash:7].css'
+  })
+}
 ```
 
 # 编译提效：如何为 Webpack 编译阶段提速？
@@ -332,9 +402,40 @@ new webpack.IgnorePlugin({
 如 lodash 中只引入使用的方法
 
 ```
-import {cloneDeep} from 'lodash'
+import {cloneDeep} from 'lodash-es'
 // 或者babel-plugin-lodash 或 babel-plugin-import
 // Tree Shaking（1.依赖包使用 ES6 模块化，如lodash-es，2.Tree Shaking 并不能减少模块编译阶段的构建时间。）
+```
+
+### babel-plugin-import 实现组件 CSS 按需加载
+
+```
+{
+  "plugins": [
+    // babel-plugin-import
+    ["import", {
+      "libraryName": "antd",
+      "style": true // import js and css modularly (LESS/Sass source files)
+      // "style": 'css' // import js and css modularly (css built files)
+    }]
+  ]
+}
+
+// 效果
+import { Button } from 'antd';
+ReactDOM.render(<Button>xxxx</Button>);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+var _button = require('antd/lib/button');
+// 自动导入组件样式
+require('antd/lib/button/style');
+ReactDOM.render(<_button>xxxx</_button>);
+
+// 原理（借助 ast） https://www.codingsky.com/doc/2020/7/31/937.html
+1.  收集依赖：找到 importDeclaration，分析出包 a 和依赖 b,c,d....，假如 a 和 libraryName 一致，就将 b,c,d... 在内部收集起来
+2.  判断是否使用：在多种情况下判断收集到的 b,c,d... 是否在代码中被使用，如果有使用的，就调用 importMethod 生成新的 import 语句
+3.  生成引入代码：根据配置项生成代码和样式的 import 语句
 ```
 
 ### DllPlugin
@@ -500,8 +601,10 @@ optimization: {
 }
 ```
 
-####  babel-loader 会导致 Tree-shaking 失效？
+#### babel-loader 会导致 Tree-shaking 失效？
+
 最新版本的 babel-loader（8.x） 并不会导致 Tree-shaking 失效，已经自动帮我们关闭了对 ES Modules 转换的插件（不会将其转换为 Common.js）
+
 ```
 module: {
     rules: [
@@ -511,7 +614,7 @@ module: {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { 
+              ['@babel/preset-env', {
                 // 关闭对ES Modules 的转换
                 modules: false
                 }
@@ -524,14 +627,15 @@ module: {
   },
 ```
 
-
 ### sideEffects
+
 Tree-shaking 只能移除没有用到的代码成员，而想要完整移除没有用到的模块，那就需要开启 sideEffects 特性了。
 sideEffects 表明模块是否有副作用。
 模块的副作用是指模块执行的时候除了导出成员是否还做了其他事情（如原型链中添加方法等）。
+
 ```
 optimization: {
-  // 开启 sideEffects 功能，在使用三方包是package.json 中的 sideEffects 用来标记该包代码是否有副作用 
+  // 开启 sideEffects 功能，在使用三方包是package.json 中的 sideEffects 用来标记该包代码是否有副作用
   sideEffects: true,
   // 还可以标记出有副作用的文件
   sideEffects: ['./src/extend.js', '*.css']
