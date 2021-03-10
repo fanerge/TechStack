@@ -564,6 +564,25 @@ function bigNumSum(a, b) {
   return temp.join("");
 }
 
+// 两数之和
+// 思路1：先进行排序O(nlogn) 在使用两个指针向中间靠拢
+// 思路2：使用额外空间 map 记录每个数字的key和value一次循环，再一次循环
+function twoNumSum(arr, sum) {
+  let map = new Map();
+  arr.forEach((item, index) => {
+    map.set(item, index)
+  });
+
+  for(let i=0; i< arr.length; i++) {
+    let d = sum - arr[i];
+    if(map.has(d)) {
+      return []
+    }
+  }
+
+  return []
+}
+
 // 循环有序列表的查找
 function find(list, target) {
   let left = 0;
