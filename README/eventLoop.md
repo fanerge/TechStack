@@ -43,21 +43,24 @@ process.nextTick 会在每个阶段完成后，如果存在 nextTick 队列，�
 ## 事件循环的 6 个阶段
 
 ```
-// 每个事件循环都有6个阶段，每个阶段都会维持一个先进先出的可执行回调函数队列。
+// 每个事件循环都有6个阶段（Macrotask），每个阶段都会维持一个先进先出的可执行回调函数队列。
 // 然后执行这个阶段队列中的回调函数直到队列为空，或者回调函数调用次数达到上限，事件循环会进入下一个阶段。
 // 在事件循环的每次运行之间，Node.js检查它是否在等待任何异步I/O或定时器，如果没有，则彻底关闭。
-1.  timers 执行setTimeout() 和 setInterval()中到期的callback
-2.  pending callbacks 执行上一轮循环被延迟的I/O回调
+// process.nextTick、promise.then 会在下面6个阶段执行完的间隙中执行微任务
+1.  timers 执行setTimeout() 和 setInterval()中到期的callback。
+2.  I/O callbacks 这个阶段主要执行系统级别的回调函数，比如 TCP 连接失败的回调。
 3.  idle，prepare（libuv内部使用）
-4.  poll (轮询阶段)最为重要的阶段，执行I/O callback，在适当的条件下会阻塞在这个阶段
+4.  poll (轮询阶段)是一个重要且复杂的阶段，几乎所有 I/O 相关的回调，都在这个阶段执行（除了setTimeout、setInterval、setImmediate 以及一些因为 exception 意外关闭产生的回调）
     如果轮询队列不是空的 ，则执行它们。
     如果轮询队列为空，则进行下列操作。
       有到达时间阈值的 setTimeout，则回到 timers阶段。
       如有 setImmediate 则进入 check 阶段。
-5.  check 由setImmediate()设置的回调函数。
-6.  close callbacks 一些关闭回调，例如socket.on('close', ...)
+5.  check 执行 setImmediate() 设定的 callbacks。
+6.  close callbacks 执行关闭请求的回调函数，比如 socket.on('close', ...)。
 ```
-
+浏览器端任务队列每轮事件循环仅出队一个回调函数接着去执行微任务队列；而 Node.js 端只要轮到执行某个宏任务队列，则会执行完队列中所有的当前任务，但是当前轮次新添加到队尾的任务则会等到下一轮次才会执行。<br>
+poll 阶段
+![poll 阶段](../img/node-eventloop-poll.png)
 [event-loop-timers-and-nexttick](https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/)<br>
 microtask 会在事件循环的各个阶段之间执行<br>
 [Node.js 指南（Node.js 事件循环、定时器和 process.nextTick()）](https://segmentfault.com/a/1190000017017364)
