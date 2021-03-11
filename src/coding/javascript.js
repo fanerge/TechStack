@@ -576,12 +576,26 @@ function twoNumSum(arr, sum) {
   for(let i=0; i< arr.length; i++) {
     let d = sum - arr[i];
     if(map.has(d)) {
-      return []
+      return [i, map.get(d)]
     }
   }
 
   return []
 }
+// console.log(twoNumSum([1, 2, 3, 4, 5 ,6, 7], 99))
+
+
+// 判断是否为一个有效的 url
+function isRealUrl(str) {
+  // const a = document.createElement('a');
+  // a.href = str;
+  const a = new URL(str);
+  return [(/^(http|https):$/).test(a.protocol), a.host, a.pathname !== str, a.pathname !== `/${str}`].find(x=> !x) === void 0;
+}
+// console.log(isRealUrl('http://www.pauct.com/groupbuy'))
+
+
+
 
 // 循环有序列表的查找
 function find(list, target) {
@@ -1581,33 +1595,40 @@ function currencyFormatChinese(currencyDigits) {
   return outputCharacters;
 }
 
-// 将数组转化为树
-// [{id: 0, pid: -1}, {id: 1, pid: 0}, {id: 2, pid: 0}, {id: 3, pid: 1}]
-// 转化为tree（约定pid为-1是根节点） {id: 0, children: [{id: 1, children: [{id: 3, children: []}]}, {id: 2, children: []}]}
-function array2Tree(list = []) {
-  let root = null;
-  let map = {};
-  // 2 obj
-  list.forEach((item) => {
-    map[item.id] = item;
-  });
 
-  list.forEach((item) => {
-    let parent = map[item.pid];
-    if (parent) {
-      if (!Array.isArray(parent.children)) {
-        parent.children = [];
+// 将数组转化为树
+
+function array2Tree2(ary) {
+  let map = new Map()
+  // 转化为以 id 为key item 为 value 的对象
+  /**
+   * {
+   *  0: {id: 0, pid: -1},
+   *  1: {id: 1, pid: 0},
+   *  2: {id: 2, pid: 0}
+   * }
+   */
+  ary.forEach(item => map.set(item.id, item));
+  
+  let tree = null;
+  ary.forEach((item) => {
+    if(map.has(item.pid)) {
+      let parentNode = map.get(item.pid);
+      if(!Array.isArray(parentNode.children)) {
+        parentNode.children = []
       }
-      if (!parent.children.some((item1) => item1.id === item.id)) {
-        parent.children.push(item);
-      }
-    } else {
-      root = item;
+      parentNode.children.push(map.get(item.id));
+    }else {
+      // root
+      tree = item;
     }
   });
 
-  return root;
+  return tree;
 }
+// var ssss = [{id: 0, pid: -1}, {id: 1, pid: 0}, {id: 2, pid: 0}, {id: 3, pid: 1}, {id: 4, pid: 2}, {id: 5, pid: 4}];
+// console.log(array2Tree2(ssss))
+
 
 // 实现XPath
 // 实现一个函数，生成某个DOM元素的xpath，主要包含两部分：标签层级和兄弟元素中的顺序。

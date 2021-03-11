@@ -16,6 +16,10 @@
 
 # git
 
+## 自动保存 git 密码（mac）
+
+git config --global credential.helper osxkeychain
+
 ## git ssh 相关
 
 // 生成 ssh 密钥
