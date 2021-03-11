@@ -1597,8 +1597,7 @@ function currencyFormatChinese(currencyDigits) {
 
 
 // 将数组转化为树
-
-function array2Tree2(ary) {
+function array2Tree(ary) {
   let map = new Map()
   // 转化为以 id 为key item 为 value 的对象
   /**
@@ -1617,7 +1616,9 @@ function array2Tree2(ary) {
       if(!Array.isArray(parentNode.children)) {
         parentNode.children = []
       }
-      parentNode.children.push(map.get(item.id));
+      if(!parentNode.children.some(o => o.id === item.id)) {
+        parentNode.children.push(map.get(item.id));
+      }
     }else {
       // root
       tree = item;
@@ -1627,8 +1628,82 @@ function array2Tree2(ary) {
   return tree;
 }
 // var ssss = [{id: 0, pid: -1}, {id: 1, pid: 0}, {id: 2, pid: 0}, {id: 3, pid: 1}, {id: 4, pid: 2}, {id: 5, pid: 4}];
-// console.log(array2Tree2(ssss))
+// console.log(array2Tree(ssss))
 
+// 从树中找出父路径
+function findParentId(tree) {
+  let map = new Map();
+  return (id) => {
+    if(map.has(id)) return map.get(id)
+    function dfs(node, map, ary = []) {
+      console.log('dfs')
+      if(!node) {
+        return;
+      }
+      if(!map.has(node.id)) {
+        map.set(node.id, ary)
+      }
+      let list = map.get(node.id);
+      list.push(node.id)
+      if(Array.isArray(node.children)) {
+        node.children.forEach(item => {
+          dfs(item, map, list.slice(0))
+        })
+      }
+    }
+    dfs(tree, map, [])
+    return map.get(id);
+  }
+}
+var testObj = {
+  "id": 0,
+  "pid": -1,
+  "children": [
+      {
+          "id": 1,
+          "pid": 0,
+          "children": [
+              {
+                  "id": 3,
+                  "pid": 1
+              }
+          ]
+      },
+      {
+          "id": 2,
+          "pid": 0,
+          "children": [
+              {
+                  "id": 4,
+                  "pid": 2,
+                  "children": [
+                      {
+                          "id": 5,
+                          "pid": 4
+                      }
+                  ]
+              }
+          ]
+      }
+  ]
+}
+// var tree2Map = findParentId(testObj)
+// window.tree2Map = tree2Map;
+// console.log(tree2Map(4))
+
+// 递归实现数字翻转
+function reverseNum(num) {
+  function rec(n) {
+    const str = n.toString()
+    if(str.length === 1) {
+      return n;
+    }
+    return `${str.slice(-1)}${+rec(str.slice(0, -1))}`
+  }
+
+  return rec(num)
+}
+// console.log(reverseNum(123456))
 
 // 实现XPath
 // 实现一个函数，生成某个DOM元素的xpath，主要包含两部分：标签层级和兄弟元素中的顺序。
