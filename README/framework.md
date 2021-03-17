@@ -8,8 +8,9 @@
 [Front-End-Checklist](https://github.com/thedaviddias/Front-End-Checklist)
 [HTML/Head 详细说明](https://github.com/joshbuchea/HEAD)
 
-#	JS
-[根据user-agent 异步加载, 懒加载, polyfill的优化](https://polyfill.io/v3/url-builder/)
+# JS
+
+[根据 user-agent 异步加载, 懒加载, polyfill 的优化](https://polyfill.io/v3/url-builder/)
 
 # shell
 
@@ -173,6 +174,7 @@ menu-aim: react-menu-aim、es6-menu-aim
 
 ## react 系列
 
+滚动优化：react-custom-scrollbars
 拖拽：react-dnd
 组件与 viewport 交互：react-waypoint
 Svg 以组件导入：svg-react-loader

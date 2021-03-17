@@ -1,36 +1,38 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/Cellar/yarn/1.22.5/libexec/bin/yarn.js
+  /usr/local/bin/node /usr/local/Cellar/yarn/1.22.5/libexec/bin/yarn.js add @babel/plugin-proposal--decorators -D
 
 PATH: 
-  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+  /Users/apple/Sites/apache-maven-3.6.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/apple/Sites/apache-maven-3.6.3/bin
 
 Yarn version: 
   1.22.5
 
 Node version: 
-  14.9.0
+  12.18.4
 
 Platform: 
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/typescript/-/typescript-3.5.3.tgz: ESOCKETTIMEDOUT
-      at ClientRequest.<anonymous> (/usr/local/Cellar/yarn/1.22.5/libexec/lib/cli.js:141376:19)
-      at Object.onceWrapper (events.js:420:28)
-      at ClientRequest.emit (events.js:314:20)
-      at TLSSocket.emitRequestTimeout (_http_client.js:769:9)
-      at Object.onceWrapper (events.js:420:28)
-      at TLSSocket.emit (events.js:326:22)
-      at TLSSocket.Socket._onTimeout (net.js:482:8)
-      at listOnTimeout (internal/timers.js:554:17)
-      at processTimers (internal/timers.js:497:7)
+  Error: https://registry.yarnpkg.com/@babel%2fplugin-proposal--decorators: Not found
+      at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.22.5/libexec/lib/cli.js:66988:18)
+      at Request.self.callback (/usr/local/Cellar/yarn/1.22.5/libexec/lib/cli.js:140749:22)
+      at Request.emit (events.js:315:20)
+      at Request.<anonymous> (/usr/local/Cellar/yarn/1.22.5/libexec/lib/cli.js:141721:10)
+      at Request.emit (events.js:315:20)
+      at IncomingMessage.<anonymous> (/usr/local/Cellar/yarn/1.22.5/libexec/lib/cli.js:141643:12)
+      at Object.onceWrapper (events.js:421:28)
+      at IncomingMessage.emit (events.js:327:22)
+      at endReadableNT (_stream_readable.js:1220:12)
+      at processTicksAndRejections (internal/process/task_queues.js:84:21)
 
 npm manifest: 
   {
-    "name": "webpack-demo",
+    "name": "teach-stack",
     "version": "1.0.0",
     "description": "",
     "scripts": {
+      "dev": "yarn start",
       "start": "webpack-dev-server --open",
       "test": "jest",
       "build": "webpack"
@@ -2771,9 +2773,9 @@ Lockfile:
       domelementtype "1"
   
   dot-prop@^4.1.0:
-    version "4.2.0"
-    resolved "https://registry.npm.taobao.org/dot-prop/download/dot-prop-4.2.0.tgz#1f19e0c2e1aa0e32797c49799f2837ac6af69c57"
-    integrity sha1-HxngwuGqDjJ5fEl5nyg3rGr2nFc=
+    version "4.2.1"
+    resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-4.2.1.tgz#45884194a71fc2cda71cbb4bceb3a4dd2f433ba4"
+    integrity sha512-l0p4+mIuJIua0mhxGoh4a+iNL9bmeK5DvnSVQa6T0OhrVmaEa1XScX5Etc673FePCJOArq/4Pa2cLGODUWTPOQ==
     dependencies:
       is-obj "^1.0.0"
   
@@ -4198,7 +4200,7 @@ Lockfile:
   
   is-obj@^1.0.0:
     version "1.0.1"
-    resolved "https://registry.npm.taobao.org/is-obj/download/is-obj-1.0.1.tgz#3e4729ac1f5fde025cd7d83a896dab9f4f67db0f"
+    resolved "https://registry.yarnpkg.com/is-obj/-/is-obj-1.0.1.tgz#3e4729ac1f5fde025cd7d83a896dab9f4f67db0f"
     integrity sha1-PkcprB9f3gJc19g6iW2rn09n2w8=
   
   is-path-cwd@^2.0.0:

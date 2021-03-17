@@ -313,13 +313,13 @@ class Scheduler {
     this.curNum = 0;
   }
 
-  // @measuerRunTime
+  @measuerRunTime
   test() {
     let i = 0;
     while (i < 1000) {
       i++;
     }
-    console.log('end')
+    // console.log('end')
   }
 
   async add(promiseCreator) {
@@ -340,7 +340,7 @@ class Scheduler {
   }
 }
 
-const timeout = (time) => new Promise(resolve => {
+const timeout = (time) => new Promise((resolve, reject) => {
   setTimeout(resolve, time)
 })
 
@@ -359,7 +359,6 @@ const addTask = (time, order) => {
 // output: 2 3 1 4
 
 // 限制并发，如上
-// TODO 有问题呆调试
 function limitLoad(urls, handler, limit) {
   const sequence = [].concat(urls);
   let promises = [];
@@ -369,6 +368,7 @@ function limitLoad(urls, handler, limit) {
     });
   })
 
+  // 前 limit 个开始执行
   let p = Promise.race(promises);
   for (let i = 0; i < sequence.length; i++) {
     p = p.then((res) => {
@@ -383,14 +383,14 @@ function limitLoad(urls, handler, limit) {
 }
 const urls = [{
   info: '1111',
-  time: 1000
+  time: 3000
 },
 {
   info: '222',
   time: 1000
 }, {
   info: '333',
-  time: 1000
+  time: 2000
 }, {
   info: '4444',
   time: 1000
@@ -405,18 +405,19 @@ const urls = [{
   time: 1000
 }, {
   info: '888',
-  time: 1000
+  time: 5000
 }]
 function loadImg(url) {
   return new Promise((resolve, reject) => {
-    console.log(url.info + '!!!start');
+    // console.log(url.info + '!!!start');
     setTimeout(() => {
       console.log(url.info + '!!!end');
       resolve()
+      // reject()
     }, url.time);
   })
 }
-// limitLoad(urls, loadImg, 3)
+limitLoad(urls, loadImg, 3)
 
 // 实现xhrHook
 class Xhrhook {
@@ -565,21 +566,15 @@ class EventEmitter {
     }
   }
 
-  emit(name, func, ...args) {
+  emit(name, ...args) {
     const { map } = this;
     if (name === undefined) {
       throw Error('name 必填')
     }
     let list = map.get(name) || []
-    if (typeof func !== 'function') {
-      // 所有函数都执行一遍
-      list.forEach(f => {
-        f(...args)
-      });
-    } else {
-      let f = list.find(f => func === f);
-      typeof f === 'function' && f(...args);
-    }
+    list.forEach(f => {
+      f.apply(this, args)
+    });
   }
 }
 
@@ -1127,7 +1122,7 @@ function findSumList(list, N, M) {
 // findSumList([1, 3, 6, 4, 2, 7, 5], 3, 8);
 
 // 实现简化的 promise
-function Promise(func) {
+function MyPromise(func) {
   this.fullfilled = false;
   this.rejected = false;
   this.pending = true;
@@ -1142,23 +1137,23 @@ function Promise(func) {
   func.call(this, resolve.bind(this), reject.bind(this));
 }
 
-Promise.prototype.then = function (func) {
+MyPromise.prototype.then = function (func) {
   this.handlers.push(func);
   return this;
 };
-Promise.prototype.catch = function (func) {
+MyPromise.prototype.catch = function (func) {
   this.errorHandlers.push(func);
   return this;
 };
 
-Promise.race = (promises) =>
+MyPromise.race = (promises) =>
   new Promise((resolve, reject) => {
     promises.forEach((promise) => {
       promise.then(resolve, reject);
     });
   });
 
-Promise.all = (promises) =>
+  MyPromise.all = (promises) =>
   new Promise((resolve, reject) => {
     let len = promises.length;
     let res = [];
@@ -1186,19 +1181,19 @@ Promise.all = (promises) =>
 // p2.then(console.log).catch((...args) => console.log("fail", ...args));
 
 // Promise.prototype.finally
-Promise.prototype.finally = function (callback) {
-  // Promise
-  const P = this.constructor;
-  return this.then((value) => {
-    return P.resolve(callback()).then(() => {
-      return value;
-    })
-  }, (reason) => {
-    return P.resolve(callback()).then(() => {
-      throw reason;
-    })
-  })
-}
+// Promise.prototype.finally = function (callback) {
+//   // Promise
+//   const P = this.constructor;
+//   return this.then((value) => {
+//     return P.resolve(callback()).then(() => {
+//       return value;
+//     })
+//   }, (reason) => {
+//     return P.resolve(callback()).then(() => {
+//       throw reason;
+//     })
+//   })
+// }
 
 // quickSort
 // 找一个基准点，比基准点小的放一个数组，比基准点大的放另一个数组。
@@ -1497,7 +1492,7 @@ function repeat(func, times, ms, immediate) {
 // repeatFunc("hello world"); //会打印4次 helloworld，每次间隔3秒
 
 const repeatFunc = repeat(console.log, 4, 3000, true);
-repeatFunc("hello world"); //先立即打印一个hellworld，然后每个三秒打印三个hello world
+// repeatFunc("hello world"); //先立即打印一个hellworld，然后每个三秒打印三个hello world
 
 // 周期执行某个函数 n 次
 function repeat1(func, times, ms, immediate) {
