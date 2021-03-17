@@ -139,6 +139,7 @@ homebrew 安装
 ## 常用的 npm 包
 
 ```
+isomorphic-fetch：fetch polyfill 适合同构
 数字处理：Math.js、big.js
 数字格式化：numeral
 数字计算精度问题：Math.js/decimal.js/big.js/BigNumber.js
