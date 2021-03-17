@@ -313,6 +313,15 @@ class Scheduler {
     this.curNum = 0;
   }
 
+  // @measuerRunTime
+  test() {
+    let i = 0;
+    while (i < 1000) {
+      i++;
+    }
+    console.log('end')
+  }
+
   async add(promiseCreator) {
     if (this.curNum >= this.size) {
       await new Promise((resolve, reject) => {
@@ -336,6 +345,8 @@ const timeout = (time) => new Promise(resolve => {
 })
 
 const scheduler = new Scheduler(2)
+scheduler.test();
+
 const addTask = (time, order) => {
   scheduler.add(() => timeout(time))
     .then(() => console.log(order))
@@ -346,6 +357,149 @@ const addTask = (time, order) => {
 // addTask(300, '3')
 // addTask(400, '4')
 // output: 2 3 1 4
+
+// 限制并发，如上
+// TODO 有问题呆调试
+function limitLoad(urls, handler, limit) {
+  const sequence = [].concat(urls);
+  let promises = [];
+  promises = sequence.splice(0, limit).map((url, index) => {
+    return handler(url).then(() => {
+      return index;
+    });
+  })
+
+  let p = Promise.race(promises);
+  for (let i = 0; i < sequence.length; i++) {
+    p = p.then((res) => {
+      promises[res] = handler(sequence[i]).then(() => {
+        return res;
+      })
+      return Promise.race(promises)
+      // 相当于
+      // p.then().then() ...
+    })
+  }
+}
+const urls = [{
+  info: '1111',
+  time: 1000
+},
+{
+  info: '222',
+  time: 1000
+}, {
+  info: '333',
+  time: 1000
+}, {
+  info: '4444',
+  time: 1000
+}, {
+  info: '5555',
+  time: 1000
+}, {
+  info: '666',
+  time: 1000
+}, {
+  info: '777',
+  time: 1000
+}, {
+  info: '888',
+  time: 1000
+}]
+function loadImg(url) {
+  return new Promise((resolve, reject) => {
+    console.log(url.info + '!!!start');
+    setTimeout(() => {
+      console.log(url.info + '!!!end');
+      resolve()
+    }, url.time);
+  })
+}
+// limitLoad(urls, loadImg, 3)
+
+// 实现xhrHook
+class Xhrhook {
+  constructor(beforehooks = {}, afterhooks = {}) {
+    this.XHR = window.XMLHttpRequest;
+    this.beforehooks = beforehooks;
+    this.afterhooks = afterhooks;
+    this.init();
+  }
+
+  init() {
+    let _this = this;
+    window.XMLHttpRequest = function () {
+      this._xhr = new _this.XHR()
+      this.overwrite(this);
+    }
+  }
+
+  overwrite(proxyXHR) {
+    for (let key in proxyXHR._xhr) {
+      if (typeof proxyXHR._xhr[key] === 'function') {
+        this.overwriteMethod(key, proxyXHR);
+        continue;
+      }
+      this.overwriteAttributes(key, proxyXHR);
+    }
+  }
+
+  overwriteMethod(key, proxyXHR) {
+    let beforeHooks = this.beforehooks;
+    let afterHooks = this.afterHooks;
+
+    proxyXHR[key] = (...args) => {
+      if (beforeHooks) {
+        const res = beforeHooks[key].apply(proxyXHR, args)
+        return res;
+      }
+      const res = proxyXHR._xhr[key].apply(proxyXHR._xhr, args)
+      afterHooks[key] && afterHooks[key].call(proxyXHR._xhr, res)
+      return res;
+    }
+  }
+
+  overwriteAttributes(key, proxyXHR) {
+    Object.defineProperty(proxyXHR, key, this.setPropertyDescriptor(key, proxyXHR))
+  }
+
+  setPropertyDescriptor(key, proxyXHR) {
+    let obj = Object.create(null);
+    let _this = this;
+    obj.set = function (val) {
+      if (key.startsWith('on')) {
+        proxyXHR['__' + key] = val;
+        return;
+      }
+      if (_this.beforehooks[key]) {
+        this._xhr[key] = function (...args) {
+          _this.beforehooks[key].call(proxyXHR);
+          val.apply(proxyXHR, args)
+        }
+        return;
+      }
+      this._xhr[key] = val;
+    }
+    obj.get = function () {
+      return proxyXHR['__' + key] || this._xhr[key];
+    }
+
+    return obj;
+  }
+}
+// 使用hook
+// new XhrHook({
+//   open: function () {
+//     console.log('open');
+//   },
+//   onload: function() {
+//   }
+// }, {
+//   onerror: function() {
+//   }
+// })
+// 使用var xhr = new XMLHttpRequest() 就已经添加了对应hook
 
 // 实现一个基本的EventEmitter
 class EventEmitter {
@@ -573,9 +727,9 @@ function twoNumSum(arr, sum) {
     map.set(item, index)
   });
 
-  for(let i=0; i< arr.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     let d = sum - arr[i];
-    if(map.has(d)) {
+    if (map.has(d)) {
       return [i, map.get(d)]
     }
   }
@@ -590,7 +744,7 @@ function isRealUrl(str) {
   // const a = document.createElement('a');
   // a.href = str;
   const a = new URL(str);
-  return [(/^(http|https):$/).test(a.protocol), a.host, a.pathname !== str, a.pathname !== `/${str}`].find(x=> !x) === void 0;
+  return [(/^(http|https):$/).test(a.protocol), a.host, a.pathname !== str, a.pathname !== `/${str}`].find(x => !x) === void 0;
 }
 // console.log(isRealUrl('http://www.pauct.com/groupbuy'))
 
@@ -1032,7 +1186,7 @@ Promise.all = (promises) =>
 // p2.then(console.log).catch((...args) => console.log("fail", ...args));
 
 // Promise.prototype.finally
-Promise.prototype.finally = function(callback) {
+Promise.prototype.finally = function (callback) {
   // Promise
   const P = this.constructor;
   return this.then((value) => {
@@ -1164,11 +1318,11 @@ function genArray(len) {
 }
 function toSolutionArray(ary) {
   const num = 10;
-  ary.sort((a,b) => a-b);
+  ary.sort((a, b) => a - b);
   let map = new Map();
   ary.forEach(item => {
-    let key = +parseInt(item/num)
-    if(!map.has(key)) map.set(key, [])
+    let key = +parseInt(item / num)
+    if (!map.has(key)) map.set(key, [])
     let oldVals = map.get(key);
     oldVals.push(item)
     // map.set(key, [...oldVals, item])
@@ -1191,20 +1345,20 @@ function findSubStrIndex(str, subStr) {
   // dp[i][j] 表示连续相等的字符个数
   let strLen = str.length;
   let subStrLen = subStr.length;
-  let dp = new Array(strLen+1)
-  for(let i=0; i<strLen+1; i++) {
+  let dp = new Array(strLen + 1)
+  for (let i = 0; i < strLen + 1; i++) {
     dp[i] = new Array(subStrLen + 1).fill(0);
   }
 
-  for(let i=1; i<strLen+1; i++) {
-    for(let j=1; j<subStrLen+1; j++) {
-      if(str[i-1] === subStr[j-1]) {
-        dp[i][j] = dp[i-1][j-1] + 1;
-      }else{
+  for (let i = 1; i < strLen + 1; i++) {
+    for (let j = 1; j < subStrLen + 1; j++) {
+      if (str[i - 1] === subStr[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
         dp[i][j] = 0;
       }
-      if(dp[i][j] === subStrLen ) {
-        return i-subStrLen;
+      if (dp[i][j] === subStrLen) {
+        return i - subStrLen;
       }
     }
   }
@@ -1214,11 +1368,11 @@ function findSubStrIndex(str, subStr) {
 function findSubStrIndex2(str, subStr) {
   let strLen = str.length;
   let subStrLen = subStr.length;
-  if(strLen < subStrLen) return -1;
+  if (strLen < subStrLen) return -1;
 
-  for(let i=0; i<strLen-subStrLen+1; i++) {
-    let temp = str.slice(i, i+subStrLen);
-    if(temp === subStr) {
+  for (let i = 0; i < strLen - subStrLen + 1; i++) {
+    let temp = str.slice(i, i + subStrLen);
+    if (temp === subStr) {
       console.log(i)
       return i;
     }
@@ -1232,7 +1386,7 @@ function findSubStrIndex2(str, subStr) {
 function rotateArray(ary, k) {
   let len = ary.length
   let items = k % len;
-  if(items === 0) {
+  if (items === 0) {
     console.log(ary)
     return ary
   }
@@ -1242,7 +1396,7 @@ function rotateArray(ary, k) {
   //   ary.unshift(last);
   // }
   // 需要额外空间
-  ary = ary.slice(-items).concat(ary.slice(0, len-items))
+  ary = ary.slice(-items).concat(ary.slice(0, len - items))
   console.log(ary)
   return ary;
 }
@@ -1253,7 +1407,7 @@ function rotateArray(ary, k) {
 
 // 找出1000以内的对称数
 function findConNum(num) {
-  const temp =  [...new Array(num).keys()].filter(item => {
+  const temp = [...new Array(num).keys()].filter(item => {
     const str = item.toString();
     return str.length >= 1 && str === str.split('').reverse().join('')
   });
@@ -1266,7 +1420,7 @@ function moveZero(ary) {
   // 额外空间
   let len = ary.length;
   let gt0Ary = ary.filter(item => item !== 0);
-  let temp = [...gt0Ary].concat(new Array(len-gt0Ary.length).fill(0))
+  let temp = [...gt0Ary].concat(new Array(len - gt0Ary.length).fill(0))
   console.log(temp);
   return temp;
 }
@@ -1274,9 +1428,9 @@ function moveZero1(ary) {
   // 不需要额外空间
   let len = ary.length;
   let rmCount = 0;
-  for(let i=0; i< len; i++) {
-    if(ary[i] === 0 && i < len - rmCount) {
-      let rm = ary.splice(i,1)
+  for (let i = 0; i < len; i++) {
+    if (ary[i] === 0 && i < len - rmCount) {
+      let rm = ary.splice(i, 1)
       ary.push(...rm);
       ++rmCount;
       --i;
@@ -1287,6 +1441,37 @@ function moveZero1(ary) {
 }
 // moveZero1([1, 2, 3, 4, 0, 5, 6, 0, 0, 9])
 
+// 装饰器的使用 TODO
+// 测量某个方法执行的时间
+export function measuerRunTime(target, name, descriptor) {
+  const oldValue = descriptor.value;
+  descriptor.value = async function () {
+    console.time(name)
+    const ret = await oldValue.apply(this, arguments)
+    console.timeEnd(name)
+    return ret;
+  }
+}
+
+// 检查浏览器是否支持 webp
+function checkWebp1() {
+  return document.createElement('canvas')
+    .toDataURL('image/webp')
+    .indexOf('data:image/webp') === 0;
+}
+
+async function checkWebp2() {
+  return new Promise((resolve, reject) => {
+    let img = new Image();
+    img.onload = function () {
+      resolve(true)
+    }
+    img.onerror = function () {
+      resolve(false)
+    }
+    img.src = 'data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAAAAAAfQ//73v/+BiOh/AAA=';
+  })
+}
 
 function repeat(func, times, ms, immediate) {
   let count = 0;
@@ -1608,18 +1793,18 @@ function array2Tree(ary) {
    * }
    */
   ary.forEach(item => map.set(item.id, item));
-  
+
   let tree = null;
   ary.forEach((item) => {
-    if(map.has(item.pid)) {
+    if (map.has(item.pid)) {
       let parentNode = map.get(item.pid);
-      if(!Array.isArray(parentNode.children)) {
+      if (!Array.isArray(parentNode.children)) {
         parentNode.children = []
       }
-      if(!parentNode.children.some(o => o.id === item.id)) {
+      if (!parentNode.children.some(o => o.id === item.id)) {
         parentNode.children.push(map.get(item.id));
       }
-    }else {
+    } else {
       // root
       tree = item;
     }
@@ -1634,18 +1819,18 @@ function array2Tree(ary) {
 function findParentId(tree) {
   let map = new Map();
   return (id) => {
-    if(map.has(id)) return map.get(id)
+    if (map.has(id)) return map.get(id)
     function dfs(node, map, ary = []) {
       console.log('dfs')
-      if(!node) {
+      if (!node) {
         return;
       }
-      if(!map.has(node.id)) {
+      if (!map.has(node.id)) {
         map.set(node.id, ary)
       }
       let list = map.get(node.id);
       list.push(node.id)
-      if(Array.isArray(node.children)) {
+      if (Array.isArray(node.children)) {
         node.children.forEach(item => {
           dfs(item, map, list.slice(0))
         })
@@ -1659,32 +1844,32 @@ var testObj = {
   "id": 0,
   "pid": -1,
   "children": [
-      {
-          "id": 1,
-          "pid": 0,
+    {
+      "id": 1,
+      "pid": 0,
+      "children": [
+        {
+          "id": 3,
+          "pid": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "pid": 0,
+      "children": [
+        {
+          "id": 4,
+          "pid": 2,
           "children": [
-              {
-                  "id": 3,
-                  "pid": 1
-              }
+            {
+              "id": 5,
+              "pid": 4
+            }
           ]
-      },
-      {
-          "id": 2,
-          "pid": 0,
-          "children": [
-              {
-                  "id": 4,
-                  "pid": 2,
-                  "children": [
-                      {
-                          "id": 5,
-                          "pid": 4
-                      }
-                  ]
-              }
-          ]
-      }
+        }
+      ]
+    }
   ]
 }
 // var tree2Map = findParentId(testObj)
@@ -1695,7 +1880,7 @@ var testObj = {
 function reverseNum(num) {
   function rec(n) {
     const str = n.toString()
-    if(str.length === 1) {
+    if (str.length === 1) {
       return n;
     }
     return `${str.slice(-1)}${+rec(str.slice(0, -1))}`

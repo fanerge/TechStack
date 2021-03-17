@@ -8,6 +8,9 @@
 [Front-End-Checklist](https://github.com/thedaviddias/Front-End-Checklist)
 [HTML/Head 详细说明](https://github.com/joshbuchea/HEAD)
 
+#	JS
+[根据user-agent 异步加载, 懒加载, polyfill的优化](https://polyfill.io/v3/url-builder/)
+
 # shell
 
 ## shellCheck
