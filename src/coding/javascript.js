@@ -1198,7 +1198,7 @@ MyPromise.race = (promises) =>
 // quickSort
 // 找一个基准点，比基准点小的放一个数组，比基准点大的放另一个数组。
 // [1, 3, 2, 9, 6, 5, 1, 0, -2, 10]
-function quickSorthelper(ary) {
+function quickSortHelper(ary) {
   const { floor, random } = Math;
   if (ary.length <= 1) return ary;
   // 随机找一个基准点
@@ -1216,10 +1216,10 @@ function quickSorthelper(ary) {
     }
   });
 
-  return [...quickSorthelper(smaller), pointValue, ...quickSorthelper(bigger)];
+  return [...quickSortHelper(smaller), pointValue, ...quickSortHelper(bigger)];
 }
 function quickSort(ary) {
-  return quickSorthelper(ary);
+  return quickSortHelper(ary);
 }
 
 // mergeSort

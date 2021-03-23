@@ -59,6 +59,15 @@ git rebase --continue
 it rebase —-abort
 ```
 
+# 动画
+
+## svg 动画
+
+svg 图案：Flation、iconFont、Iconfinder、icons8
+[TimelineLite/TimelineMax-创建时间轴（timeline）作为动画或其他时间轴的容器](https://greensock.com/)
+[TimelineMax 中文手册](https://www.tweenmax.com.cn/api/timelinemax/)
+[十分钟教你用 svg 做出精美的动画！](https://juejin.cn/post/6930412294149472269)
+
 # Node.js
 
 ```
