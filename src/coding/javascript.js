@@ -1,3 +1,6 @@
+import '../algorithm/stack'
+
+
 // deepClone
 // 1. 针对能够遍历对象的不可枚举属性以及 Symbol 类型，我们可以使用 Reflect.ownKeys 方法；
 // 2. 当参数为 Date、RegExp 类型，则直接生成一个新的实例返回；
@@ -313,7 +316,7 @@ class Scheduler {
     this.curNum = 0;
   }
 
-  @measuerRunTime
+  // @measuerRunTime
   test() {
     let i = 0;
     while (i < 1000) {
@@ -417,7 +420,7 @@ function loadImg(url) {
     }, url.time);
   })
 }
-limitLoad(urls, loadImg, 3)
+// limitLoad(urls, loadImg, 3)
 
 // 实现xhrHook
 class Xhrhook {
@@ -1153,7 +1156,7 @@ MyPromise.race = (promises) =>
     });
   });
 
-  MyPromise.all = (promises) =>
+MyPromise.all = (promises) =>
   new Promise((resolve, reject) => {
     let len = promises.length;
     let res = [];
