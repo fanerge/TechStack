@@ -118,3 +118,149 @@ var Size = [4, 2, 5, 3, 1];
 var Dir = [1, 1, 0, 0, 0]
 // console.log(stack3(Size, Dir));
 
+/**
+【题目】一个整数数组 A，找到每个元素：右边第一个比我小的下标位置，没有则用 -1 表示。
+输入：[5, 2]
+输出：[1, -1]
+解释：因为元素 5 的右边离我最近且比我小的位置应该是 A[1]，最后一个元素 2 右边没有比 2 小的元素，所以应该输出 -1。
+*/
+
+function findRightSmall(A) {
+	// 递增栈（小数消大数）
+	// index
+	let stack = [];
+	let ans = [];
+
+	for(let i=0; i<A.length; i++) {
+		if(stack.length <= 0) {
+			stack.push(i);
+			continue;
+		}
+		while(stack.length > 0 && A[stack[stack.length-1]] > A[i]) {
+			// 先存储在删除
+			ans[stack[stack.length-1]] = i;
+			stack.pop();
+		}
+		stack.push(i);
+	}
+
+	// 栈中还有元素，则没有右边比它小的了，全设置为 -1
+	while(stack.length > 0) {
+		let index = stack.pop();
+		ans[index] = -1;
+	}
+
+	return ans;
+}
+
+// findRightSmall([5, 2])
+
+/**
+数组中右边第一个比我大的元素的位置
+*/
+function findRightBig(A) {
+	// 递减栈（小数消大数）
+	// index
+	let stack = [];
+	let ans = [];
+
+	for(let i=0; i<A.length; i++) {
+		if(stack.length <= 0) {
+			stack.push(i);
+			continue;
+		}
+		while(stack.length > 0 && A[stack[stack.length-1]] < A[i]) {
+			// 先存储在删除
+			ans[stack[stack.length-1]] = i;
+			stack.pop();
+		}
+		stack.push(i);
+	}
+
+	// 栈中还有元素，则没有右边比它小的了，全设置为 -1
+	while(stack.length > 0) {
+		let index = stack.pop();
+		ans[index] = -1;
+	}
+
+	return ans;
+}
+// findRightBig([5, 2])
+
+/**
+数组中元素左边离我最近且比我小的元素的位置
+*/
+function findLeftSmall(A) {
+	// index，递增栈
+	let stack = [];
+	let ans = [];
+
+	for(let i=A.length-1; 0<=i; i--) {
+		if(stack.length <= 0) {
+			stack.push(i);
+			continue;
+		}
+		while(stack.length > 0 && A[stack[stack.length-1]] > A[i]) {
+			ans[stack[stack.length-1]] = i;
+			stack.pop();
+		}
+		stack.push(i)
+	}
+
+
+	while(stack.length > 0) {
+		ans[stack[stack.length-1]] = -1;
+		stack.pop();
+	}
+
+	return ans;
+}
+// findLeftSmall([5, 2, 6, 7])
+
+/**
+数组中元素左边离我最近且比我大的元素的位置
+*/
+function findLeftBig(A) {
+	// index，递减栈
+	let stack = [];
+	let ans = [];
+
+	for(let i=A.length-1; 0<=i; i--) {
+		if(stack.length <= 0) {
+			stack.push(i);
+			continue;
+		}
+		while(stack.length > 0 && A[stack[stack.length-1]] < A[i]) {
+			ans[stack[stack.length-1]] = i;
+			stack.pop();
+		}
+		stack.push(i)
+	}
+
+
+	while(stack.length > 0) {
+		ans[stack[stack.length-1]] = -1;
+		stack.pop();
+	}
+
+	return ans;
+}
+// findLeftBig([5, 2, 6, 7])
+
+
+/**
+【题目】给定一个正整数数组和 k，要求依次取出 k 个数，输出其中数组的一个子序列，需要满足：1. 长度为 k；2.字典序最小。
+输入：nums = [3,5,2,6], k = 2
+输出：[2,6]
+解释：在所有可能的解：{[3,5], [3,2], [3,6], [5,2], [5,6], [2,6]} 中，[2,6] 字典序最小。
+所谓字典序就是，给定两个数组：x = [x1,x2,x3,x4]，y = [y1,y2,y3,y4]，如果 0 ≤ p < i，xp == yp 且 xi < yi，那么我们认为 x 的字典序小于 y。
+*/
+
+
+
+
+
+
+
+
+

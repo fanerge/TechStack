@@ -19,6 +19,29 @@ npm help <term> [<terms..>]
 npm help-search <text>
 ```
 
+# 运行
+
+```
+npm run-script test
+npm run test
+npm test
+npm t
+// npm 执行传参
+npm run <script> --argName=234
+// 要依次运行多个脚本，可以使用 &&
+npm run lint && npm test
+// 要并行运行多个脚本，可以使用＆(这仅适用于 Unix 环境)
+npm run lint ＆ npm test
+// 静默消息(如果想减少错误日志并非防止脚本抛出错误)
+npm run <script> --silent
+// 或者
+npm run <script> -s
+// 如果脚本名不存在时不想报错，可以使用 --if-present ，比如：
+npm run <script> --if-present
+// 指定输出日志等级("silent", "error", "warn", "notice", "http", "timing", "info", "verbose", "silly".)
+npm run <script> --loglevel <info>
+```
+
 # root
 
 查看包的安装路径
@@ -100,7 +123,7 @@ npm uninstall [<@scope>/]<pkg>[@<version>]... [-S|--save|-D|--save-dev|-O|--save
 更新模块
 
 ```
-npm update <name> -g // 更新全局包 npm update <name> -S // 更新生产依赖包
+npm update <name> -g // 更新全局包npm update <name> -S // 更新生产依赖包
 npm update <name> -D // 更新开发依赖包
 ```
 
