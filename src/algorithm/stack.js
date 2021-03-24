@@ -126,31 +126,31 @@ var Dir = [1, 1, 0, 0, 0]
 */
 
 function findRightSmall(A) {
-	// 递增栈（小数消大数）
-	// index
-	let stack = [];
-	let ans = [];
+  // 递增栈（小数消大数）
+  // index
+  let stack = [];
+  let ans = [];
 
-	for(let i=0; i<A.length; i++) {
-		if(stack.length <= 0) {
-			stack.push(i);
-			continue;
-		}
-		while(stack.length > 0 && A[stack[stack.length-1]] > A[i]) {
-			// 先存储在删除
-			ans[stack[stack.length-1]] = i;
-			stack.pop();
-		}
-		stack.push(i);
-	}
+  for (let i = 0; i < A.length; i++) {
+    if (stack.length <= 0) {
+      stack.push(i);
+      continue;
+    }
+    while (stack.length > 0 && A[stack[stack.length - 1]] > A[i]) {
+      // 先存储在删除
+      ans[stack[stack.length - 1]] = i;
+      stack.pop();
+    }
+    stack.push(i);
+  }
 
-	// 栈中还有元素，则没有右边比它小的了，全设置为 -1
-	while(stack.length > 0) {
-		let index = stack.pop();
-		ans[index] = -1;
-	}
+  // 栈中还有元素，则没有右边比它小的了，全设置为 -1
+  while (stack.length > 0) {
+    let index = stack.pop();
+    ans[index] = -1;
+  }
 
-	return ans;
+  return ans;
 }
 
 // findRightSmall([5, 2])
@@ -159,31 +159,31 @@ function findRightSmall(A) {
 数组中右边第一个比我大的元素的位置
 */
 function findRightBig(A) {
-	// 递减栈（小数消大数）
-	// index
-	let stack = [];
-	let ans = [];
+  // 递减栈（小数消大数）
+  // index
+  let stack = [];
+  let ans = [];
 
-	for(let i=0; i<A.length; i++) {
-		if(stack.length <= 0) {
-			stack.push(i);
-			continue;
-		}
-		while(stack.length > 0 && A[stack[stack.length-1]] < A[i]) {
-			// 先存储在删除
-			ans[stack[stack.length-1]] = i;
-			stack.pop();
-		}
-		stack.push(i);
-	}
+  for (let i = 0; i < A.length; i++) {
+    if (stack.length <= 0) {
+      stack.push(i);
+      continue;
+    }
+    while (stack.length > 0 && A[stack[stack.length - 1]] < A[i]) {
+      // 先存储在删除
+      ans[stack[stack.length - 1]] = i;
+      stack.pop();
+    }
+    stack.push(i);
+  }
 
-	// 栈中还有元素，则没有右边比它小的了，全设置为 -1
-	while(stack.length > 0) {
-		let index = stack.pop();
-		ans[index] = -1;
-	}
+  // 栈中还有元素，则没有右边比它小的了，全设置为 -1
+  while (stack.length > 0) {
+    let index = stack.pop();
+    ans[index] = -1;
+  }
 
-	return ans;
+  return ans;
 }
 // findRightBig([5, 2])
 
@@ -191,29 +191,29 @@ function findRightBig(A) {
 数组中元素左边离我最近且比我小的元素的位置
 */
 function findLeftSmall(A) {
-	// index，递增栈
-	let stack = [];
-	let ans = [];
+  // index，递增栈
+  let stack = [];
+  let ans = [];
 
-	for(let i=A.length-1; 0<=i; i--) {
-		if(stack.length <= 0) {
-			stack.push(i);
-			continue;
-		}
-		while(stack.length > 0 && A[stack[stack.length-1]] > A[i]) {
-			ans[stack[stack.length-1]] = i;
-			stack.pop();
-		}
-		stack.push(i)
-	}
+  for (let i = A.length - 1; 0 <= i; i--) {
+    if (stack.length <= 0) {
+      stack.push(i);
+      continue;
+    }
+    while (stack.length > 0 && A[stack[stack.length - 1]] > A[i]) {
+      ans[stack[stack.length - 1]] = i;
+      stack.pop();
+    }
+    stack.push(i)
+  }
 
 
-	while(stack.length > 0) {
-		ans[stack[stack.length-1]] = -1;
-		stack.pop();
-	}
+  while (stack.length > 0) {
+    ans[stack[stack.length - 1]] = -1;
+    stack.pop();
+  }
 
-	return ans;
+  return ans;
 }
 // findLeftSmall([5, 2, 6, 7])
 
@@ -221,29 +221,29 @@ function findLeftSmall(A) {
 数组中元素左边离我最近且比我大的元素的位置
 */
 function findLeftBig(A) {
-	// index，递减栈
-	let stack = [];
-	let ans = [];
+  // index，递减栈
+  let stack = [];
+  let ans = [];
 
-	for(let i=A.length-1; 0<=i; i--) {
-		if(stack.length <= 0) {
-			stack.push(i);
-			continue;
-		}
-		while(stack.length > 0 && A[stack[stack.length-1]] < A[i]) {
-			ans[stack[stack.length-1]] = i;
-			stack.pop();
-		}
-		stack.push(i)
-	}
+  for (let i = A.length - 1; 0 <= i; i--) {
+    if (stack.length <= 0) {
+      stack.push(i);
+      continue;
+    }
+    while (stack.length > 0 && A[stack[stack.length - 1]] < A[i]) {
+      ans[stack[stack.length - 1]] = i;
+      stack.pop();
+    }
+    stack.push(i)
+  }
 
 
-	while(stack.length > 0) {
-		ans[stack[stack.length-1]] = -1;
-		stack.pop();
-	}
+  while (stack.length > 0) {
+    ans[stack[stack.length - 1]] = -1;
+    stack.pop();
+  }
 
-	return ans;
+  return ans;
 }
 // findLeftBig([5, 2, 6, 7])
 
@@ -255,9 +255,35 @@ function findLeftBig(A) {
 解释：在所有可能的解：{[3,5], [3,2], [3,6], [5,2], [5,6], [2,6]} 中，[2,6] 字典序最小。
 所谓字典序就是，给定两个数组：x = [x1,x2,x3,x4]，y = [y1,y2,y3,y4]，如果 0 ≤ p < i，xp == yp 且 xi < yi，那么我们认为 x 的字典序小于 y。
 */
+function findSmallSeq(nums, k) {
+  // 递增栈
+  let stack = [];
+  let ans = [];
+
+  for (let i = 0; i < nums.length; i++) {
+    if (stack.length <= 0) {
+      stack.push(nums[i]);
+      continue;
+    }
+    // 小数消大数 && 栈不为空且栈中元素大于当前元素且栈中元素length + nums.length - i
+    while (stack.length > 0 && stack[stack.length - 1] > nums[i] && stack.length + nums.length - i > k) {
+      stack.pop();
+    }
+    stack.push(nums[i])
+  }
+
+  while (stack.length > 0) {
+    ans.unshift(stack.pop());
+  }
+  return ans;
+}
+// console.log(findSmallSeq([9, 2, 4, 5, 1, 2, 3, 0], 3))
+// console.log(findSmallSeq([3, 5, 2, 6], 2))
 
 
-
+/**
+ * 给定一个数组，数组中的元素代表木板的高度。请你求出相邻木板能剪出的最大矩形面积
+ */
 
 
 

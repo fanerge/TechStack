@@ -1,4 +1,5 @@
 import '../algorithm/stack'
+import '../algorithm/queue'
 
 
 // deepClone
