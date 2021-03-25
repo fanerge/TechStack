@@ -159,16 +159,16 @@ class MyCircularQueue1 {
     // rear是enQueue可在存放的位置，[front, rear)
     this.rear = 0;
     // 循环队列最多可以存放的元素个数为 k，需要多申请一个位置
-    this.capacity = k+1;
+    this.capacity = k + 1;
     // 循环队列的存储空间
-    this.list = new Array(k+1);
+    this.list = new Array(k + 1);
     // this.isFull = this.isFull.bind(this);
   }
 
   // 将value放到队列中, 成功返回true
   enQueue(val) {
     const { isFull, list, rear, capacity } = this;
-    if(isFull()) {
+    if (isFull()) {
       return false;
     }
     list[rear] = val;
@@ -221,5 +221,134 @@ class MyCircularQueue1 {
     return (rear + 1) % capacity === front;
   }
 }
-let cirQ = new MyCircularQueue1(4);
-window.qq = cirQ;
+// let cirQ = new MyCircularQueue1(4);
+// window.qq = cirQ;
+
+
+/**
+ * 滑动窗口的最大值
+ * 给定一个数组和滑动窗口的大小，请找出所有滑动窗口里的最大值。
+ * 输入：nums = [1,3,-1,-3,5,3], k = 3
+ * 输出：[3,3,5,5]
+ * 根据题意，用单调递减队列解题
+ */
+class Queue2 {
+  constructor() {
+    this.queue = [];
+  }
+
+  push(val) {
+    const { queue } = this;
+    while (queue.length > 0 && queue[queue.length - 1] < val) {
+      queue.pop();
+    }
+    queue.push(val);
+  }
+
+  pop(val) {
+    const { queue } = this;
+    if (queue.length > 0 && queue[0] === val) {
+      queue.shift();
+    }
+  }
+
+  maxSlidingWindow(nums, k) {
+    const { queue } = this;
+    let ans = [];
+    for (let i = 0; i < nums.length; i++) {
+      this.push(nums[i]);
+      if (i < k - 1) {
+        continue;
+      }
+      ans.push(queue[0])
+      this.pop(nums[i - k + 1])
+    }
+    return ans;
+  }
+}
+// test
+// var list = [1, 3, -1, 3, 5, 3, 5, 6, 7, 1, 2, 3];
+// var queue1 = new Queue2();
+// console.log(queue1.maxSlidingWindow(list, 3))
+
+// 滑动窗口的最小值
+class Queue3 {
+  constructor() {
+    this.queue = [];
+  }
+
+  push(val) {
+    const { queue } = this;
+    while (queue.length > 0 && queue[queue.length - 1] > val) {
+      queue.pop();
+    }
+    queue.push(val);
+  }
+
+  pop(val) {
+    const { queue } = this;
+    if (queue.length > 0 && queue[0] === val) {
+      queue.shift();
+    }
+  }
+
+  maxSlidingWindow(nums, k) {
+    const { queue } = this;
+    let ans = [];
+    for (let i = 0; i < nums.length; i++) {
+      this.push(nums[i]);
+      if (i < k - 1) {
+        continue;
+      }
+      ans.push(queue[0])
+      this.pop(nums[i - k + 1])
+    }
+    return ans;
+  }
+}
+// test
+// var list = [1, 3, -1, 3, 5, 3, 5, 6, 7];
+// var queue1 = new Queue3();
+// console.log(queue1.maxSlidingWindow(list, 3))
+
+
+/**
+ * 捡金币游戏
+ * 给定一个数组 A[]，每个位置 i 放置了金币 A[i]，小明从 A[0] 出发。当小明走到 A[i] 的时候，下一步他可以选择 A[i+1, i+k]（当然，不能超出数组边界）。* 每个位置一旦被选择，将会把那个位置的金币收走（如果为负数，就要交出金币）。请问，最多能收集多少金币？
+ * 输入：[1,-1,-100,-1000,100,3], k = 2
+ * 输出：4
+ * 通过这道题你应该明白，有的时候，滑动窗口不一定是在给定的数组上操作，还可能会在一个隐藏的数组上操作。
+ */
+function maxResult(A, k) {
+  if (A === null || A.length === 0 || k <= 0) {
+    return 0;
+  }
+  // 每个位置可以收集到的金币数目
+  let get = [];
+  // 单调递减队列(最大值)
+  let queue = [];
+
+  for (let i = 0; i < A.length; i++) {
+    // 在取最大值之前，需要保证单调队列中都是有效值。
+    // 也就是都在区间里面的值
+    // 当要求get[i]的时候，
+    // 单调队列中应该是只能保存[i-k, i-1]这个范围
+    if (i - k > 0) {
+      if (queue.length > 0 && queue[0] === get[i - k - 1]) {
+        queue.shift();
+      }
+    }
+    // 从单调队列中取得较大值
+    let old = queue.length === 0 ? 0 : queue[0];
+    get[i] = old + A[i];
+    // 入队的时候，采用单调队列入队
+    while (queue.length > 0 && queue[queue.length - 1] < get[i]) {
+      queue.pop();
+    }
+    queue.push(get[i])
+  }
+
+  return get[A.length - 1]
+}
+// test
+console.log(maxResult([1, -1, -100, -1000, 100, 3], 2));
