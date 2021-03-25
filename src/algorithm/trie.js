@@ -69,4 +69,3 @@ let trie = new Trie();
 // trie.insert("app");
 // console.log(trie.search("app")); // 返回 true
 // console.log(trie.search("appp")); // 返回 false
-
