@@ -1,5 +1,7 @@
 import '../algorithm/stack'
 import '../algorithm/queue'
+import '../algorithm/trie'
+
 
 
 // deepClone
@@ -785,7 +787,7 @@ function find(list, target) {
 
 // flatArray
 // es flat
-var ary = [1, 2, [3, [4, 5, [6, [7, 8]]]], [10, [11, 12]]];
+var ary = [1, 2, [3, [4, 5, [6, [7, 8]]]],9 , [10, [11, 12]]];
 function flatArray(list, res = [], n) {
   list.forEach((item, index) => {
     if (Array.isArray(item) && n > 0) {
@@ -798,6 +800,81 @@ function flatArray(list, res = [], n) {
 
   return res;
 }
+
+// flatArray 迭代版（修改了原数组）
+function flatArray1(arr) {
+  // 可以深拷贝一下
+  for(let i=0; i<arr.length; i++) {
+    if(Array.isArray(arr[i])) {
+      let temp = arr[i];
+      arr.splice(i, 1, ...temp);
+    }
+  }
+
+  return arr;
+}
+function flatArray2(arr) {
+  for(let i=0; i<arr.length; i++) {
+    if(Array.isArray(arr[i])) {
+      arr = arr.slice(0, i+1).concat(arr[i], ...arr.slice(i+1));
+      arr.splice(i, 1);
+    }
+  }
+
+  return arr;
+}
+// console.log(flatArray2(ary));
+// console.log(ary);
+
+// 数组交集
+function arrayMethod1(arr1, arr2) {
+  let ans = [];
+  function array2Map(arr) {
+    return arr.reduce((acc, item, index) => {
+      if(!acc[item]) {
+        acc[item] = 1;
+      }else {
+        acc[item]++;
+      }
+      return acc;
+    }, {})
+  }
+  let map1 = array2Map(arr1)
+  let map2 = array2Map(arr2)
+ // [[key, val]]
+  return Object.entries(map1).reduce((list, array) => {
+    if(map2[array[0]] > 0) {
+      let minCount = Math.min(array[1], map2[array[0]])
+      let temp = Array.from({length: minCount}, () => +array[0])
+      list = list.concat(temp);
+    }
+    return list;
+  }, [])
+
+}
+// console.log(arrayMethod1([1, 2, 3, 2, 2], [1, 2, 2, 2, 3]))
+
+// 数组并集
+function arrayMethod2(arr1, arr2) {
+  function array2Map(arr) {
+    return arr.reduce((acc, item, index) => {
+      if(!acc[item]) {
+        acc[item] = 1;
+      }else {
+        acc[item]++;
+      }
+      return acc;
+    }, {})
+  }
+  let map = array2Map([...arr1, ...arr2])
+  return Object.entries(map).reduce((acc, array, index) => {
+    // array [key, val]
+    let temp = Array.from({length: array[1]}, () => +array[0])
+    acc = acc.concat(temp)
+    return acc;
+  }, []);
+}
+// console.log(arrayMethod2([1, 2, 3, 2, 2], [1, 2, 2, 2, 3]))
 
 // lazyman
 class LazyMan {
