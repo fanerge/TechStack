@@ -63,10 +63,11 @@ function queue2(tree) {
 
 /**
  * 设计一个可以容纳 k 个元素的循环队列
+ * 当前 index 为i，前一个 index =  (i-1 + k) % k;后一个 index = (i+1) % k
  */
+// 方法1（多一个变量来区分空队和满队）
 // 只使用 k 个元素的空间，三个变量 front, rear, used 来控制循环队列的使用
 // used 的作用，记录队列中右多少个元素，因为空对和满对时 front 和 rear 都相同
-// 当前 index 为i，前一个 index =  (i-1 + k) % k;后一个 index = (i+1) % k
 class MyCircularQueue {
   constructor(k) {
     // 下标只能在 [0, k-1]
@@ -142,6 +143,83 @@ class MyCircularQueue {
     return used === capacity;
   }
 }
+// let cirQ = new MyCircularQueue(4);
+// window.qq = cirQ;
 
-let cirQ = new MyCircularQueue(4);
+// 方法2（多申请一个空间来区分空队和满队）
+// 申请空间 k + 1, 并且 capacity 也必须为 k + 1
+// front == rear 此时队列为空
+// (rear + 1) % capacity == front，此时队列为满
+class MyCircularQueue1 {
+  // k 为容量
+  constructor(k) {
+    // 下标只能在 [0, k-1]
+    // 第一个元素所在位置
+    this.front = 0;
+    // rear是enQueue可在存放的位置，[front, rear)
+    this.rear = 0;
+    // 循环队列最多可以存放的元素个数为 k，需要多申请一个位置
+    this.capacity = k+1;
+    // 循环队列的存储空间
+    this.list = new Array(k+1);
+    // this.isFull = this.isFull.bind(this);
+  }
+
+  // 将value放到队列中, 成功返回true
+  enQueue(val) {
+    const { isFull, list, rear, capacity } = this;
+    if(isFull()) {
+      return false;
+    }
+    list[rear] = val;
+    this.rear = (rear + 1) % capacity;
+    console.log(`${val}入队`);
+    return true;
+  }
+
+  // 删除队首元素，成功返回true
+  deQueue() {
+    const { list, front, capacity } = this;
+    let ret = list[front];
+    this.front = (front + 1) % capacity
+    list[front] = null;
+    console.log(`${ret}出队`)
+    return true;
+  }
+
+  // 得到队首元素，如果为空，返回-1
+  Front() {
+    const { list, front } = this;
+    if (this.isEmpty()) {
+      return -1;
+    }
+    return list[front];
+  }
+
+  // 得到队尾元素，如果队列为空，返回-1
+  Rear() {
+    const { list, rear, capacity } = this;
+    if (this.isEmpty()) {
+      return -1;
+    }
+    // 注意：这里不能使用rear - 1
+    // 需要取模
+    let tail = (rear - 1 + capacity) % capacity;
+    return list[tail];
+  }
+
+  // 看一下循环队列是否为空
+  isEmpty() {
+    const { Front, Rear } = this;
+    return Front === Rear;
+  }
+
+  // 看一下循环队列是否已放满k个元素
+  isFull() {
+
+    const { front, rear, capacity } = this;
+    return (rear + 1) % capacity === front;
+  }
+}
+let cirQ = new MyCircularQueue1(4);
 window.qq = cirQ;
