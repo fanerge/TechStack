@@ -902,6 +902,38 @@ function arrayMethod2(arr1, arr2) {
 }
 // console.log(arrayMethod2([1, 2, 3, 2, 2], [1, 2, 2, 2, 3]))
 
+// 子集（回塑）
+function skuList(list) {
+  let len = list.length;
+  let res = [];
+  for(let l=1; l<=len; l++) {
+    backTrack(list, [], l, res)
+  }
+
+  function backTrack(allList, selectedList, n, res) {
+    if(selectedList.length === n) {
+      let str = selectedList.slice(0).sort((a, b) => a-b).join("*")
+      if(!res.includes(str)) {
+        res.push(str)
+      }
+      return;
+    }
+
+    for(let i=0; i<allList.length; i++) {
+      if(!selectedList.includes(allList[i])) {
+        selectedList.push(allList[i])
+        backTrack(allList, selectedList, n, res)
+        selectedList.pop()
+      }
+    }	
+  }
+
+  res = res.map(str =>  str.split('*').map(item =>  +item))
+  res.unshift([])
+  return res;
+}
+// console.log(skuList([1, 2, 3]));
+
 // lazyman
 class LazyMan {
   constructor(name) {
