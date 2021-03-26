@@ -739,6 +739,32 @@ function twoNumSum(arr, sum) {
 }
 // console.log(twoNumSum([1, 2, 3, 4, 5 ,6, 7], 99))
 
+// 朋友圈的个数
+function findCircleNum(M) {
+  // 标记某个同学是否访问过(0为未访问)
+  let visited = Array.from({length: M.length}).fill(0);
+  let res = 0;
+  for(let i=0; i<visited.length; i++) {
+    if(visited[i] === 0) {
+      visited[i] = 1;
+      dfs(i);
+      res++;
+    }
+  }
+
+  function dfs(i) {
+    for(let j=0; j<M.length; j++) {
+      if(i !== j && visited[j] === 0 && M[j][i] === 1) {
+        visited[j] = 1;
+        dfs(j)
+      }
+    }
+  }
+
+  return res;
+}
+// findCircleNum([[1,1,0], [1,1,0], [0,0,1]])
+
 
 // 判断是否为一个有效的 url
 function isRealUrl(str) {
