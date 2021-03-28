@@ -739,6 +739,32 @@ function twoNumSum(arr, sum) {
 }
 // console.log(twoNumSum([1, 2, 3, 4, 5 ,6, 7], 99))
 
+// 朋友圈的个数
+function findCircleNum(M) {
+  // 标记某个同学是否访问过(0为未访问)
+  let visited = Array.from({length: M.length}).fill(0);
+  let res = 0;
+  for(let i=0; i<visited.length; i++) {
+    if(visited[i] === 0) {
+      visited[i] = 1;
+      dfs(i);
+      res++;
+    }
+  }
+
+  function dfs(i) {
+    for(let j=0; j<M.length; j++) {
+      if(i !== j && visited[j] === 0 && M[j][i] === 1) {
+        visited[j] = 1;
+        dfs(j)
+      }
+    }
+  }
+
+  return res;
+}
+// findCircleNum([[1,1,0], [1,1,0], [0,0,1]])
+
 
 // 判断是否为一个有效的 url
 function isRealUrl(str) {
@@ -875,6 +901,38 @@ function arrayMethod2(arr1, arr2) {
   }, []);
 }
 // console.log(arrayMethod2([1, 2, 3, 2, 2], [1, 2, 2, 2, 3]))
+
+// 子集（回塑）
+function skuList(list) {
+  let len = list.length;
+  let res = [];
+  for(let l=1; l<=len; l++) {
+    backTrack(list, [], l, res)
+  }
+
+  function backTrack(allList, selectedList, n, res) {
+    if(selectedList.length === n) {
+      let str = selectedList.slice(0).sort((a, b) => a-b).join("*")
+      if(!res.includes(str)) {
+        res.push(str)
+      }
+      return;
+    }
+
+    for(let i=0; i<allList.length; i++) {
+      if(!selectedList.includes(allList[i])) {
+        selectedList.push(allList[i])
+        backTrack(allList, selectedList, n, res)
+        selectedList.pop()
+      }
+    }	
+  }
+
+  res = res.map(str =>  str.split('*').map(item =>  +item))
+  res.unshift([])
+  return res;
+}
+// console.log(skuList([1, 2, 3]));
 
 // lazyman
 class LazyMan {

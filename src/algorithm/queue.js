@@ -248,6 +248,7 @@ class Queue2 {
   pop(val) {
     const { queue } = this;
     if (queue.length > 0 && queue[0] === val) {
+      // 注意，队头出对
       queue.shift();
     }
   }
@@ -288,6 +289,7 @@ class Queue3 {
   pop(val) {
     const { queue } = this;
     if (queue.length > 0 && queue[0] === val) {
+      // 注意，队头出对
       queue.shift();
     }
   }
@@ -351,4 +353,4 @@ function maxResult(A, k) {
   return get[A.length - 1]
 }
 // test
-console.log(maxResult([1, -1, -100, -1000, 100, 3], 2));
+// console.log(maxResult([1, -1, -100, -1000, 100, 3], 2));
