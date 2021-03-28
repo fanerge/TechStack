@@ -282,11 +282,80 @@ function findSmallSeq(nums, k) {
 
 
 /**
+ * https://github.com/lagoueduCol/Algorithm-Dryad/blob/main/01.Stack/84.%E6%9F%B1%E7%8A%B6%E5%9B%BE%E4%B8%AD%E6%9C%80%E5%A4%A7%E7%9A%84%E7%9F%A9%E5%BD%A2.java
  * 给定一个数组，数组中的元素代表木板的高度。请你求出相邻木板能剪出的最大矩形面积
+ * @param {number[]} heights
+ * @return {number}
  */
+var largestRectangleArea = function (heights) {
+  let ans = 0;
+  let len = heights == null ? 0 : heights.length;
+  let rights = rightMinIndexs(heights)
+  let lefts = leftMinIndexs(heights)
+  console.log(lefts, rights);
+  for (let i = 0; i < len; i++) {
+    let height = heights[i];
+    let leftPos = lefts[i];
+    let rightPos = rights[i] === -1 ? len : rights[i];
 
+    let width = rightPos - leftPos - 1;
+    let area = height * width;
 
+    ans = Math.max(ans, area);
+  }
 
+  return ans;
+};
 
+// leftMinIndex
+// rightMinINdex
+// (leftMinIndex - rightMinINdex - 1) * heights[i]
+function rightMinIndexs(heights) {
+  let len = heights.length;
+  // 放右边最小的index
+  let res = [];
+  // 放 index
+  let stack = [];
+
+  for (let i = 0; i < len; i++) {
+    while (stack.length > 0 && heights[stack[stack.length - 1]] > heights[i]) {
+      res[stack[stack.length - 1]] = i;
+      stack.pop();
+    }
+    stack.push(i);
+  }
+
+  while (stack.length > 0) {
+    res[stack[stack.length - 1]] = -1;
+    stack.pop();
+  }
+
+  return res;
+}
+function leftMinIndexs(heights) {
+  let len = heights.length;
+  // 放左边最小的index
+  let res = [];
+  // 放 index
+  let stack = [];
+
+  for (let i = len - 1; i >= 0; i--) {
+    while (stack.length > 0 && heights[stack[stack.length - 1]] > heights[i]) {
+      res[stack[stack.length - 1]] = i;
+      stack.pop();
+    }
+    stack.push(i);
+  }
+
+  while (stack.length > 0) {
+    res[stack[stack.length - 1]] = -1;
+    stack.pop();
+  }
+
+  return res;
+}
+// [2,1,5,6,2,3]
+
+console.log(largestRectangleArea([2, 1, 5, 6, 2, 3]))
 
 
