@@ -1,5 +1,6 @@
 import '../algorithm/stack'
 import '../algorithm/queue'
+import '../algorithm/heap'
 import '../algorithm/trie'
 
 
@@ -742,10 +743,10 @@ function twoNumSum(arr, sum) {
 // 朋友圈的个数
 function findCircleNum(M) {
   // 标记某个同学是否访问过(0为未访问)
-  let visited = Array.from({length: M.length}).fill(0);
+  let visited = Array.from({ length: M.length }).fill(0);
   let res = 0;
-  for(let i=0; i<visited.length; i++) {
-    if(visited[i] === 0) {
+  for (let i = 0; i < visited.length; i++) {
+    if (visited[i] === 0) {
       visited[i] = 1;
       dfs(i);
       res++;
@@ -753,8 +754,8 @@ function findCircleNum(M) {
   }
 
   function dfs(i) {
-    for(let j=0; j<M.length; j++) {
-      if(i !== j && visited[j] === 0 && M[j][i] === 1) {
+    for (let j = 0; j < M.length; j++) {
+      if (i !== j && visited[j] === 0 && M[j][i] === 1) {
         visited[j] = 1;
         dfs(j)
       }
@@ -813,7 +814,7 @@ function find(list, target) {
 
 // flatArray
 // es flat
-var ary = [1, 2, [3, [4, 5, [6, [7, 8]]]],9 , [10, [11, 12]]];
+var ary = [1, 2, [3, [4, 5, [6, [7, 8]]]], 9, [10, [11, 12]]];
 function flatArray(list, res = [], n) {
   list.forEach((item, index) => {
     if (Array.isArray(item) && n > 0) {
@@ -830,8 +831,8 @@ function flatArray(list, res = [], n) {
 // flatArray 迭代版（修改了原数组）
 function flatArray1(arr) {
   // 可以深拷贝一下
-  for(let i=0; i<arr.length; i++) {
-    if(Array.isArray(arr[i])) {
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
       let temp = arr[i];
       arr.splice(i, 1, ...temp);
     }
@@ -840,9 +841,9 @@ function flatArray1(arr) {
   return arr;
 }
 function flatArray2(arr) {
-  for(let i=0; i<arr.length; i++) {
-    if(Array.isArray(arr[i])) {
-      arr = arr.slice(0, i+1).concat(arr[i], ...arr.slice(i+1));
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      arr = arr.slice(0, i + 1).concat(arr[i], ...arr.slice(i + 1));
       arr.splice(i, 1);
     }
   }
@@ -857,9 +858,9 @@ function arrayMethod1(arr1, arr2) {
   let ans = [];
   function array2Map(arr) {
     return arr.reduce((acc, item, index) => {
-      if(!acc[item]) {
+      if (!acc[item]) {
         acc[item] = 1;
-      }else {
+      } else {
         acc[item]++;
       }
       return acc;
@@ -867,11 +868,11 @@ function arrayMethod1(arr1, arr2) {
   }
   let map1 = array2Map(arr1)
   let map2 = array2Map(arr2)
- // [[key, val]]
+  // [[key, val]]
   return Object.entries(map1).reduce((list, array) => {
-    if(map2[array[0]] > 0) {
+    if (map2[array[0]] > 0) {
       let minCount = Math.min(array[1], map2[array[0]])
-      let temp = Array.from({length: minCount}, () => +array[0])
+      let temp = Array.from({ length: minCount }, () => +array[0])
       list = list.concat(temp);
     }
     return list;
@@ -884,9 +885,9 @@ function arrayMethod1(arr1, arr2) {
 function arrayMethod2(arr1, arr2) {
   function array2Map(arr) {
     return arr.reduce((acc, item, index) => {
-      if(!acc[item]) {
+      if (!acc[item]) {
         acc[item] = 1;
-      }else {
+      } else {
         acc[item]++;
       }
       return acc;
@@ -895,7 +896,7 @@ function arrayMethod2(arr1, arr2) {
   let map = array2Map([...arr1, ...arr2])
   return Object.entries(map).reduce((acc, array, index) => {
     // array [key, val]
-    let temp = Array.from({length: array[1]}, () => +array[0])
+    let temp = Array.from({ length: array[1] }, () => +array[0])
     acc = acc.concat(temp)
     return acc;
   }, []);
@@ -906,29 +907,29 @@ function arrayMethod2(arr1, arr2) {
 function skuList(list) {
   let len = list.length;
   let res = [];
-  for(let l=1; l<=len; l++) {
+  for (let l = 1; l <= len; l++) {
     backTrack(list, [], l, res)
   }
 
   function backTrack(allList, selectedList, n, res) {
-    if(selectedList.length === n) {
-      let str = selectedList.slice(0).sort((a, b) => a-b).join("*")
-      if(!res.includes(str)) {
+    if (selectedList.length === n) {
+      let str = selectedList.slice(0).sort((a, b) => a - b).join("*")
+      if (!res.includes(str)) {
         res.push(str)
       }
       return;
     }
 
-    for(let i=0; i<allList.length; i++) {
-      if(!selectedList.includes(allList[i])) {
+    for (let i = 0; i < allList.length; i++) {
+      if (!selectedList.includes(allList[i])) {
         selectedList.push(allList[i])
         backTrack(allList, selectedList, n, res)
         selectedList.pop()
       }
-    }	
+    }
   }
 
-  res = res.map(str =>  str.split('*').map(item =>  +item))
+  res = res.map(str => str.split('*').map(item => +item))
   res.unshift([])
   return res;
 }

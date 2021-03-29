@@ -292,7 +292,7 @@ var largestRectangleArea = function (heights) {
   let len = heights == null ? 0 : heights.length;
   let rights = rightMinIndexs(heights)
   let lefts = leftMinIndexs(heights)
-  console.log(lefts, rights);
+  // console.log(lefts, rights);
   for (let i = 0; i < len; i++) {
     let height = heights[i];
     let leftPos = lefts[i];
@@ -356,6 +356,6 @@ function leftMinIndexs(heights) {
 }
 // [2,1,5,6,2,3]
 
-console.log(largestRectangleArea([2, 1, 5, 6, 2, 3]))
+// console.log(largestRectangleArea([2, 1, 5, 6, 2, 3]))
 
 
