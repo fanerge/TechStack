@@ -1,12 +1,13 @@
+// 最常见用途：实现优先级队列，Priority Queue
 // 主要操作就两个，sink（下沉）和swim（上浮），用以维护二叉堆的性质。
 // 主要应用有两个，首先是一种排序方法「堆排序」，第二是一种很有用的数据结构「优先级队列」。
 // 二叉堆其实就是一种特殊的二叉树（完全二叉树），只不过存储在数组里。一般的链表二叉树，我们操作节点的指针，而在数组里，我们把数组索引作为指针
 // 父节点的索引, 索引从1开始及索引1为堆顶
 // 最大堆为例
 
-class MaxHeap {
-	constructor() {
-		this.arr = [];
+export default class MaxHeap {
+	constructor(arr) {
+		this.arr = arr;
 	}
 	swap(i, j) {
 		let arr = this.arr;
@@ -37,8 +38,8 @@ class MaxHeap {
 	sink(index) {
 		const { arr, leftIndex, rightIndex } = this;
 		let N = arr.length - 1;
-		// 如果沉到堆底，就不能再上沉了
-		while (leftIndex(index) < N) {
+		// 如果沉到堆底，就不能再上沉了，(不一定有右节点，所以这里用左节点 index 来判断)
+		while(leftIndex(index) < N) {
 			// 先假设左边节点较大
 			let older = leftIndex(index);
 			// 如果右节点存在，比一下大小
@@ -77,11 +78,11 @@ class MaxHeap {
 }
 
 // test
-let maxHeap = new MaxHeap();
-maxHeap.insert(7)
-maxHeap.insert(8)
-maxHeap.insert(9)
-maxHeap.insert(10)
+// let maxHeap = new MaxHeap();
+// maxHeap.insert(7)
+// maxHeap.insert(8)
+// maxHeap.insert(9)
+// maxHeap.insert(10)
 // console.log(maxHeap)
 
 // 小堆
@@ -254,6 +255,6 @@ function heap2(words, k) {
 }
 
 // console.log(heap2(["i", "love", "leetcode", "i", "love", "coding"], 3));
-console.log(heap2(['aaa', "aa", "a"], 1));
+// console.log(heap2(['aaa', "aa", "a"], 1));
 
 
