@@ -40,7 +40,6 @@ require("./algorithm/binarySearch.js");
 require("./algorithm/dp.js");
 require("./algorithm/template.js");
 import "./algorithm/floodfill";
-import "./algorithm/heap"
 import "./utils/promise"
 import "./test"
 import "./coding/javascript"
