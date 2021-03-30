@@ -6,7 +6,7 @@
 // 最大堆为例
 
 export default class MaxHeap {
-	constructor() {
+	constructor(arr) {
 		this.arr = arr;
 	}
 	swap(i, j) {
@@ -78,11 +78,11 @@ export default class MaxHeap {
 }
 
 // test
-let maxHeap = new MaxHeap();
-maxHeap.insert(7)
-maxHeap.insert(8)
-maxHeap.insert(9)
-maxHeap.insert(10)
+// let maxHeap = new MaxHeap();
+// maxHeap.insert(7)
+// maxHeap.insert(8)
+// maxHeap.insert(9)
+// maxHeap.insert(10)
 // console.log(maxHeap)
 
 // 小堆
@@ -256,6 +256,6 @@ function heap2(words, k) {
 }
 
 // console.log(heap2(["i", "love", "leetcode", "i", "love", "coding"], 3));
-console.log(heap2(['aaa', "aa", "a"], 1));
+// console.log(heap2(['aaa', "aa", "a"], 1));
 
 
