@@ -115,7 +115,8 @@ i 结点的右子结点 2 _ i + 2
 3.  将 a[0] 进行下沉操作
 
 # 链表（Link List）
-
+![](./img/linklist1.png)
+[例子-linkList](./linkList.js)
 链表常用的 3 个技巧：假头、新链表、双指针。
 
 ## 假头（Dummy Head）或者“哑头”

@@ -39,7 +39,7 @@ export default class MaxHeap {
 		const { arr, leftIndex, rightIndex } = this;
 		let N = arr.length - 1;
 		// 如果沉到堆底，就不能再上沉了，(不一定有右节点，所以这里用左节点 index 来判断)
-		while(leftIndex(index) < N) {
+		while (leftIndex(index) < N) {
 			// 先假设左边节点较大
 			let older = leftIndex(index);
 			// 如果右节点存在，比一下大小
@@ -143,18 +143,23 @@ class MinHeap {
 		// 上浮找到对应的位置
 		this.swim(index);
 	}
-	delMax() {
+	delMin() {
 		// 交换堆顶和堆底的元素，然后再删除堆底元素，再下沉堆顶元素，直到堆平衡
 		let { arr } = this;
-		let max = arr[0];
+		let min = arr[0];
 		let len = arr.length;
 		[arr[0], arr[len - 1]] = [arr[len - 1], arr[0]]
 		arr.length = len - 1;
 		this.sink(0)
-		return max;
+		return min;
 	}
 	size() {
 		return this.arr.length;
+	}
+
+	// 堆顶
+	peek() {
+		return this.arr[0]
 	}
 }
 
@@ -256,5 +261,63 @@ function heap2(words, k) {
 
 // console.log(heap2(["i", "love", "leetcode", "i", "love", "coding"], 3));
 // console.log(heap2(['aaa', "aa", "a"], 1));
+
+
+/**
+ * 一只蚂蚁在树下吃果子，第 i 天会掉 落A[i] 个果子，这些果子会在接下来的 B[i] 天（即第 i+B[i] 天）立马坏掉不能吃。给定 A，B 两个数组，蚂蚁一天只能吃一个果子。吃不完了它可以存放起来。请问最多蚂蚁可以吃多少个果子。
+输入：A = [3, 1], B = [3, 1]
+输出：3
+思路：用小堆保存苹果
+node {bad: 这批苹果坏的剩余天数, num: 这批苹果剩余个数}
+ */
+
+class AppleNode {
+	constructor(num, bad) {
+		// 
+		this.num = num;
+		this.bad = bad;
+	}
+}
+// A数组表示第i天要掉落的果子数
+// B表示从掉落那天起，i + B[i]那天立马坏掉不能吃了。
+function eatenApples(A, B) {
+	let N = A === null ? 0 : A.length;
+	// 以 bad 的小堆，bad 小于 0 时弹出
+	let Q = new MinHeap();
+	let ans = 0;
+	// i为天数
+	let i = 1;
+	while (i <= N || Q.size() > 0) {
+		// 第i天得到 num 个苹果
+		// 会在 bad 那天坏掉
+		if (i < N) {
+			let num = A[i - 1];
+			let bad = i + B[i - 1];
+			if (num > 0) {
+				Q.insert(new AppleNode(num, bad))
+			}
+		}
+		// 把已经过期的都扔掉
+		while (Q.size() > 0 && Q.peek().bad <= i) {
+			Q.delMin();
+		}
+
+		if (Q.size() > 0) {
+			// 选出今天吃的
+			let cur = Q.delMin();
+			ans++;
+			if (--cur.num > 0) {
+				// 如果还能还有剩余苹果将重新放入堆中，即使马上过期，也会在第二天吃之前出堆
+				Q.insert(cur)
+			}
+		}
+		i++;
+	}
+
+	return ans;
+}
+// test
+var apples = [1, 2, 3, 5, 2], days = [3, 2, 1, 4, 2]
+// console.log(eatenApples(apples, days));
 
 

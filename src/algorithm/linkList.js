@@ -1,8 +1,8 @@
 // 链表结点的定义
 export class ListNode {
     constructor(val) {
-       this.val = val;
-       this.next = null; 
+        this.val = val;
+        this.next = null;
     }
 }
 
@@ -32,9 +32,9 @@ export default class MyLinkedList {
         p.next = this.dummy.next;
         this.dummy.next = p;
         // 注意动静结合原则，添加结点时，注意修改tail指针。(非常容易忘记)
-        if (this.tail == this.dummy) {
-          this.tail = p;
-        }
+        if (this.tail == this.dummy) {
+            this.tail = p;
+        }
         this.length++;
     }
 
@@ -44,7 +44,7 @@ export default class MyLinkedList {
         let back = this.dummy;
         let front = this.dummy.next;
         // 在查找的时候，front与back总是一起走(front !== null 防止越界)
-        for(let i=0; i<index && front !== null; i++) {
+        for (let i = 0; i < index && front !== null; i++) {
             back = front;
             front = front.next;
         }
@@ -52,15 +52,15 @@ export default class MyLinkedList {
         return back;
     }
 
-    get(index) {
+    get(index) {
         /* code here: 获取链表中第index个结点的值。如果索引无效，则返回-1。*/
         // index从0开始。
-        if(index < 0 || index >= this.length) {
+        if (index < 0 || index >= this.length) {
             return -1;
         }
 
         return this.getPrevNode(index).next.val;
-    }
+    }
 
     addAtIndex(index, val) {
         // code here:
@@ -69,16 +69,16 @@ export default class MyLinkedList {
         // 2. 如果 index 大于链表长度，则不会插入结点。
         // 3. 如果index小于0，则在头
         // 4. 否则在指定位置前面插入结点。
-        if(index > this.length) {
+        if (index > this.length) {
             // case1
             return;
-        }else if(index === this.length) {
+        } else if (index === this.length) {
             // case2
             this.addAtTail(val);
-        }else if(index <= 0) {
+        } else if (index <= 0) {
             // case3
             this.addAtHead(val);
-        }else {
+        } else {
             let prev = this.getPrevNode(index);
             let node = new ListNode(val);
             // 先保存原来剩余的链表节点
@@ -91,15 +91,16 @@ export default class MyLinkedList {
     deleteAtIndex(index) {
         /* code here: 如果索引index有效，则删除链表中的第index个结点。*/
         // Case 1. 如果index无效，那么什么也不做。
-        if(index < 0 || index >= this.length) {
+        if (index < 0 || index >= this.length) {
             return false;
         }
         // Case 2. 删除index结点
         // step 1. 找到index前面的结点
         // step 2. 如果要删除的是最后一个结点，那么需要更改tail指针
-        // step. 3 进行删除操作。并修改链表长度。
+        // step 3. 进行删除操作。并修改链表长度。
         let prev = this.getPrevNode(index);
-        if(this.tail === prev.next) {
+        // 删除的是尾节点需要移动尾指针
+        if (this.tail === prev.next) {
             this.tail = prev;
         }
         prev.next = prev.next.next;
