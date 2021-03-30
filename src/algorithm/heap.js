@@ -246,7 +246,6 @@ function heap2(words, k) {
 		}
 		return b[1] - a[1];
 	});
-	console.log(list)
 	let res = [];
 	for (let i = 0; i < k; i++) {
 		res.push(list[i][0]);
