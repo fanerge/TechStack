@@ -118,3 +118,49 @@ export default class MyLinkedList {
 // link1.deleteAtIndex(2)
 // // link1.addAtTail(1)
 // console.log(link1)
+
+/**
+ * 输入一个链表的头结点，反转该链表，并返回反转后链表的头结点。
+输入：1->2->3
+输出：3->2->1
+ */
+
+function reverse(head) {
+    let dummy = new ListNode();
+    while(head !== null) {
+        let temp = head.next;
+        head.next = dummy.next;
+        dummy.next = head;
+        head = temp;
+    }
+
+    return dummy.next;
+}
+
+/**
+ * 【题目】给定一个链表头及一个整数值，要求把链表里面等于整数值的结点都从链表中移除出去。
+输入：1->2->3->2->4, remove = 2
+输出：1->3->4。
+ */
+
+function remove(head, val) {
+    // 生成一个新链表
+    let dummy = new ListNode();
+    let tail = dummy;
+    // 依次取出旧链表中的每个结点
+    while(head !== null) {
+        let temp = head.next;
+        // 如果结点值需要保留，那么采用属部追加的方法
+        // 添加到新链表中
+        if(head.val !== val) {
+            tail.next = head;
+            // test
+            tail = tail.next;
+        }
+        head = temp;
+    }
+    // 注意设置尾巴的next为空
+    tail.next = null;
+
+    return dummy.next;
+}
