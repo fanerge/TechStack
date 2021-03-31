@@ -127,7 +127,7 @@ export default class MyLinkedList {
 
 function reverse(head) {
     let dummy = new ListNode();
-    while(head !== null) {
+    while (head !== null) {
         let temp = head.next;
         head.next = dummy.next;
         dummy.next = head;
@@ -148,13 +148,13 @@ function remove(head, val) {
     let dummy = new ListNode();
     let tail = dummy;
     // 依次取出旧链表中的每个结点
-    while(head !== null) {
+    while (head !== null) {
         let temp = head.next;
         // 如果结点值需要保留，那么采用属部追加的方法
         // 添加到新链表中
-        if(head.val !== val) {
+        if (head.val !== val) {
             tail.next = head;
-            // test
+            // tail = head;
             tail = tail.next;
         }
         head = temp;
@@ -162,5 +162,30 @@ function remove(head, val) {
     // 注意设置尾巴的next为空
     tail.next = null;
 
+    return dummy.next;
+}
+
+/**
+ * 删除排序链表中的重复元素
+ * 输入：head = [1,1,2,3,3]
+输出：[1,2,3]
+ */
+var deleteDuplicates = function (head) {
+
+    let dummy = new ListNode();
+    let tail = dummy;
+    let prevVal = null;
+
+    while (head !== null) {
+        let temp = head.next;
+        if (head.val !== prevVal) {
+            tail.next = head;
+            tail = tail.next;
+        }
+        prevVal = head.val;
+        head = temp;
+    }
+
+    tail.next = null;
     return dummy.next;
 }
