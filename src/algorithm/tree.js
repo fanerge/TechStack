@@ -56,19 +56,29 @@ function preOrder(node, ary = []) {
 }
 // 🌲的preOrder（迭代版，使用模拟栈）
 function preOrder1(root) {
-  let stack = [root];
-  let output = [];
-  if (!root) return output;
-  while (stack.length > 0) {
+  let stack = [];
+  let ans = [];
+  // 开始利用栈来进行遍历
+  while(root !== null || stack.length > 0) {
+    // 模拟递归的压栈过程(根-》左-》右)
+    while(root !== null) {
+      stack.push(root);
+      ans.push(root.val);
+      root = root.left;
+    }
+    // 下一次迭代将右节点入栈，当无法压栈的时候，将root.right进行压栈
     let top = stack.pop();
-    // 根
-    output.push(top.val);
-    // 放入栈的顺序相反，因为栈顶元素先被弹出
-    top.right && stack.push(top.right);
-    top.left && stack.push(top.left);
+    root = top.right;
   }
-  return output;
+
+  return ans;
 }
+
+/**
+ * https://zhuanlan.zhihu.com/p/101321696
+ * tree，神级遍历——morris
+ * morris遍历利用的是树的叶节点左右孩子为空（树的大量空闲指针），实现空间开销的极限缩减。
+ */
 
 // 🌲的midOrder（递归版，使用系统调用栈）
 function midOrder(root, ary = []) {
