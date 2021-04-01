@@ -59,9 +59,9 @@ function preOrder1(root) {
   let stack = [];
   let ans = [];
   // 开始利用栈来进行遍历
-  while(root !== null || stack.length > 0) {
+  while (root !== null || stack.length > 0) {
     // 模拟递归的压栈过程(根-》左-》右)
-    while(root !== null) {
+    while (root !== null) {
       stack.push(root);
       ans.push(root.val);
       root = root.left;
@@ -94,18 +94,21 @@ function midOrder(root, ary = []) {
 // 🌲的midOrder（迭代版，使用模拟栈）
 function midOrder1(root) {
   let stack = [];
-  let output = [];
-  let curr = root;
-  while (curr || stack.length > 0) {
-    while (curr) {
-      stack.push(curr);
-      curr = curr.left;
+  let ans = [];
+  while (root !== null || stack.length > 0) {
+    // 往左边走，连续入栈，直到不能再走为止
+    while (root !== null) {
+      stack.push(root);
+      root = root.left;
     }
-    curr = stack.pop();
-    output.push(curr.val);
-    curr = curr.right;
+    // 到达了最左边，把结点弹出来，进行遍历
+    root = stack.pop();
+    ans.push(root.val);
+    // 转向右子树
+    root = root.right
   }
-  return output;
+
+  return ans;
 }
 
 // 🌲的postOrder（递归版，使用系统调用栈）
@@ -118,17 +121,46 @@ function postOrder(root, ary = []) {
   return ary;
 }
 // 🌲的postOrder（迭代版，使用模拟栈）
-function postOrder1(root) {
-  let stack = [root];
-  let output = [];
-  if (!root) return output;
-  while (stack.length > 0) {
-    let top = stack.pop();
-    output.unshift(top.val);
-    top.left && stack.push(top.left);
-    top.right && stack.push(top.right);
+function postOrder1(t) {
+  let ans = [];
+  // pre表示遍历时前面一个已经遍历过的结点
+  let pre = null;
+  let stack = [];
+  // 如果栈中还有元素，或者当前结点t非空
+  while (stack.length > 0 || t !== null) {
+    // 顺着左子树走，并且将所有的元素压入栈中
+    while (t !== null) {
+      stack.push(t);
+      t = t.left;
+    }
+    // 当没有任何元素可以压栈的时候
+    // 拿栈顶元素，注意这里并不将栈顶元素弹出
+    // 因为在迭代时，根结点需要遍历两次，这里需要判断一下
+    // 右子树是否遍历完毕
+    t = stack[stack.length - 1];
+    // 如果要遍历当前结点，需要确保右子树已经遍历完毕
+    // 1. 如果当前结点左子树为空，那么右子树没有遍历的必要
+    // 需要将当前结点放到ans中
+    // 2. 当t.right == pre时，说明右子树已经被打印过了
+    // 那么此时需要将当前结点放到ans中
+    if (t.right === null || t.right === pre) {
+      // 右子树已经遍历完毕，放到ans中。
+      ans.push(t.val);
+      // 弹栈
+      stack.pop();
+      // 因为已经遍历了当前结点，所以需要更新pre结点
+      pre = t;
+      // 已经打印完毕。需要设置为空，否则下一轮循环
+      // 还会遍历t的左子树。
+      t = null;
+    } else {
+      // 第一次走到t结点，不能放到ans中，因为t的右子树还没有遍历。
+      // 需要将t结点的右子树遍历
+      t = t.right;
+    }
   }
-  return output;
+
+  return ans;
 }
 
 // 从中序与后序遍历序列构造二叉树
@@ -147,3 +179,36 @@ function buildTree(inorder, postorder) {
 
   return build(inorder);
 }
+
+/**
+ * 
+给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
+输入：root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+输出：[[5,4,11,2],[5,8,4,5]]
+ */
+var pathSum = function (root, sum) {
+  let ans = [];
+  function backTrack(node, path = [], cur, target, ans) {
+    if (node === null) {
+      return;
+    }
+    // 前序遍历，加上累计的和
+    cur += node.val;
+    // 将结点添加到路径中，相当于压栈一样
+    path.push(node.val);
+    if (node.left === null && node.right === null) {
+      if (cur === target) {
+        ans.push(path.slice(0));
+      }
+    } else {
+      // 回溯，分别再看子情况。
+      backTrack(node.left, path, cur, target, ans);
+      backTrack(node.right, path, cur, target, ans);
+    }
+    // 函数结束的时候弹栈，也要把结点从路径最后扔掉!
+    path.pop();
+  }
+  backTrack(root, [], 0, sum, ans)
+
+  return ans;
+};
