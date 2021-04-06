@@ -17,8 +17,9 @@ JS 分为同步任务和异步任务<br>
 4.  当前宏任务执行完毕，开始检查渲染，然后 GUI 线程接管渲染
 5.  渲染完毕后，JS 线程继续接管，开始下一个宏任务（从事件队列中获取）
 
+宏任务是由宿主（浏览器、Node）发起的，而微任务是由 JS 发起的。
 Macrotask：主代码块（同步代码）、MessageChannel、postMessage、setTimeout、setInterval、setImmediate、I/O、UI rendering<br>
-Microtask：process.nextTick、Promise.then、MutaionObserver（监听 DOM 变动的构造函数）、Object.observe（已废弃）<br>
+Microtask：process.nextTick、Promise.[then/catch/finally]、MutaionObserver（监听 DOM 变动的构造函数）、 queueMicrotask、Object.observe（已废弃）<br>
 [Event Loop](https://juejin.im/post/5d5b4c2df265da03dd3d73e5#heading-10)
 
 ## 重绘和回流其实也和 Eventloop 有关
@@ -58,6 +59,7 @@ process.nextTick 会在每个阶段完成后，如果存在 nextTick 队列，�
 5.  check 执行 setImmediate() 设定的 callbacks。
 6.  close callbacks 执行关闭请求的回调函数，比如 socket.on('close', ...)。
 ```
+
 浏览器端任务队列每轮事件循环仅出队一个回调函数接着去执行微任务队列；而 Node.js 端只要轮到执行某个宏任务队列，则会执行完队列中所有的当前任务，但是当前轮次新添加到队尾的任务则会等到下一轮次才会执行。<br>
 poll 阶段
 ![poll 阶段](../img/node-eventloop-poll.png)
