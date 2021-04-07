@@ -1348,6 +1348,7 @@ function quickSortHelper(ary) {
   let bigger = [];
   let smaller = [];
   ary.forEach((item, index) => {
+    // 这里容易出错
     if (index !== pointIndex) {
       if (item <= pointValue) {
         smaller.push(item);
