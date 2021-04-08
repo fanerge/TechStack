@@ -1,7 +1,7 @@
 // test1
 function mergeSort(nums) {
   let len = nums.length
-  if (len <= 0) {
+  if (len <= 1) {
     return nums;
   }
   mSort(nums, 0, len, [])
@@ -30,7 +30,8 @@ function mSort(arr, start, end, temp) {
     // 如果右子数组没有元素 或 左子数组开头的元素小于右子数组开头的元素
     // 那么取走左子数组开头的元素
     // 考点：a[i] <= a[j]这样可以保证合并排序是稳定的，不要写错!
-    if (j > end || i < mid && arr[i] <= arr[j]) {
+    // j >= end，取不到end，因为end为数组长度
+    if (j >= end || i < mid && arr[i] <= arr[j]) {
       temp[to++] = arr[i++]
     } else {
       // 否则就是取右子数组开头的元素
@@ -38,9 +39,49 @@ function mSort(arr, start, end, temp) {
     }
   }
   // 把合并的结果拷回原来的数组a[]
+  console.log(temp)
   for (let i = start; i < end; i++) {
     arr[i] = temp[i];
   }
 }
 
-console.log(mergeSort([9, 8, 3, 4, 3]));
+// console.log(mergeSort([9, 8, 3, 4, 1]));
+function quickSort(nums) {
+  if (nums == null) return;
+  qSort(nums, 0, nums.length);
+  return nums;
+}
+function qSort(arr, start, end) {
+  // 像二叉树一样，如果空树/只有一个结点，那么不需要再递归了 
+  // 如果给定的区间段为空，或者只有一个结点。 
+  if (start >= end || start + 1 >= end) {
+    return;
+  }
+  // 取数组中间的元素作为x
+  let mid = start + Math.floor((end - start) / 2);
+  let midVal = arr[mid];
+  // 三路切分
+  let first = start, i = start, last = end - 1;
+  while (i <= last) {
+    if (arr[i] < midVal) {
+      swap(arr, first++, i++);
+    } else if (arr[i] === midVal) {
+      i++;
+    } else {
+      swap(arr, last--, i);
+    }
+  }
+  // 像二叉树的前序遍历一样，分别遍历左子树与右子树。
+  qSort(arr, start, first);
+  qSort(arr, i, end);
+}
+
+function swap(arr, i, j) {
+  let temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+
+// console.log(quickSort([9, 8, 3, 4, 1]));
+
+
