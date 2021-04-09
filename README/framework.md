@@ -64,6 +64,7 @@ it rebase —-abort
 ## svg 动画
 
 svg 图案：Flation、iconFont、Iconfinder、icons8
+[SVG 轻量级微动效](https://www.svgator.com/)
 [TimelineLite/TimelineMax-创建时间轴（timeline）作为动画或其他时间轴的容器](https://greensock.com/)
 [TimelineMax 中文手册](https://www.tweenmax.com.cn/api/timelinemax/)
 [十分钟教你用 svg 做出精美的动画！](https://juejin.cn/post/6930412294149472269)
@@ -74,6 +75,7 @@ svg 图案：Flation、iconFont、Iconfinder、icons8
 Node 版本管理：nvm、n
 npm 源管理：nrm
 daemon：forever、pm2、
+node内存泄漏分析：heapdump + chrome devtools（memory profiler）
 ```
 
 # W3C-Validator

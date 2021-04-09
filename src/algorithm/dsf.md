@@ -206,3 +206,5 @@ void Union(int x, int y) {
   F[find(x)] = find(y); // <- 2. 合并
 }
 ```
+
+1
