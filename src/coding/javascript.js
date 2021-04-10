@@ -4,6 +4,8 @@ import '../algorithm/heap'
 import '../algorithm/linkList'
 import '../algorithm/trie'
 import '../algorithm/sort'
+import '../algorithm/binarySearch1'
+
 
 
 
