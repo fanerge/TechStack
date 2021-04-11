@@ -87,3 +87,4 @@ function upperBound(arr, target) {
   return left;
 }
 // console.log(upperBound([1, 2, 2, 2, 2, 2, 3, 3, 5], 2));
+
