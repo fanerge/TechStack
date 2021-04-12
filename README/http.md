@@ -132,12 +132,25 @@ s-maxage
 
 # CORS
 ```
-Access-Control-Allow-Origin // 允许的源
-Access-Control-Allow-Credentials // 是否允许发送 Cookie
-客户端还需要设置withCredentials
-Access-Control-Expose-Headers // header
+// 简单跨域
+Access-Control-Allow-Origin = '指定域名（只能设置一个域名）'
+Access-Control-Allow-Origin = '*' 
+// 允许 client 使用什么方法
 Access-Control-Allow-Methods //  method
-Access-Control-Max-Age // 预检请求的有效期
+// 允许 client 携带那些 header
+Access-Control-Allow-Headers = 'x-token-id'
+// 允许 client 解析那些 header（不然 client 读取对应header 为 null）
+Access-Control-Expose-Headers
+// 非简单请求（需要发预检请求 options）
+// Content-type="application/json" 为非简单请求
+// 携带cookie等
+Access-Control-Allow-Origin = '必须要指定域名，*不再可用'
+Access-Control-Allow-Credentials = true // 是否允许发送 Cookie
+客户端还需要设置withCredentials
+如fetch，credentials='include'
+如xhr，withCredentials=true
+// 预检请求的有效期，单位为s，不然对同一个资源都还会再打到后端去做preflight
+Access-Control-Max-Age = 300
 ```
 
 # HTTP/2的特性
