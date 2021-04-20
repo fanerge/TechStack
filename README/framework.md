@@ -182,7 +182,8 @@ git hook：husky
 移动端调试：vConsole、eruda
 menu-aim: react-menu-aim、es6-menu-aim
 ```
-
+#	私有npm源
+Verdaccio
 ## react 系列
 
 滚动优化：react-custom-scrollbars
