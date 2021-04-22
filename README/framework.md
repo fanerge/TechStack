@@ -59,6 +59,9 @@ git rebase --continue
 it rebase —-abort
 ```
 
+##	获取最新commit id
+git rev-parse --short HEAD
+
 # 动画
 
 ## svg 动画
