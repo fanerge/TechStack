@@ -59,6 +59,9 @@ git rebase --continue
 it rebase —-abort
 ```
 
+##	获取最新commit id
+git rev-parse --short HEAD
+
 # 动画
 
 ## svg 动画
@@ -80,7 +83,11 @@ Node 版本管理：nvm、n
 npm 源管理：nrm
 daemon：forever、pm2、
 node内存泄漏分析：heapdump + chrome devtools（memory profiler）
+<<<<<<< HEAD
 压测工具：WRK（Windows Research Kernel）
+=======
+诊断和查明 Node.js 性能问题：clinicjs（CPU 异常问题、事件循环延迟问题、内存泄漏问题、句柄泄漏问题）
+>>>>>>> c6f52380dd0bd25dac0310a35bca079d2841062f
 ```
 
 # W3C-Validator
