@@ -69,6 +69,10 @@ svg 图案：Flation、iconFont、Iconfinder、icons8
 [TimelineMax 中文手册](https://www.tweenmax.com.cn/api/timelinemax/)
 [十分钟教你用 svg 做出精美的动画！](https://juejin.cn/post/6930412294149472269)
 
+## 动画解决方案
+
+lottie-复杂帧动画的解决方案
+
 # Node.js
 
 ```
@@ -76,6 +80,7 @@ Node 版本管理：nvm、n
 npm 源管理：nrm
 daemon：forever、pm2、
 node内存泄漏分析：heapdump + chrome devtools（memory profiler）
+压测工具：WRK（Windows Research Kernel）
 ```
 
 # W3C-Validator
@@ -239,6 +244,4 @@ Server.get(‘/polyfill’, async (req, res) => {
 
 typescript 依赖：@types/node、@types/react、@types/react-dom、@types/styled-jsx
 
-# 动画解决方案
 
-lottie-复杂帧动画的解决方案
