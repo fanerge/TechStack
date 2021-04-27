@@ -59,6 +59,9 @@ git rebase --continue
 it rebase —-abort
 ```
 
+#	前端状态机
+[xstate](https://xstate.js.org/)
+[xstate/vue](https://xstate.js.org/docs/recipes/vue.html)
 # 动画
 
 ## svg 动画
