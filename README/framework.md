@@ -83,8 +83,11 @@ Node 版本管理：nvm、n
 npm 源管理：nrm
 daemon：forever、pm2、
 node内存泄漏分析：heapdump + chrome devtools（memory profiler）
-压测工具：WRK（Windows Research Kernel）、Apache-ab 压测工具、Siege
 CPU 进行采集：v8-profiler-next
+// 压力测试工具
+WRK（Windows Research Kernel）、Apache-ab 压测工具、Siege
+Apache Benchmark
+JMeter（java）
 ```
 
 # W3C-Validator
