@@ -1,8 +1,12 @@
-// 参考文档：https://leetcode-cn.com/problems/permutations/solution/hui-su-suan-fa-xiang-jie-by-labuladong-2/
+/**
+ * 回溯算法本质上是一种 DFS 算法，在一些小的数据集上能够找到最优解。
+ // 参考文档：https://leetcode-cn.com/problems/permutations/solution/hui-su-suan-fa-xiang-jie-by-labuladong-2/
+ * 
+ */
 
 /** 回溯算法模版
  result = []
-def backtrack(路径, 选择列表):
+def backtrace(路径, 选择列表):
     if 满足结束条件:
         result.add(路径)
         return
@@ -11,7 +15,7 @@ def backtrack(路径, 选择列表):
         # 做选择
         将该选择从选择列表移除
         路径.add(选择)
-        backtrack(路径, 选择列表)
+        backtrace(路径, 选择列表)
         # 撤销选择
         路径.remove(选择)
         将该选择再加入选择列表
@@ -23,11 +27,11 @@ def backtrack(路径, 选择列表):
  */
 let permute = (nums) => {
   let res = [];
-  backTrack1([], nums, res);
+  backtrace1([], nums, res);
   return res;
 };
 // used 为路径，all为选择列表
-let backTrack1 = (used, all, res) => {
+let backtrace1 = (used, all, res) => {
   if (used.length === all.length) {
     res.push(used.slice(0));
     return;
@@ -35,7 +39,7 @@ let backTrack1 = (used, all, res) => {
   for (let i = 0; i < all.length; i++) {
     if (used.includes(all[i])) continue;
     used.push(all[i]);
-    backTrack1(used, all, res);
+    backtrace1(used, all, res);
     used.pop();
   }
 };
@@ -58,7 +62,7 @@ var generateParenthesis = function (n) {
   if (n === 0) return [];
   // 存储结果
   let res = [];
-  backTrack("", 0, 0, n);
+  backtrace("", 0, 0, n);
   /**
    *
    * @param {*} cur 构建好的字符串
@@ -66,7 +70,7 @@ var generateParenthesis = function (n) {
    * @param {*} right 构建好的字符数串中右括号的数量
    * @param {*} max 左右括号的最大数量
    */
-  function backTrack(cur, left, right, max) {
+  function backtrace(cur, left, right, max) {
     if (cur.length === 2 * max) {
       res.push(cur);
       return;
@@ -75,14 +79,14 @@ var generateParenthesis = function (n) {
     // 过滤掉不满足要求的结构（剪枝）
     // 左括号小于max
     if (left < max) {
-      backTrack(cur + "(", left + 1, right, max);
+      backtrace(cur + "(", left + 1, right, max);
       // 回溯到之前的状态给后面可能的结果使用
       cur = cur.slice(0, cur.length);
     }
 
     // 左括号的数量大于右括号才允许添加右括号
     if (left > right) {
-      backTrack(cur + ")", left, right + 1, max);
+      backtrace(cur + ")", left, right + 1, max);
       // 回溯到之前的状态给后面可能的结果使用
       cur = cur.slice(0, cur.length);
     }
