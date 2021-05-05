@@ -1,3 +1,4 @@
+// 剪枝，就是通过一些信息，提前判断出当前这条求解路径不可能是最优解，此时就应该及时放弃这条路径。
 // 参考地址
 // https://labuladong.gitbook.io/algo/di-ling-zhang-bi-du-xi-lie/xue-xi-shu-ju-jie-gou-he-suan-fa-de-gao-xiao-fang-fa
 /**
