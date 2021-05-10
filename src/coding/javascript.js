@@ -5,12 +5,14 @@ import '../algorithm/linkList'
 import '../algorithm/trie'
 import '../algorithm/sort'
 import '../algorithm/binarySearch1'
+import './test.js'
 
 
 
 
 
-// deepClone
+
+// cloneDeep
 // 1. 针对能够遍历对象的不可枚举属性以及 Symbol 类型，我们可以使用 Reflect.ownKeys 方法；
 // 2. 当参数为 Date、RegExp 类型，则直接生成一个新的实例返回；
 // 3. 利用 Object 的 getOwnPropertyDescriptors 方法可以获得对象的所有属性，以及对应的特性，顺便结合 Object 的 create 方法创建一个新对象，并继承传入原对象的原型链；
@@ -39,7 +41,7 @@ obj.loop = obj    // 设置loop成循环引用的属性
 function isComplexType(val) {
   return (typeof val === 'object' && val !== null) || (typeof val === 'function')
 }
-function deepClone(oldVal, hash = new WeakMap()) {
+function cloneDeep(oldVal, hash = new WeakMap()) {
   // 基本类型
   if (!isComplexType(oldVal)) {
     return oldVal;
