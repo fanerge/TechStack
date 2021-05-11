@@ -77,9 +77,10 @@ Function.prototype.myCall = function (ctx, ...args) {
   //   ctx = typeof window === 'undefined' ? global : window;
   // }
   ctx = ctx || globalThis;
-  ctx.func = this;
-  let res = ctx.func(...args);
-  delete ctx.func;
+  let key = Symbol('func');
+  ctx[key] = this;
+  let res = ctx[key](...args);
+  delete ctx[key];
   return res;
 }
 
@@ -101,9 +102,10 @@ Function.prototype.myApply = function (ctx, args) {
   //   ctx = typeof window === 'undefined' ? global : window;
   // }
   ctx = ctx || globalThis;
-  ctx.func = this;
-  let res = ctx.func(...args);
-  delete ctx.func;
+  let key = Symbol('func');
+  ctx[key] = this;
+  let res = ctx[key](...args);
+  delete ctx[key];
   return res;
 }
 // test
@@ -113,7 +115,13 @@ Function.prototype.myApply = function (ctx, args) {
 // myBind
 //#region 
 Function.prototype.myBind = function (ctx, ...args1) {
-  ctx = ctx || globalThis;
+  if (ctx === undefined) {
+    ctx = typeof window === 'undefined' ? global : window;
+  }
+  if (typeof ctx !== 'object' || ctx === null) {
+    ctx = Object(ctx);
+  }
+  // ctx = ctx || globalThis;
   let func = this;
 
   return function (...args2) {
@@ -125,14 +133,121 @@ Function.prototype.myBind = function (ctx, ...args1) {
   }
 }
 // test
-// myCallTest.myBind(mycallObj)(12, 'wanyuan')
+// window.name = 'fanerge'
+// myCallTest.myBind()(12, 'wanyuan')
 //#endregion
 
 // throttle
+//#region 
+function throttle(fn, ms, immediate) {
+  let last = null;
+  return function (...args) {
+    let now = Date.now();
+    // first
+    if (last === null && immediate) {
+      fn.apply(this, args);
+      last = Date.now();
+      return;
+    }
+    if (last === null && !immediate) {
+      last = Date.now();
+      return;
+    }
+
+    if (now - last >= ms) {
+      fn.apply(this, args);
+      last = Date.now();
+    }
+  }
+}
+// test
+// $0.addEventListener('click', throttle(function () { console.log(this) }, 200))
+//#endregion
+
 // debounce
+//#region
+function debounce(fn, ms, immediate) {
+  let timerId = null;
+  return function (...args) {
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+    if (timerId === null && immediate) {
+      fn.apply(this, args);
+      // 产生一个无用的id
+      timerId = setTimeout(() => { }, ms);
+      return;
+    }
+
+    timerId = setTimeout(() => {
+      fn.apply(this, args);
+    }, ms);
+  }
+}
+// test
+// $0.addEventListener('mousemove', debounce(function () { console.log(this) }, 2000))
+//#endregion
+
 // mockNew
+//#region 
+function mockNew(fn, ...args) {
+  let obj = Object.create(fn.prototype)
+  let res = fn.apply(obj, args);
+  if (typeof res === 'object' && res !== null || typeof res === 'function') {
+    return res;
+  }
+  return obj;
+}
+// test
+function Person(name, age, sex) {
+  this.name = name;
+  this.age = age;
+}
+Person.prototype.sayName = function () {
+  console.log(this.name);
+}
+let mockN = mockNew(Person, 'yzf', '29')
+// console.log(mockN.sayName());
+//#endregion
+
 // mockInstanceOf
+//#region
+function mockInstanceOf(left, right) {
+  if (typeof left !== 'object' || left === null) {
+    throw new Error('left 必须为对象');
+  }
+  if (typeof right !== 'function') {
+    throw new Error('right 必须为函数');
+  }
+
+  let leftProto = Object.getPrototypeOf(left);
+  while (leftProto) {
+    if (leftProto === right.prototype) {
+      return true;
+    }
+    leftProto = Object.getPrototypeOf(leftProto)
+  }
+  return false;
+}
+// console.log(mockInstanceOf(Object.create(null), Object));
+//#endregion
+
 // curry
+//#region 
+function curry(fn) {
+  return function inner(...args1) {
+    return fn.length <= args1.length ?
+      fn.call(null, ...args1) :
+      (...args2) => inner.call(null, ...args1, ...args2);
+  }
+}
+function curryAdd(a, b, c) {
+  return a + b + c;
+}
+// console.log(curry(curryAdd)(1)(2)(3));
+//#endregion
+
+
 // compose
 // pipe
 // Scheduler

@@ -10,6 +10,7 @@ import HashTable1 from "./modules/hashTable1";
 import Graph from "./modules/graph";
 // import { cloneLoop } from './utils/deepClone';
 import { cloneOther } from "./utils/other";
+import './style.css'
 import {
   checkType,
   deepClone,
@@ -147,7 +148,7 @@ function hotPotato(nameList: string[], num: number) {
 // test-throttle
 let body = document.querySelector("body");
 let fragment = document.createDocumentFragment();
-var browsers = ["----"];
+var browsers = ["--------"];
 
 browsers.forEach(function (browser) {
   var h2 = document.createElement("h2");
