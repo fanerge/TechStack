@@ -160,7 +160,7 @@ body.appendChild(fragment);
 // 防抖节流
 function handle(e: any) {
   // console.log(Math.random());
-  console.log(e);
+  // console.log(e);
 }
 window.addEventListener("scroll", throttle(handle, 3000));
 // let test = fmoney(10000);

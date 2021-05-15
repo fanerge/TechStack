@@ -94,7 +94,6 @@ function myCallTest(age, address) {
 // myCallTest.myCall(mycallObj, 12)
 //#endregion
 
-
 // myApply
 //#region 
 Function.prototype.myApply = function (ctx, args) {
@@ -247,15 +246,214 @@ function curryAdd(a, b, c) {
 // console.log(curry(curryAdd)(1)(2)(3));
 //#endregion
 
-
 // compose
+//#region 
+function compose(...fns) {
+  return function (arg) {
+    if (arg === undefined || arg === null) return
+    if (fns.length > 0 && fns.every(fn => typeof fn === 'function')) {
+      return fns.reduceRight((pre, fn) => {
+        return fn(pre)
+      }, arg);
+    }
+  }
+}
+var funs = compose((a) => a + 11, (b) => b * 2, (c) => c + 5)
+// console.log(funs(10));
+//#endregion
+
 // pipe
+//#region 
+function pipe(...fns) {
+  return function (arg) {
+    return fns.reduce((res, fn) => {
+      return fn(res);
+    }, arg);
+  }
+}
+var funs = pipe((a) => a + 11, (b) => b * 2, (c) => c + 5);
+// console.log(funs(2));
+//#endregion
+
 // Scheduler
+//#region 
+class Scheduler {
+  constructor(size) {
+    this.size = size;
+    this.queue = [];
+    this.num = 0;
+  }
+
+  async add(genPromise) {
+    if (this.num >= this.size) {
+      // 到达阈值了
+      await new Promise((resolve, reject) => {
+        this.queue.push(resolve);
+      })
+    }
+    this.num += 1;
+    let res = await genPromise();
+    this.num -= 1;
+    if (this.queue.length > 0) {
+      // resolve
+      this.queue.shift()();
+    }
+    return res;
+  }
+}
+// genPromiseTask
+let scheduler = new Scheduler(2);
+const timeout = (time) => new Promise((resolve, reject) => {
+  setTimeout(resolve, time)
+})
+const addTask = (time, order) => {
+  scheduler.add(() => timeout(time))
+    .then(() => console.log(order))
+}
+// addTask(1000, '1')
+// addTask(500, '2')
+// addTask(300, '3')
+// addTask(400, '4')
+// addTask(100, '5')
+// 2,3,4,1,5
+//#endregion
+
 // EventEmitter
+//#region 
+class EventEmitter {
+  constructor(limit = 10) {
+    this.limit = limit;
+    this.map = new Map();
+  }
+  on(type, fn) {
+    const { limit, map } = this;
+    let list = [];
+    if (map.has(type)) {
+      list = map.get(type);
+    } else {
+      map.set(type, list)
+    }
+    if (list.length >= limit) {
+      return
+    }
+    list.push(fn)
+  }
+
+  once(type, fn) {
+    const { limit, map } = this;
+    let self = this;
+    let tempFun = function (...args) {
+      fn.apply(this, args)
+      self.off(type, tempFun);
+    }
+    this.on(type, tempFun);
+  }
+
+  emit(type, ...args) {
+    const { limit, map } = this;
+    let list = map.get(type) || [];
+    list.forEach(function (fn) {
+      fn.apply(this, args);
+    });
+  }
+  off(type, fn) {
+    const { map } = this;
+    if (!map.has(type)) {
+      return;
+    }
+    if (fn) {
+      let list = map.get(type);
+      list = list.filter(item => item !== fn);
+      map.set(type, list);
+    } else {
+      map.delete(type)
+    }
+  }
+
+
+}
+//#endregion
+
 // LRUCache
+//#region 
+class LRUCache {
+  constructor(limit = 10) {
+    this.limit = limit;
+    this.cache = new Map();
+  }
+  set(key, value) {
+    const { limit, cache } = this;
+    if (cache.has(key)) {
+      cache.delete(key);
+    }
+    if (cache.size >= limit) {
+      // rm first
+      let firstKey = cache.keys().next().value
+      cache.delete(firstKey);
+    }
+    cache.set(key, value);
+  }
+  get(key) {
+    const { cache } = this;
+    if (!cache.has(key)) {
+      return null;
+    }
+    let res = cache.get(key);
+    // 保证添加顺序在最后面
+    cache.delete(key);
+    cache.set(key, res);
+    return res;
+  }
+}
+var lru = new LRUCache(3);
+// console.log(lru.cache)
+//#endregion
+
 // flatArray
+//#region 
+//#endregion
+
 // lensProp
 // formatMoney
 // mergeSort
 // quickSort
 // renderTemplate
+
+
+
+
+// Promise
+function genPromiseTask(num, ms) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(num);
+    }, ms)
+  });
+}
+// 异步串行1
+function runPromiseByQueue(...funs) {
+  funs.reduce((pre, cur, index) => {
+    return pre.then((res) => {
+      return cur(index);
+    });
+  }, Promise.resolve());
+}
+// runPromiseByQueue(genPromiseTask, genPromiseTask, genPromiseTask)
+// 异步串行2
+async function runPromiseByQueue1(...funs) {
+  for (let i = 0; i < funs.length; i++) {
+    await funs[i](i);
+  }
+}
+// runPromiseByQueue1(genPromiseTask, genPromiseTask, genPromiseTask)
+/**
+ * Promise.all
+ * 所有的 promise 都“完成（resolved）”或参数中不包含 promise 时回调完成（resolve）；如果参数中  promise 有一个失败（rejected），此实例回调失败（reject），失败原因的是第一个失败 promise 的结果。
+ * Promise.allSettled
+ * allSettled 在所有给定的promise已被解析或被拒绝后解析，并且每个对象都描述每个promise的结果。
+ * Promise.race
+ * race 一旦迭代器中的某个promise解决或拒绝，返回的 promise就会解决或拒绝。
+ * Promise.any
+ * any 只要其中的一个 promise 成功，就返回那个已经成功的 promise 。如果可迭代对象中没有一个 promise 成功（即所有的 promises 都失败/拒绝），就返回一个失败的 promise 和AggregateError类型的实例
+ * Promise.prototype.finally
+ */
