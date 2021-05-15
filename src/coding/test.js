@@ -414,10 +414,79 @@ var lru = new LRUCache(3);
 //#endregion
 
 // flatArray
-//#region 
+//#region
+function flatArray(ary, res = [], n = 1) {
+  ary.forEach(item => {
+    if (Array.isArray(item) && n > 0) {
+      flatArray(item, res, n - 1);
+    } else {
+      res.push(item);
+    }
+  });
+
+  return res;
+}
+function flatArray1(ary) {
+  for (let i = 0; i < ary.length; i++) {
+    if (Array.isArray(ary[i])) {
+      ary.splice(i, 1, ...ary[i]);
+      i--;
+    }
+  }
+  return ary;
+}
+var ary = [1, 2, [3, [4, 5, [6, [7, 8]]]], 9, [10, [11, 12]], [[[13]]]];
+// console.log(flatArray(ary, [], 4));
+// console.log(flatArray1(ary, [], 4));
 //#endregion
 
 // lensProp
+//#region 
+function lensProp(obj = {}, path = '') {
+  if (typeof obj !== 'object' || obj === null) {
+    obj = {}
+  }
+  let props = path.replace(/\[/g, '.').replace(/\]/g, '').split('.')
+  for (let i = 0; i < props.length; i++) {
+    if (typeof obj[props[i]] === 'undefined') {
+      return void 0;
+    } else {
+      // debugger
+      if (typeof obj[props[i]] === 'object' && obj !== null) {
+        obj = obj[props[i]]
+      } else {
+        return i === props.length - 1 ? obj[props[i]] : void 0;
+      }
+    }
+  }
+
+  return obj;
+}
+var obj6 = {
+  name: 'yzf',
+  children: [{
+    name: 'yy',
+    age: 1,
+    children: [
+      {
+        name: 'yyy',
+        age: 1,
+        children: []
+      }
+    ]
+  }, {
+    name: 'yy1',
+    age: 8,
+    children: []
+  }],
+  other: {
+    year: 29
+  }
+}
+// console.log(lensProp(obj6, 'children.0.name'));
+// console.log(lensProp(obj6, 'children[0].children[0].name[0]'));
+//#endregion
+
 // formatMoney
 // mergeSort
 // quickSort

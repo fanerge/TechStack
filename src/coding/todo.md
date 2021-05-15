@@ -21,7 +21,5 @@ renderTemplate
 // 函数式编程考察
 
 https://juejin.cn/post/6847902225423925255
-
-
-// test
-$0.addEventListener('click', throttle(function() {console.log(this)}, 200))
+https://juejin.cn/post/6844903928442667015
+https://mp.weixin.qq.com/s/ZfhKh7BkfzCXA7C6D3Waaw
