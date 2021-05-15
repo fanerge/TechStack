@@ -123,13 +123,17 @@ Function.prototype.myBind = function (ctx, ...args1) {
   // ctx = ctx || globalThis;
   let func = this;
 
-  return function (...args2) {
+  const tempFunc = function (...args2) {
     let key = Symbol('func');
     ctx[key] = func;
     let res = ctx[key](...args1, ...args2);
     delete ctx[key];
     return res;
   }
+  // 支持 new 调用方式
+  tempFunc.prototype = Object.create(fn.prototype);
+
+  return tempFunc;
 }
 // test
 // window.name = 'fanerge'

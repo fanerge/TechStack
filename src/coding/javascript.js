@@ -257,8 +257,8 @@ function curry(func) {
   return function inner(...args) {
     let needLen = func.length;
     return args.length >= needLen
-      ? func.call(ctx, ...args)
-      : (...rest) => inner.call(ctx, ...args, ...rest);
+      ? func.call(func, ...args)
+      : (...rest) => inner.call(func, ...args, ...rest);
   };
 
   // (...rest) => inner.call(ctx, ...args, ...rest) 也可以使用 Function.prototype.bind 来预置参数
