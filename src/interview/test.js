@@ -488,14 +488,99 @@ var obj6 = {
 //#endregion
 
 // formatMoney
+//#region 
+function formatMoney(num) {
+  let str = num.toString();
+  // front 12345678 -> 1,235,678
+  // len = 8
+  let [front, end] = str.split('.')
+  let frontLen = front.length;
+  let frontStr = [...front].reduceRight((acc, item, index) => {
+    let curIndx = frontLen - index;
+    if (curIndx % 3 === 0 && index !== 0) {
+      acc = `,${item}` + acc;
+    } else {
+      acc = `${item}` + acc;
+    }
+    return acc;
+  }, '')
+
+  return `${frontStr}${end ? `.${end}` : ''}`
+}
+// console.log(formatMoney('13234242343453245345.123123'));
+//#endregion
+
 // mergeSort
+//#region 
+function mergeSort(ary) {
+  if (ary.length <= 1) {
+    return ary;
+  }
+  let mid = Math.floor(ary.length / 2);
+  let left = ary.slice(0, mid);
+  let right = ary.slice(mid)
+
+  return mergeSortHelper(mergeSort(left), mergeSort(right));
+}
+function mergeSortHelper(left, right) {
+  let res = [];
+  while (left.length > 0 && right.length > 0) {
+    let left0 = left[0];
+    let right0 = right[0];
+    if (left0 <= right0) {
+      res.push(left.shift());
+    } else {
+      res.push(right.shift());
+    }
+  }
+
+  return res.concat(left).concat(right);
+}
+var list = [1, 3, 2, 9, 6, 5, 1, 0, -2, 10]
+// console.log(mergeSort(list))
+//#endregion
+
 // quickSort
+//#region 
+function quickSort(ary) {
+  if (ary.length <= 1) {
+    return ary;
+  }
+  // 取均分点可以随机一点
+  let midIndex = Math.floor(ary.length / 2);
+  let midVal = ary[midIndex];
+  let left = [];
+  let right = [];
+  ary.forEach((item, index) => {
+    if (index === midIndex) return;
+    if (item <= midVal) {
+      left.push(item);
+    } else {
+      right.push(item);
+    }
+  });
+
+  return [...quickSort(left), midVal, ...quickSort(right)]
+}
+// console.log(quickSort(list))
+//#endregion
+
 // renderTemplate
-
-
-
+//#region
+function renderTemplate(template, obj = {}) {
+  return template.replace(/{{[A-Z|a-z|\d\s]+}}/g, function (match) {
+    return obj[match.slice(2).slice(0, -2).trim()]
+  })
+}
+let str = renderTemplate(`<p style="color: red;"><b>我是{{name }}</b>，年龄{{age}}</p>`, {
+  name: "fanerge",
+  age: 17,
+});
+// console.log(str)
+//#endregion
 
 // Promise
+//#region 
 function genPromiseTask(num, ms) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -530,3 +615,11 @@ async function runPromiseByQueue1(...funs) {
  * any 只要其中的一个 promise 成功，就返回那个已经成功的 promise 。如果可迭代对象中没有一个 promise 成功（即所有的 promises 都失败/拒绝），就返回一个失败的 promise 和AggregateError类型的实例
  * Promise.prototype.finally
  */
+//#endregion
+
+// mySetInterVal
+//#region 
+function mySetInterVal(a, b) {
+
+}
+//#endregion
