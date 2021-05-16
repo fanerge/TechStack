@@ -20,11 +20,69 @@ Access-Control-Allow-Credentials = true // 是否允许发送 Cookie
 Access-Control-Max-Age = 300
 ```
 # 一次前端项目内存泄漏排坑
-https://mp.weixin.qq.com/s/ZfhKh7BkfzCXA7C6D3Waaw
 ```
-// TODO
-```
+// nuxt 内存泄露问题 & 优化
+// 商品详情页有推荐其他商品的列表，在推荐列表中点击商品，进入该推荐商品的详情页，如此多几点几次内存增加了一倍
+// 查看 Performance 一下三个指标增加较多
+// JS heap size
+// DOM Nodes(一些DOM的事件监听没有解绑，导致游离节点一直没有释放)
+// JS event listenters(没有取消订阅)
+// 排查过程：进行两次内存快照，选择 comparison ，比较两次快照的差异
+// 过滤 detached
+// delta 列表示两个快照净差值 
+// 导致内存泄漏代码
+// 1.dom 移除时，没有把对应事件给移除
+V.directive('report', {
+  bind(el) {
+    if (option.onload) {
+      el.addEventListener('load', option.onload);
+    }
+    if (option.onerror) {
+      el.addEventListener('error', option.onerror);
+    }
+  },
 
+  // dom 移除时，没有把对应事件给移除
+  unbind(el) {
+    if (option.onload) {
+      el.removeEventListener('load', option.onload);
+    }
+    if (option.onerror) {
+      el.removeEventListener('error', option.onerror);
+    }
+  }
+});
+
+// 2.组件销毁时，没有移除对应取消订阅
+mounted() {
+  eventBus.$on('***', this.updateList);
+  // 组件销毁时，没有移除对应取消订阅
+  this.$once('hook:beforeDestroy', () => {
+    eventBus.$off('***', this.updateList);
+	})
+}
+
+// 3.三方库使用完毕忘记调用其销毁方法，如复制分享链接的功能，使用了clipboard.js
+mounted() {
+  this.clipboard = new Clipboard('#copyLinkBtn');
+  clipboard.on('success', () => {
+    // do something
+  });
+  // 组件销毁时，没有销毁三方组件
+  this.$once('hook:beforeDestory', () => {
+    this.clipboard.destroy();
+    this.clipboard = null;
+  })
+}
+
+// 其他可能造成内存泄漏的原因
+1.  全局变量，未声明变量
+2.  DOM脱离文档流仍被引用
+3.  被正确的闭包的使用
+4.  被遗忘的定时器
+5.  Node.js 内存泄漏排查，heapdump 库产出快照，然后导入到 chrome devtool 中分析
+// https://juejin.cn/post/6926501702216450062
+```
 
 # 浏览器缓存历史
 ```
