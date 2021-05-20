@@ -163,8 +163,30 @@ function throttle(fn, ms, immediate) {
     }
   }
 }
+function proxyThrottle(fn, ms, immediate) {
+  let last = null;
+  return new Proxy(fn, {
+    apply(target, thisArg, args) {
+      let now = Date.now();
+      if (last === null && immediate) {
+        target.apply(thisArg, args)
+        last = Date.now();
+        return;
+      }
+      if (last === null) {
+        last = Date.now();
+        return;
+      }
+      if (now - last >= ms) {
+        target.apply(thisArg, args)
+        last = Date.now();
+      }
+    }
+  })
+}
+window.proxyThrottle = proxyThrottle;
 // test
-// $0.addEventListener('click', throttle(function () { console.log(this) }, 200))
+// $0.addEventListener('click', proxyThrottle(function () { console.log(this) }, 2000))
 //#endregion
 
 // debounce
@@ -187,8 +209,33 @@ function debounce(fn, ms, immediate) {
     }, ms);
   }
 }
+function proxyDebounce(fn, ms, immediate) {
+  let timerId = null;
+  return new Proxy(fn, {
+    apply(target, thisArg, args) {
+      if (timerId === null && immediate) {
+        target.apply(thisArg, args);
+        timerId = setTimeout(() => { })
+        return;
+      }
+      if (timerId === null) {
+        timerId = setTimeout(() => {
+          target.apply(thisArg, args);
+        }, ms);
+        return;
+      }
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+      timerId = setTimeout(() => {
+        target.apply(thisArg, args);
+      }, ms);
+    }
+  })
+}
+window.proxyDebounce = proxyDebounce
 // test
-// $0.addEventListener('mousemove', debounce(function () { console.log(this) }, 2000))
+// $0.addEventListener('mousemove', proxyDebounce(function () { console.log(this) }, 2000))
 //#endregion
 
 // mockNew
@@ -581,6 +628,69 @@ let str = renderTemplate(`<p style="color: red;"><b>我是{{name }}</b>，年龄
 
 // Promise
 //#region 
+let pending = 'pending';
+let resolved = 'resolved';
+let rejected = 'rejected';
+function MyPromise(constructor) {
+  let that = this;
+  this.status = pending;
+  this.value = undefined;
+  this.reason = undefined;
+  // 支持异步
+  this.onFulfilled = [];//成功的回调
+  this.onRejected = []; //失败的回调
+
+  function resolve(value) {
+    if (that.status === pending) {
+      that.value = value;
+      that.status = resolved;
+      that.onFulfilled.forEach(fn => {
+        fn(that.value)
+      })
+    }
+  }
+  function reject(reason) {
+    if (that.status === pending) {
+      that.reason = reason;
+      that.status = rejected;
+      that.onRejected.forEach(fn => {
+        fn(that.reason)
+      })
+    }
+  }
+  // 捕获构造异常
+  try {
+    constructor(resolve, reject);
+  } catch (e) {
+    reject(e);
+  }
+}
+MyPromise.prototype.then = function (onResolved, onRejected) {
+  if (this.status === resolved) {
+    onResolved(this.value)
+    return;
+  }
+  if (this.status === rejected) {
+    onRejected(this.reason)
+    return;
+  }
+  // 异步
+  if (this.status === pending) {
+    if (typeof onResolved === 'function') {
+      this.onFulfilled.push(onResolved)
+    }
+    if (typeof onResolved === 'function') {
+      this.onRejected.push(onRejected)
+    }
+  }
+}
+
+new MyPromise((resolve, reject) => {
+  // resolve(1);
+  setTimeout(() => {
+    reject(1)
+  }, 1000);
+}).then(res => console.log(res), (e) => { console.error(e) });
 function genPromiseTask(num, ms) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -604,6 +714,7 @@ async function runPromiseByQueue1(...funs) {
   }
 }
 // runPromiseByQueue1(genPromiseTask, genPromiseTask, genPromiseTask)
+
 /**
  * Promise.all
  * 所有的 promise 都“完成（resolved）”或参数中不包含 promise 时回调完成（resolve）；如果参数中  promise 有一个失败（rejected），此实例回调失败（reject），失败原因的是第一个失败 promise 的结果。
@@ -707,4 +818,62 @@ function fibdp(n) {
   return dp[n]
 }
 // console.log(fib(5), fibdp(5));
+//#endregion
+
+// 手写数组转树
+//#region 
+var input = [
+  {
+    id: 1,
+    val: "学校",
+    parentId: null,
+  },
+  {
+    id: 2,
+    val: "班级1",
+    parentId: 1,
+  },
+  {
+    id: 3,
+    val: "班级2",
+    parentId: 1,
+  },
+  {
+    id: 4,
+    val: "学生1",
+    parentId: 2,
+  },
+  {
+    id: 5,
+    val: "学生2",
+    parentId: 3,
+  },
+  {
+    id: 6,
+    val: "学生3",
+    parentId: 3,
+  },
+];
+function array2Tree(arr) {
+  let obj = arr.reduce((acc, item) => {
+    acc[item.id] = item;
+    return acc;
+  }, {});
+  let root;
+  arr.forEach(item => {
+    if (item.parentId === null) {
+      root = item;
+      return;
+    }
+    let parentItem = obj[item.parentId];
+    if (!Array.isArray(parentItem.children)) {
+      parentItem.children = []
+    }
+    parentItem.children.push(item)
+  });
+
+  return root;
+}
+var test = array2Tree(input)
+// console.log(test);
 //#endregion
