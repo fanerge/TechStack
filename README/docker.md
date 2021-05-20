@@ -315,6 +315,7 @@ docker attach [OPTIONS] CONTAINER
 docker attach busybox // 多个终端同步显示可能会发生命令阻塞
 docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
 docker exec -it busybox sh // 各个终端是独立的
+docker exec -it 容器id  /bin/bash
 
 // 导出导入容器（实现容器的迁移）
 // export

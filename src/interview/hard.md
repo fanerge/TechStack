@@ -102,3 +102,24 @@ if-Modified-Since：浏览器再次请求服务器的时候，请求头会包含
 Etag：服务器响应请求时，通过此字段告诉浏览器当前资源在服务器生成的唯一标识（生成规则由服务器决定）
 If-None-Match： 再次请求服务器时，浏览器的请求报文头部会包含此字段，后面的值为在缓存中获取的标识。
 ```
+
+# 私服部署自定义 hooks，使用遇到依赖多版本 React 问题
+// peerDependencies字段，就是用来供插件指定其所需要的主工具的版本，npm 3.0版开始，peerDependencies不再会默认安装。
+```
+// 报错：You might have more than one copy of React in the same app
+// 刚开始自定义 hooks package.json 中 
+"dependencies": {
+  "react": "^16.13.1",
+  "react-dom": "^16.13.1"
+},
+// 项目中的 package.json
+"dependencies": {
+  "react": "^16.18.0",
+  "react-dom": "^16.18.0"
+}
+// 解决方法 在 hooks 的 package.json 中使用 peerDependencies 来管理依赖
+"peerDependencies": {
+    "react": ">=16.8",
+    "react-dom": ">=16.8",
+},
+```
