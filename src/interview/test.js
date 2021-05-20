@@ -619,7 +619,92 @@ async function runPromiseByQueue1(...funs) {
 
 // mySetInterVal
 //#region 
-function mySetInterVal(a, b) {
+class MySetInterVal {
+  constructor(fn, a, b) {
+    this.a = a;
+    this.b = b;
+    this.times = 0;
+    this.timerId = null;
+    this.fn = fn;
+  }
 
+  start() {
+    const { a, b, times, fn } = this;
+    this.timerId = setTimeout(() => {
+      fn()
+      console.log(a + times * b);
+      this.times++;
+      this.start();
+    }, a + times * b);
+  }
+  stop() {
+    const { timerId } = this;
+    clearTimeout(timerId);
+    this.times = 0;
+    this.timerId = null;
+  }
 }
+var setT = new MySetInterVal(() => { console.log('fn') }, 500, 1000)
+// setT.start()
+// setTimeout(() => {
+//   setT.stop()
+// }, 5000);
+//#endregion
+
+// 合并二维有序数组成一维有序数组，归并排序的思路
+//#region
+function mergeList(left, right) {
+  let list = [];
+  while (left.length > 0 && right.length > 0) {
+    if (left[0] <= right[0]) {
+      list.push(left.shift());
+    } else {
+      list.push(right.shift());
+    }
+  }
+  return list.concat(left).concat(right);
+}
+function mergeArray(arr) {
+  if (arr.length === 0) {
+    return arr;
+  }
+  while (arr.length > 1) {
+    let arr1 = arr.shift();
+    let arr2 = arr.shift();
+    let list = mergeList(arr1, arr2)
+    arr.push(list)
+  }
+
+  return arr[0];
+}
+var arr1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 2, 3], [4, 5, 6]];
+var arr2 = [[1, 4, 6], [7, 8, 10], [2, 6, 9], [3, 7, 13], [1, 5, 12]];
+// console.log(mergeArray(arr2))
+//#endregion
+
+// 斐波那契数列
+//#region 
+//0, 1, 1, 2, 3, 5, 8, 13, 
+function fib(n, cache = []) {
+  if (n === 0) {
+    return 0;
+  }
+  if (n === 1) {
+    return 1;
+  }
+  if (cache[n]) {
+    return cache[n]
+  } else {
+    cache[n] = fib(n - 1, cache) + fib(n - 2, cache)
+  }
+  return cache[n];
+}
+function fibdp(n) {
+  let dp = [0, 1];
+  for (let i = 2; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2];
+  }
+  return dp[n]
+}
+// console.log(fib(5), fibdp(5));
 //#endregion
