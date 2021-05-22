@@ -688,7 +688,7 @@ MyPromise.prototype.then = function (onResolved, onRejected) {
 new MyPromise((resolve, reject) => {
   // resolve(1);
   setTimeout(() => {
-    reject(1)
+    // reject(1)
   }, 1000);
 }).then(res => console.log(res), (e) => { console.error(e) });
 function genPromiseTask(num, ms) {
@@ -877,3 +877,18 @@ function array2Tree(arr) {
 var test = array2Tree(input)
 // console.log(test);
 //#endregion
+
+// 手写用 ES6proxy 如何实现 arr[-1] 的访问
+function proxyArray(arr) {
+  return new Proxy(arr, {
+    get(target, index) {
+      let len = target.length;
+      if (index < 0) {
+        index = len + +index;
+      }
+      return target[index]
+    }
+  });
+}
+var list = [0, 1, 2];
+// console.log(proxyArray(list)[-3])
