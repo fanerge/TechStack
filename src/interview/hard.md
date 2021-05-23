@@ -169,3 +169,17 @@ from.validate = (callback) => {
   return promise;
 }
 ```
+# CommonJS和ESModule区别
+##  require/exports(module.exports) 是运行时动态加载，import/export 是静态编译
+CommonJS 加载的是一个对象（即 module.exports 属性），该对象只有在脚本运行完才会生成。而 ES6 模块不是对象，它的对外接口只是一种静态定义，在代码静态解析阶段就会生成
+##  require/exports 输出的是一个值的拷贝，import/export 模块输出的是值的引用
+require/exports 输出的是值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。
+import/export 模块输出的是值的引用。JS 引擎对脚本静态分析的时候，遇到模块加载命令import，就会生成一个只读引用。
+等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。
+PS：若文件引用的模块值改变，require 引入的模块值不会改变，而 import 引入的模块值会改变。
+##  exports 是对 module.exports 的引用
+相当于 exports = module.exports = {};
+// 在不改变 exports 指向的情况下，使用 exports 和 module.exports 没有区别
+##  ES6 模块可以在 import 引用语句前使用模块，CommonJS 则需要先引用后使用
+##  import/export 只能在模块顶层使用，不能在函数、判断语句等代码块之中引用；require/exports 可以
+
