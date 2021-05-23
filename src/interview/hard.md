@@ -78,12 +78,11 @@ mounted() {
 // 其他可能造成内存泄漏的原因
 1.  全局变量，未声明变量
 2.  DOM脱离文档流仍被引用
-3.  被正确的闭包的使用
+3.  未正确的使用闭包
 4.  被遗忘的定时器
 5.  Node.js 内存泄漏排查，heapdump 库产出快照，然后导入到 chrome devtool 中分析
 // https://juejin.cn/post/6926501702216450062
 ```
-
 # 浏览器缓存历史
 ```
 //  强缓存
@@ -121,4 +120,52 @@ If-None-Match： 再次请求服务器时，浏览器的请求报文头部会包
     "react": ">=16.8",
     "react-dom": ">=16.8",
 },
+```
+# CJK 输入的问题
+
+在中文输入是会频繁触发 input 事件，我们应该在待确认文本选择时才触发对应事件
+对应事件先后顺序
+compositionstart > compositionupdate > input > compositionend
+
+```
+// 解决思路
+let iscomposing = false;
+$('input').on('compositionstart', function(e){
+  // 这里就阻止 input 在中文没选择时就执行
+  iscomposing = true;
+})
+$('input').on('input', function(e){
+  if(!iscomposing) {
+    // todo
+    inputDoing()
+  }
+})
+$('input').on('compositionend', function(e){
+  // 如果输入非CJK文字，则不存在该问题，需重置为true
+  iscomposing = false;
+  // CJK被阻止了，所以这里要执行一次
+  inputDoing()
+})
+```
+# Form 实现 scrollFirstError
+
+element-ui 的 Form 组件不支持 scrollFirstError
+VUE 自定义 directive，在钩子函数中有个叫 vnode 的属性，vnode.componentInstance 可以拿到组件的实例
+通过重写 componentInstance 的 validate 方法
+
+```
+const form = vnode.componentInstance
+let oldValidate = from.validate;
+from.validate = (callback) => {
+  let promise = new Promise((resolve, reject) => {
+    oldValidate().then(valid => {
+      resolve(valid)
+    }).catch(error => {
+      let errorList = form.fields.filter(d => d.validateState === 'error')
+      // 即可实现
+      errorList[0].$el.scrollIntoView();
+    })
+  })
+  return promise;
+}
 ```

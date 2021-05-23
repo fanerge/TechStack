@@ -38,6 +38,16 @@ export function cloneDeep(val, hash = new WeakMap()) {
 
   return newVal;
 }
+function cloneDeep2(data) {
+  return new Promise((resolve, reject) => {
+    // 不能有function
+    let { port1, port2 } = new MessageChannel();
+    port1.postMessage(data);
+    port2.onmessage = function (e) {
+      resolve(e.data);
+    }
+  });
+}
 // test
 let obj1 = { name: '我是一个对象', id: 1 };
 Object.setPrototypeOf(obj1, {
@@ -46,6 +56,7 @@ Object.setPrototypeOf(obj1, {
   }
 });
 let obj = {
+  num1: new Number(1),
   num: 0,
   str: '',
   boolean: true,
@@ -57,26 +68,29 @@ let obj = {
   [Symbol('1')]: 1,
   date: new Date(),
   regExp: /\d+/img,
-  func: function ss(a, b, c) {
-    console.log(a + b + c)
-  },
-  func1: () => { }
+  // func: function ss(a, b, c) {
+  //   console.log(a + b + c)
+  // },
+  // func1: () => { }
 };
 Object.defineProperty(obj, 'innumerable', {
   enumerable: false, value: '不可枚举属性'
 }
 );
 obj.loop = obj    // 设置loop成循环引用的属性
-// console.log(cloneDeep(obj));
+window.cloneDeep2 = cloneDeep2;
+window.obj = obj;
+console.log(cloneDeep(obj));
 //#endregion
 
 // myCall
 //#region 
 Function.prototype.myCall = function (ctx, ...args) {
-  // if (ctx === undefined) {
-  //   ctx = typeof window === 'undefined' ? global : window;
-  // }
-  ctx = ctx || globalThis;
+  let lists = [null, undefined];
+  if (lists.includes(ctx)) {
+    ctx = globalThis;
+  }
+  ctx = Object(ctx);
   let key = Symbol('func');
   ctx[key] = this;
   let res = ctx[key](...args);
@@ -97,10 +111,11 @@ function myCallTest(age, address) {
 // myApply
 //#region 
 Function.prototype.myApply = function (ctx, args) {
-  // if (ctx === undefined) {
-  //   ctx = typeof window === 'undefined' ? global : window;
-  // }
-  ctx = ctx || globalThis;
+  let lists = [null, undefined];
+  if (lists.includes(ctx)) {
+    ctx = globalThis;
+  }
+  ctx = Object(ctx);
   let key = Symbol('func');
   ctx[key] = this;
   let res = ctx[key](...args);
@@ -114,13 +129,11 @@ Function.prototype.myApply = function (ctx, args) {
 // myBind
 //#region 
 Function.prototype.myBind = function (ctx, ...args1) {
-  if (ctx === undefined) {
-    ctx = typeof window === 'undefined' ? global : window;
+  let lists = [null, undefined];
+  if (lists.includes(ctx)) {
+    ctx = globalThis;
   }
-  if (typeof ctx !== 'object' || ctx === null) {
-    ctx = Object(ctx);
-  }
-  // ctx = ctx || globalThis;
+  ctx = Object(ctx);
   let func = this;
 
   const tempFunc = function (...args2) {
@@ -152,7 +165,7 @@ function throttle(fn, ms, immediate) {
       last = Date.now();
       return;
     }
-    if (last === null && !immediate) {
+    if (last === null) {
       last = Date.now();
       return;
     }
@@ -165,7 +178,7 @@ function throttle(fn, ms, immediate) {
 }
 function proxyThrottle(fn, ms, immediate) {
   let last = null;
-  return new Proxy(fn, {
+  let tempFn = new Proxy(fn, {
     apply(target, thisArg, args) {
       let now = Date.now();
       if (last === null && immediate) {
@@ -183,6 +196,7 @@ function proxyThrottle(fn, ms, immediate) {
       }
     }
   })
+  return tempFn;
 }
 window.proxyThrottle = proxyThrottle;
 // test
@@ -193,35 +207,29 @@ window.proxyThrottle = proxyThrottle;
 //#region
 function debounce(fn, ms, immediate) {
   let timerId = null;
-  return function (...args) {
-    if (timerId) {
-      clearTimeout(timerId);
-    }
+  let tempFn = function (...args) {
     if (timerId === null && immediate) {
       fn.apply(this, args);
       // 产生一个无用的id
       timerId = setTimeout(() => { }, ms);
       return;
     }
-
+    if (timerId) {
+      clearTimeout(timerId);
+    }
     timerId = setTimeout(() => {
       fn.apply(this, args);
     }, ms);
   }
+  return tempFn;
 }
 function proxyDebounce(fn, ms, immediate) {
   let timerId = null;
-  return new Proxy(fn, {
+  let tempFn = new Proxy(fn, {
     apply(target, thisArg, args) {
       if (timerId === null && immediate) {
         target.apply(thisArg, args);
         timerId = setTimeout(() => { })
-        return;
-      }
-      if (timerId === null) {
-        timerId = setTimeout(() => {
-          target.apply(thisArg, args);
-        }, ms);
         return;
       }
       if (timerId) {
@@ -232,10 +240,15 @@ function proxyDebounce(fn, ms, immediate) {
       }, ms);
     }
   })
+
+  return tempFn;
 }
+window.debounce = debounce
 window.proxyDebounce = proxyDebounce
 // test
 // $0.addEventListener('mousemove', proxyDebounce(function () { console.log(this) }, 2000))
+// var fn = debounce(function (e) { console.log(e) }, 2000)
+// $0.addEventListener('click', fn)
 //#endregion
 
 // mockNew
@@ -750,9 +763,11 @@ class MySetInterVal {
   }
   stop() {
     const { timerId } = this;
-    clearTimeout(timerId);
-    this.times = 0;
-    this.timerId = null;
+    if (timerId) {
+      clearTimeout(timerId);
+      this.times = 0;
+      this.timerId = null;
+    }
   }
 }
 var setT = new MySetInterVal(() => { console.log('fn') }, 500, 1000)
@@ -879,16 +894,71 @@ var test = array2Tree(input)
 //#endregion
 
 // 手写用 ES6proxy 如何实现 arr[-1] 的访问
+//#region 
 function proxyArray(arr) {
   return new Proxy(arr, {
     get(target, index) {
+      index = +index
       let len = target.length;
       if (index < 0) {
-        index = len + +index;
+        index = len + index;
       }
       return target[index]
     }
   });
 }
 var list = [0, 1, 2];
-// console.log(proxyArray(list)[-3])
+console.log(proxyArray(list)[-1])
+//#endregion
+
+// 实现一个函数，接受函数数组参数，并执行，如果有一个函数返回结果是 string，数组剩余函数不执行，否则一直执行，
+// 如果执行结果没有异步的函数，那么整个函数就是同步的。
+// const validator = combineValidators([
+//   () => undefined,
+//   () =>
+//     new Promise(resolve => {
+//       setTimeout(() => {
+//         resolve('');
+//       });
+//     }),
+//   () => 'eeeee',
+// ])
+// error = await validator('aaa', {});
+
+
+function combineValidators(funs) {
+  let num = 0;
+  let len = funs.length;
+  return function inner(value, allValue) {
+    if (num >= len - 1) {
+      return;
+    }
+
+    let curFn = funs[num++];
+    let res = curFn(value, allValue);
+    if (typeof res === 'string') {
+      return res;
+    }
+    if (res && typeof res.then === 'function') {
+      res.then(val => {
+        res = val;
+        inner(value, allValue);
+      });
+    } else {
+      inner(value, allValue);
+    }
+  }
+}
+
+var validator = combineValidators([
+  () => undefined,
+  () =>
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve('');
+      });
+    }),
+  () => 'eeeee',
+])
+var error = validator('aaa', {});
+console.log(error)
