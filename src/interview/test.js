@@ -80,7 +80,7 @@ Object.defineProperty(obj, 'innumerable', {
 obj.loop = obj    // 设置loop成循环引用的属性
 window.cloneDeep2 = cloneDeep2;
 window.obj = obj;
-console.log(cloneDeep(obj));
+// console.log(cloneDeep(obj));
 //#endregion
 
 // myCall
@@ -134,23 +134,42 @@ Function.prototype.myBind = function (ctx, ...args1) {
     ctx = globalThis;
   }
   ctx = Object(ctx);
-  let func = this;
-
-  const tempFunc = function (...args2) {
-    let key = Symbol('func');
-    ctx[key] = func;
-    let res = ctx[key](...args1, ...args2);
-    delete ctx[key];
-    return res;
+  let that = this;
+  function tempFn(...args2) {
+    // new.target
+    if (this instanceof tempFn) {
+      return that.call(this, ...args1, ...args2);
+    } else {
+      return that.call(ctx, ...args1, ...args2);
+    }
   }
-  // 支持 new 调用方式
-  tempFunc.prototype = Object.create(fn.prototype);
 
-  return tempFunc;
+  // new 调用
+  tempFn.prototype = this.prototype;
+  return tempFn;
 }
 // test
-// window.name = 'fanerge'
-// myCallTest.myBind()(12, 'wanyuan')
+window.name = 'fanerge'
+var obj11 = { name: 'inner' }
+myCallTest.myBind()(12, 'wanyuan')
+myCallTest.bind(null)(12, 'wanyuan')
+
+// new 测试
+// var p1 = Person.myBind()
+// var p11 = new p1(1, 2);
+// var p2 = Person.bind({})
+// var p22 = new p2(1, 2)
+// console.log(p11)
+// console.log(p22)
+
+//#endregion
+
+// this 指向优先级
+//#region
+// 1.new 调用优先级最高
+// 2.bind（硬绑定）和显示绑定
+// 3.隐式绑定如，对象上的方法
+// 4.默认绑定
 //#endregion
 
 // throttle
@@ -908,11 +927,12 @@ function proxyArray(arr) {
   });
 }
 var list = [0, 1, 2];
-console.log(proxyArray(list)[-1])
+// console.log(proxyArray(list)[-1])
 //#endregion
 
 // 实现一个函数，接受函数数组参数，并执行，如果有一个函数返回结果是 string，数组剩余函数不执行，否则一直执行，
 // 如果执行结果没有异步的函数，那么整个函数就是同步的。
+//#region 
 // const validator = combineValidators([
 //   () => undefined,
 //   () =>
@@ -924,7 +944,6 @@ console.log(proxyArray(list)[-1])
 //   () => 'eeeee',
 // ])
 // error = await validator('aaa', {});
-
 
 function combineValidators(funs) {
   let num = 0;
@@ -949,16 +968,80 @@ function combineValidators(funs) {
     }
   }
 }
+// var validator = combineValidators([
+//   () => undefined,
+//   () =>
+//     new Promise(resolve => {
+//       setTimeout(() => {
+//         resolve('');
+//       });
+//     }),
+//   () => 'eeeee',
+// ])
+// var error = validator('aaa', {});
+// console.log(error)
+//#endregion
 
-var validator = combineValidators([
-  () => undefined,
-  () =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve('');
-      });
-    }),
-  () => 'eeeee',
-])
-var error = validator('aaa', {});
-console.log(error)
+// 反转链表
+//#region 
+var reverseList = function (head) {
+  // 哨兵节点
+  let sentry = new ListNode();
+
+  while (head) {
+    let rest = head.next;
+    let old = sentry.next;
+    sentry.next = head;
+    head.next = old;
+    head = rest;
+  }
+  return sentry.next;
+};
+//#endregion
+
+// 两个有序链表合并
+//#region
+var mergeTwoLists = function (l1, l2) {
+  let sentry = new ListNode();
+  let head = sentry;
+  while (l1 && l2) {
+    if (l1.val <= l2.val) {
+      head.next = l1;
+      l1 = l1.next;
+    } else {
+      head.next = l2;
+      l2 = l2.next;
+    }
+    head = head.next;
+  }
+  if (l1) {
+    head.next = l1;
+  }
+  if (l2) {
+    head.next = l2;
+  }
+
+  return sentry.next;
+};
+//#endregion
+
+// 两个链表的第一和公共节点
+//#region 
+var getIntersectionNode = function (headA, headB) {
+  if (!headA && !headB) return null;
+  let heada = headA;
+  let headb = headB;
+  while (heada !== headb) {
+    heada = heada !== null ? heada.next : headB;
+    headb = headb !== null ? headb.next : headA;
+  }
+  return heada;
+};
+//#endregion
+
+
+
+// 树的遍历
+
+// 三数之和
+// 找到所有出现两次的元素。你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？(限时5分钟)

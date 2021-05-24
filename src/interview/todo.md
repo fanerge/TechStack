@@ -20,6 +20,24 @@ quickSort
 renderTemplate
 // 函数式编程考察
 
+// 反转链表
+// 树的遍历
+// 两个有序链表合并
+// 三数之和
+// 两个链表的第一和公共节点
+// 找到所有出现两次的元素。你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？(限时5分钟)
+
+
+
+
+
+
+
+
+
+
+
+
 https://juejin.cn/post/6847902225423925255
 https://juejin.cn/post/6844903928442667015
 https://mp.weixin.qq.com/s/ZfhKh7BkfzCXA7C6D3Waaw
@@ -49,6 +67,11 @@ XML 外部实体注入 xxe
 文件包含漏洞（File Inclusion）
 越权漏洞（over permission）
 
+
+
+// 三lun
+tcp、https
+docker
 
 
 
