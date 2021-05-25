@@ -151,8 +151,8 @@ Function.prototype.myBind = function (ctx, ...args1) {
 // test
 window.name = 'fanerge'
 var obj11 = { name: 'inner' }
-myCallTest.myBind()(12, 'wanyuan')
-myCallTest.bind(null)(12, 'wanyuan')
+// myCallTest.myBind()(12, 'wanyuan')
+// myCallTest.bind(null)(12, 'wanyuan')
 
 // new 测试
 // var p1 = Person.myBind()
@@ -760,6 +760,35 @@ async function runPromiseByQueue1(...funs) {
  */
 //#endregion
 
+// Promise.prototype.finally
+//#region 
+Promise.prototype.finally1 = function (callback) {
+  return this.then((value) => {
+    // resolved
+    callback()
+    return value;
+  }, (reason) => {
+    // rejected
+    callback();
+    throw reason
+  });
+}
+// new Promise((resolve, reject) => {
+//   setTimeout(() => {
+//     resolve(1000)
+//   }, 1000);
+// }).then(() => {
+//   return '1111'
+// }).finally1(() => {
+//   // console.log('finally1');
+//   setTimeout(() => {
+//     console.log('finally1');
+//   }, 500);
+// }).then(() => {
+//   console.log('done')
+// })
+//#endregion
+
 // mySetInterVal
 //#region 
 class MySetInterVal {
@@ -1039,7 +1068,25 @@ var getIntersectionNode = function (headA, headB) {
 };
 //#endregion
 
+// 链表是否有环
+//#region 
+var hasCycle = function (head) {
+  if (head === null || head.next === null) return false;
+  let slow = head;
+  let fast = head.next;
+  while (slow !== fast) {
+    if (!fast || !fast.next) {
+      return false;
+    }
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+  return true;
+};
+//#endregion
+
 // 0.1+0.2 !== 0.3 IEEE756 64bit 表示数字
+//#region 
 /**
  * 符号位：决定正负，0为正，1为负(1位符号位)
  * 阶码：指数位则为阶码-1023，决定了数值的大小(11位指数位)
@@ -1053,8 +1100,10 @@ var getIntersectionNode = function (headA, headB) {
  * why进制转换？计算机硬件决定，只能进行2进制运算
  * why对阶运算？两个进行运算的浮点数必须阶码对齐（指数位数相同），才能进行尾数加减运算
  */
+//#endregion
 
 // JSONP 解决远程调用本地回调函数跨域的问题
+//#region 
 // Server端
 // var express=require('express');
 // var app=express();
@@ -1088,9 +1137,56 @@ function getJSON(url) {
   document.head.appendChild(script);
   // 在 callbackFunction 执行完后应该移除 script
 }
+//#endregion
 
+// ajax/promise
+//#region 
+function ajax(options = {}) {
+  let {
+    url,
+    method = 'get',
+    data = null,
+    timeout = 10000,
+    withCredentials = false,
+    asyncM = true
+  } = options;
+  method = method.toUpperCase();
+  if (!url) {
+    throw new Error('url');
+  }
+
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open(method, url, asyncM);
+    xhr.onreadystatechange = () => {
+      const { readyState, status, responseText } = xhr;
+      if (readyState === 4) {
+        if (status >= 200 && status < 300) {
+          resolve(responseText);
+        } else if (status >= 400) {
+          reject(xhr);
+        }
+      }
+    }
+    // 设置 RequestHeader
+    // xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // 设置超时时间
+    // xhr.timeout = timeout
+    // 用来指定跨域 Access-Control 请求是否应当带有授权信息，如 cookie 或授权 header 头
+    // xhr.withCredentials = withCredentials;
+    // xhr.abort() 如果请求已被发出，则立刻中止请求
+    // 获取 ResponseHeader
+    // xhr.getResponseHeader()、xhr.getAllResponseHeaders()
+    // 支持的事件：onabort、onerror、onload、ontimeout、loadend(onabort、onerror、onload)
+    xhr.send(data);
+
+  });
+}
+//#endregion
 
 // 树的遍历
 
 // 三数之和
 // 找到所有出现两次的元素。你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？(限时5分钟)
+// ajax/promise
+// fetch

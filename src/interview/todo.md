@@ -35,14 +35,6 @@ renderTemplate
 
 
 
-
-
-
-
-https://juejin.cn/post/6847902225423925255
-https://juejin.cn/post/6844903928442667015
-https://mp.weixin.qq.com/s/ZfhKh7BkfzCXA7C6D3Waaw
-
 1.  回答问题效率（不要太多废话，太啰嗦了，直接回答问题，免得让人觉得需要沟通成本）
 2.  放慢语速，不要紧张（当成一般的技术交流来对待）
 3.  短时间需要把亮点展示处理（比如自我介绍的时候，“我对 JS 有比较深的理解”，面试官就会着重考察你这方面的知识）
@@ -73,7 +65,10 @@ XML 外部实体注入 xxe
 // 三lun
 tcp、https
 docker
-
+https://juejin.cn/post/6947842412102287373
+https://juejin.cn/post/6939691851746279437
+https://juejin.cn/post/6934500357091360781
+http://www.muyiy.cn/question/async/9.html
 
 
 
