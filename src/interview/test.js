@@ -38,6 +38,16 @@ export function cloneDeep(val, hash = new WeakMap()) {
 
   return newVal;
 }
+function cloneDeep2(data) {
+  return new Promise((resolve, reject) => {
+    // 不能有function
+    let { port1, port2 } = new MessageChannel();
+    port1.postMessage(data);
+    port2.onmessage = function (e) {
+      resolve(e.data);
+    }
+  });
+}
 // test
 let obj1 = { name: '我是一个对象', id: 1 };
 Object.setPrototypeOf(obj1, {
@@ -46,6 +56,7 @@ Object.setPrototypeOf(obj1, {
   }
 });
 let obj = {
+  num1: new Number(1),
   num: 0,
   str: '',
   boolean: true,
@@ -57,26 +68,29 @@ let obj = {
   [Symbol('1')]: 1,
   date: new Date(),
   regExp: /\d+/img,
-  func: function ss(a, b, c) {
-    console.log(a + b + c)
-  },
-  func1: () => { }
+  // func: function ss(a, b, c) {
+  //   console.log(a + b + c)
+  // },
+  // func1: () => { }
 };
 Object.defineProperty(obj, 'innumerable', {
   enumerable: false, value: '不可枚举属性'
 }
 );
 obj.loop = obj    // 设置loop成循环引用的属性
+window.cloneDeep2 = cloneDeep2;
+window.obj = obj;
 // console.log(cloneDeep(obj));
 //#endregion
 
 // myCall
 //#region 
 Function.prototype.myCall = function (ctx, ...args) {
-  // if (ctx === undefined) {
-  //   ctx = typeof window === 'undefined' ? global : window;
-  // }
-  ctx = ctx || globalThis;
+  let lists = [null, undefined];
+  if (lists.includes(ctx)) {
+    ctx = globalThis;
+  }
+  ctx = Object(ctx);
   let key = Symbol('func');
   ctx[key] = this;
   let res = ctx[key](...args);
@@ -97,10 +111,11 @@ function myCallTest(age, address) {
 // myApply
 //#region 
 Function.prototype.myApply = function (ctx, args) {
-  // if (ctx === undefined) {
-  //   ctx = typeof window === 'undefined' ? global : window;
-  // }
-  ctx = ctx || globalThis;
+  let lists = [null, undefined];
+  if (lists.includes(ctx)) {
+    ctx = globalThis;
+  }
+  ctx = Object(ctx);
   let key = Symbol('func');
   ctx[key] = this;
   let res = ctx[key](...args);
@@ -114,30 +129,47 @@ Function.prototype.myApply = function (ctx, args) {
 // myBind
 //#region 
 Function.prototype.myBind = function (ctx, ...args1) {
-  if (ctx === undefined) {
-    ctx = typeof window === 'undefined' ? global : window;
+  let lists = [null, undefined];
+  if (lists.includes(ctx)) {
+    ctx = globalThis;
   }
-  if (typeof ctx !== 'object' || ctx === null) {
-    ctx = Object(ctx);
+  ctx = Object(ctx);
+  let that = this;
+  function tempFn(...args2) {
+    // new.target
+    if (this instanceof tempFn) {
+      return that.call(this, ...args1, ...args2);
+    } else {
+      return that.call(ctx, ...args1, ...args2);
+    }
   }
-  // ctx = ctx || globalThis;
-  let func = this;
 
-  const tempFunc = function (...args2) {
-    let key = Symbol('func');
-    ctx[key] = func;
-    let res = ctx[key](...args1, ...args2);
-    delete ctx[key];
-    return res;
-  }
-  // 支持 new 调用方式
-  tempFunc.prototype = Object.create(fn.prototype);
-
-  return tempFunc;
+  // new 调用
+  tempFn.prototype = this.prototype;
+  return tempFn;
 }
 // test
-// window.name = 'fanerge'
-// myCallTest.myBind()(12, 'wanyuan')
+window.name = 'fanerge'
+var obj11 = { name: 'inner' }
+myCallTest.myBind()(12, 'wanyuan')
+myCallTest.bind(null)(12, 'wanyuan')
+
+// new 测试
+// var p1 = Person.myBind()
+// var p11 = new p1(1, 2);
+// var p2 = Person.bind({})
+// var p22 = new p2(1, 2)
+// console.log(p11)
+// console.log(p22)
+
+//#endregion
+
+// this 指向优先级
+//#region
+// 1.new 调用优先级最高
+// 2.bind（硬绑定）和显示绑定
+// 3.隐式绑定如，对象上的方法
+// 4.默认绑定
 //#endregion
 
 // throttle
@@ -152,7 +184,7 @@ function throttle(fn, ms, immediate) {
       last = Date.now();
       return;
     }
-    if (last === null && !immediate) {
+    if (last === null) {
       last = Date.now();
       return;
     }
@@ -163,32 +195,79 @@ function throttle(fn, ms, immediate) {
     }
   }
 }
+function proxyThrottle(fn, ms, immediate) {
+  let last = null;
+  let tempFn = new Proxy(fn, {
+    apply(target, thisArg, args) {
+      let now = Date.now();
+      if (last === null && immediate) {
+        target.apply(thisArg, args)
+        last = Date.now();
+        return;
+      }
+      if (last === null) {
+        last = Date.now();
+        return;
+      }
+      if (now - last >= ms) {
+        target.apply(thisArg, args)
+        last = Date.now();
+      }
+    }
+  })
+  return tempFn;
+}
+window.proxyThrottle = proxyThrottle;
 // test
-// $0.addEventListener('click', throttle(function () { console.log(this) }, 200))
+// $0.addEventListener('click', proxyThrottle(function () { console.log(this) }, 2000))
 //#endregion
 
 // debounce
 //#region
 function debounce(fn, ms, immediate) {
   let timerId = null;
-  return function (...args) {
-    if (timerId) {
-      clearTimeout(timerId);
-    }
+  let tempFn = function (...args) {
     if (timerId === null && immediate) {
       fn.apply(this, args);
       // 产生一个无用的id
       timerId = setTimeout(() => { }, ms);
       return;
     }
-
+    if (timerId) {
+      clearTimeout(timerId);
+    }
     timerId = setTimeout(() => {
       fn.apply(this, args);
     }, ms);
   }
+  return tempFn;
 }
+function proxyDebounce(fn, ms, immediate) {
+  let timerId = null;
+  let tempFn = new Proxy(fn, {
+    apply(target, thisArg, args) {
+      if (timerId === null && immediate) {
+        target.apply(thisArg, args);
+        timerId = setTimeout(() => { })
+        return;
+      }
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+      timerId = setTimeout(() => {
+        target.apply(thisArg, args);
+      }, ms);
+    }
+  })
+
+  return tempFn;
+}
+window.debounce = debounce
+window.proxyDebounce = proxyDebounce
 // test
-// $0.addEventListener('mousemove', debounce(function () { console.log(this) }, 2000))
+// $0.addEventListener('mousemove', proxyDebounce(function () { console.log(this) }, 2000))
+// var fn = debounce(function (e) { console.log(e) }, 2000)
+// $0.addEventListener('click', fn)
 //#endregion
 
 // mockNew
@@ -581,6 +660,69 @@ let str = renderTemplate(`<p style="color: red;"><b>我是{{name }}</b>，年龄
 
 // Promise
 //#region 
+let pending = 'pending';
+let resolved = 'resolved';
+let rejected = 'rejected';
+function MyPromise(constructor) {
+  let that = this;
+  this.status = pending;
+  this.value = undefined;
+  this.reason = undefined;
+  // 支持异步
+  this.onFulfilled = [];//成功的回调
+  this.onRejected = []; //失败的回调
+
+  function resolve(value) {
+    if (that.status === pending) {
+      that.value = value;
+      that.status = resolved;
+      that.onFulfilled.forEach(fn => {
+        fn(that.value)
+      })
+    }
+  }
+  function reject(reason) {
+    if (that.status === pending) {
+      that.reason = reason;
+      that.status = rejected;
+      that.onRejected.forEach(fn => {
+        fn(that.reason)
+      })
+    }
+  }
+  // 捕获构造异常
+  try {
+    constructor(resolve, reject);
+  } catch (e) {
+    reject(e);
+  }
+}
+MyPromise.prototype.then = function (onResolved, onRejected) {
+  if (this.status === resolved) {
+    onResolved(this.value)
+    return;
+  }
+  if (this.status === rejected) {
+    onRejected(this.reason)
+    return;
+  }
+  // 异步
+  if (this.status === pending) {
+    if (typeof onResolved === 'function') {
+      this.onFulfilled.push(onResolved)
+    }
+    if (typeof onResolved === 'function') {
+      this.onRejected.push(onRejected)
+    }
+  }
+}
+
+new MyPromise((resolve, reject) => {
+  // resolve(1);
+  setTimeout(() => {
+    // reject(1)
+  }, 1000);
+}).then(res => console.log(res), (e) => { console.error(e) });
 function genPromiseTask(num, ms) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -604,6 +746,7 @@ async function runPromiseByQueue1(...funs) {
   }
 }
 // runPromiseByQueue1(genPromiseTask, genPromiseTask, genPromiseTask)
+
 /**
  * Promise.all
  * 所有的 promise 都“完成（resolved）”或参数中不包含 promise 时回调完成（resolve）；如果参数中  promise 有一个失败（rejected），此实例回调失败（reject），失败原因的是第一个失败 promise 的结果。
@@ -619,7 +762,286 @@ async function runPromiseByQueue1(...funs) {
 
 // mySetInterVal
 //#region 
-function mySetInterVal(a, b) {
+class MySetInterVal {
+  constructor(fn, a, b) {
+    this.a = a;
+    this.b = b;
+    this.times = 0;
+    this.timerId = null;
+    this.fn = fn;
+  }
 
+  start() {
+    const { a, b, times, fn } = this;
+    this.timerId = setTimeout(() => {
+      fn()
+      console.log(a + times * b);
+      this.times++;
+      this.start();
+    }, a + times * b);
+  }
+  stop() {
+    const { timerId } = this;
+    if (timerId) {
+      clearTimeout(timerId);
+      this.times = 0;
+      this.timerId = null;
+    }
+  }
 }
+var setT = new MySetInterVal(() => { console.log('fn') }, 500, 1000)
+// setT.start()
+// setTimeout(() => {
+//   setT.stop()
+// }, 5000);
 //#endregion
+
+// 合并二维有序数组成一维有序数组，归并排序的思路
+//#region
+function mergeList(left, right) {
+  let list = [];
+  while (left.length > 0 && right.length > 0) {
+    if (left[0] <= right[0]) {
+      list.push(left.shift());
+    } else {
+      list.push(right.shift());
+    }
+  }
+  return list.concat(left).concat(right);
+}
+function mergeArray(arr) {
+  if (arr.length === 0) {
+    return arr;
+  }
+  while (arr.length > 1) {
+    let arr1 = arr.shift();
+    let arr2 = arr.shift();
+    let list = mergeList(arr1, arr2)
+    arr.push(list)
+  }
+
+  return arr[0];
+}
+var arr1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 2, 3], [4, 5, 6]];
+var arr2 = [[1, 4, 6], [7, 8, 10], [2, 6, 9], [3, 7, 13], [1, 5, 12]];
+// console.log(mergeArray(arr2))
+//#endregion
+
+// 斐波那契数列
+//#region 
+//0, 1, 1, 2, 3, 5, 8, 13, 
+function fib(n, cache = []) {
+  if (n === 0) {
+    return 0;
+  }
+  if (n === 1) {
+    return 1;
+  }
+  if (cache[n]) {
+    return cache[n]
+  } else {
+    cache[n] = fib(n - 1, cache) + fib(n - 2, cache)
+  }
+  return cache[n];
+}
+function fibdp(n) {
+  let dp = [0, 1];
+  for (let i = 2; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2];
+  }
+  return dp[n]
+}
+// console.log(fib(5), fibdp(5));
+//#endregion
+
+// 手写数组转树
+//#region 
+var input = [
+  {
+    id: 1,
+    val: "学校",
+    parentId: null,
+  },
+  {
+    id: 2,
+    val: "班级1",
+    parentId: 1,
+  },
+  {
+    id: 3,
+    val: "班级2",
+    parentId: 1,
+  },
+  {
+    id: 4,
+    val: "学生1",
+    parentId: 2,
+  },
+  {
+    id: 5,
+    val: "学生2",
+    parentId: 3,
+  },
+  {
+    id: 6,
+    val: "学生3",
+    parentId: 3,
+  },
+];
+function array2Tree(arr) {
+  let obj = arr.reduce((acc, item) => {
+    acc[item.id] = item;
+    return acc;
+  }, {});
+  let root;
+  arr.forEach(item => {
+    if (item.parentId === null) {
+      root = item;
+      return;
+    }
+    let parentItem = obj[item.parentId];
+    if (!Array.isArray(parentItem.children)) {
+      parentItem.children = []
+    }
+    parentItem.children.push(item)
+  });
+
+  return root;
+}
+var test = array2Tree(input)
+// console.log(test);
+//#endregion
+
+// 手写用 ES6proxy 如何实现 arr[-1] 的访问
+//#region 
+function proxyArray(arr) {
+  return new Proxy(arr, {
+    get(target, index) {
+      index = +index
+      let len = target.length;
+      if (index < 0) {
+        index = len + index;
+      }
+      return target[index]
+    }
+  });
+}
+var list = [0, 1, 2];
+// console.log(proxyArray(list)[-1])
+//#endregion
+
+// 实现一个函数，接受函数数组参数，并执行，如果有一个函数返回结果是 string，数组剩余函数不执行，否则一直执行，
+// 如果执行结果没有异步的函数，那么整个函数就是同步的。
+//#region 
+// const validator = combineValidators([
+//   () => undefined,
+//   () =>
+//     new Promise(resolve => {
+//       setTimeout(() => {
+//         resolve('');
+//       });
+//     }),
+//   () => 'eeeee',
+// ])
+// error = await validator('aaa', {});
+
+function combineValidators(funs) {
+  let num = 0;
+  let len = funs.length;
+  return function inner(value, allValue) {
+    if (num >= len - 1) {
+      return;
+    }
+
+    let curFn = funs[num++];
+    let res = curFn(value, allValue);
+    if (typeof res === 'string') {
+      return res;
+    }
+    if (res && typeof res.then === 'function') {
+      res.then(val => {
+        res = val;
+        inner(value, allValue);
+      });
+    } else {
+      inner(value, allValue);
+    }
+  }
+}
+// var validator = combineValidators([
+//   () => undefined,
+//   () =>
+//     new Promise(resolve => {
+//       setTimeout(() => {
+//         resolve('');
+//       });
+//     }),
+//   () => 'eeeee',
+// ])
+// var error = validator('aaa', {});
+// console.log(error)
+//#endregion
+
+// 反转链表
+//#region 
+var reverseList = function (head) {
+  // 哨兵节点
+  let sentry = new ListNode();
+
+  while (head) {
+    let rest = head.next;
+    let old = sentry.next;
+    sentry.next = head;
+    head.next = old;
+    head = rest;
+  }
+  return sentry.next;
+};
+//#endregion
+
+// 两个有序链表合并
+//#region
+var mergeTwoLists = function (l1, l2) {
+  let sentry = new ListNode();
+  let head = sentry;
+  while (l1 && l2) {
+    if (l1.val <= l2.val) {
+      head.next = l1;
+      l1 = l1.next;
+    } else {
+      head.next = l2;
+      l2 = l2.next;
+    }
+    head = head.next;
+  }
+  if (l1) {
+    head.next = l1;
+  }
+  if (l2) {
+    head.next = l2;
+  }
+
+  return sentry.next;
+};
+//#endregion
+
+// 两个链表的第一和公共节点
+//#region 
+var getIntersectionNode = function (headA, headB) {
+  if (!headA && !headB) return null;
+  let heada = headA;
+  let headb = headB;
+  while (heada !== headb) {
+    heada = heada !== null ? heada.next : headB;
+    headb = headb !== null ? headb.next : headA;
+  }
+  return heada;
+};
+//#endregion
+
+
+
+// 树的遍历
+
+// 三数之和
+// 找到所有出现两次的元素。你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？(限时5分钟)

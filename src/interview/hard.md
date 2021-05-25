@@ -78,12 +78,11 @@ mounted() {
 // 其他可能造成内存泄漏的原因
 1.  全局变量，未声明变量
 2.  DOM脱离文档流仍被引用
-3.  被正确的闭包的使用
+3.  未正确的使用闭包
 4.  被遗忘的定时器
 5.  Node.js 内存泄漏排查，heapdump 库产出快照，然后导入到 chrome devtool 中分析
 // https://juejin.cn/post/6926501702216450062
 ```
-
 # 浏览器缓存历史
 ```
 //  强缓存
@@ -102,7 +101,6 @@ if-Modified-Since：浏览器再次请求服务器的时候，请求头会包含
 Etag：服务器响应请求时，通过此字段告诉浏览器当前资源在服务器生成的唯一标识（生成规则由服务器决定）
 If-None-Match： 再次请求服务器时，浏览器的请求报文头部会包含此字段，后面的值为在缓存中获取的标识。
 ```
-
 # 私服部署自定义 hooks，使用遇到依赖多版本 React 问题
 // peerDependencies字段，就是用来供插件指定其所需要的主工具的版本，npm 3.0版开始，peerDependencies不再会默认安装。
 ```
@@ -123,3 +121,65 @@ If-None-Match： 再次请求服务器时，浏览器的请求报文头部会包
     "react-dom": ">=16.8",
 },
 ```
+# CJK 输入的问题
+
+在中文输入是会频繁触发 input 事件，我们应该在待确认文本选择时才触发对应事件
+对应事件先后顺序
+compositionstart > compositionupdate > input > compositionend
+
+```
+// 解决思路
+let iscomposing = false;
+$('input').on('compositionstart', function(e){
+  // 这里就阻止 input 在中文没选择时就执行
+  iscomposing = true;
+})
+$('input').on('input', function(e){
+  if(!iscomposing) {
+    // todo
+    inputDoing()
+  }
+})
+$('input').on('compositionend', function(e){
+  // 如果输入非CJK文字，则不存在该问题，需重置为true
+  iscomposing = false;
+  // CJK被阻止了，所以这里要执行一次
+  inputDoing()
+})
+```
+# Form 实现 scrollFirstError
+
+element-ui 的 Form 组件不支持 scrollFirstError
+VUE 自定义 directive，在钩子函数中有个叫 vnode 的属性，vnode.componentInstance 可以拿到组件的实例
+通过重写 componentInstance 的 validate 方法
+
+```
+const form = vnode.componentInstance
+let oldValidate = from.validate;
+from.validate = (callback) => {
+  let promise = new Promise((resolve, reject) => {
+    oldValidate().then(valid => {
+      resolve(valid)
+    }).catch(error => {
+      let errorList = form.fields.filter(d => d.validateState === 'error')
+      // 即可实现
+      errorList[0].$el.scrollIntoView();
+    })
+  })
+  return promise;
+}
+```
+# CommonJS和ESModule区别
+##  require/exports(module.exports) 是运行时动态加载，import/export 是静态编译
+CommonJS 加载的是一个对象（即 module.exports 属性），该对象只有在脚本运行完才会生成。而 ES6 模块不是对象，它的对外接口只是一种静态定义，在代码静态解析阶段就会生成
+##  require/exports 输出的是一个值的拷贝，import/export 模块输出的是值的引用
+require/exports 输出的是值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。
+import/export 模块输出的是值的引用。JS 引擎对脚本静态分析的时候，遇到模块加载命令import，就会生成一个只读引用。
+等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。
+PS：若文件引用的模块值改变，require 引入的模块值不会改变，而 import 引入的模块值会改变。
+##  exports 是对 module.exports 的引用
+相当于 exports = module.exports = {};
+// 在不改变 exports 指向的情况下，使用 exports 和 module.exports 没有区别
+##  ES6 模块可以在 import 引用语句前使用模块，CommonJS 则需要先引用后使用
+##  import/export 只能在模块顶层使用，不能在函数、判断语句等代码块之中引用；require/exports 可以
+

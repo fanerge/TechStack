@@ -371,7 +371,7 @@ module:{
   ]
 },
 plugins:[
-  // Webpack v4一下使用 extractTextPlugin
+  // Webpack v4以下使用 extractTextPlugin
   new miniCssExtractPlugin({
       filename: '[name].[contenthash:7].css'
   })

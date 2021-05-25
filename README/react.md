@@ -288,7 +288,7 @@ SyntheticEvent 采用了事件池，大大节省内存，而不会频繁的创�
 
 ## 事件处理
 
-大部分事件通过冒泡到 document，然后通过 dispatchEvent 去派发事件（通过 dom 唯一标识 id），小部分事件如 Input 的 oninvalid 绑定到 Input 元素上（猜测，document 有的事件会冒泡，没有对应的事件则绑定到本身）。
+大部分事件通过冒泡到 document，然后通过 dispatchEvent 去派发事件（通过 dom 唯一标识 id），小部分事件如 Input 的 oninvalid 绑定到 Input 元素上。
 
 ## 原生事件会阻止合成事件吗？
 
