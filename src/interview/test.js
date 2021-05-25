@@ -1056,7 +1056,38 @@ var getIntersectionNode = function (headA, headB) {
 
 // JSONP 解决远程调用本地回调函数跨域的问题
 // Server端
+// var express=require('express');
+// var app=express();
 
+// app.get('/jsonp',function(req = {},res,err){
+//   if(err) {
+//     throw new Error('***');
+//   }
+//   if(!req?.query?.jsoncallback) {
+//     throw new Error('***');
+//   }
+//     const jsoncallback = req.query.jsoncallback
+//     var data=[{"name":'yzf'}];
+//     var result = `${jsoncallback}(${JSON.stringify(data)})`  
+//     res.end(result);
+// })
+// app.listen('8001',(e) => {console.log(e)})
+
+// Client端:
+// <script type="text/javascript" src="https:/***/jsonp?jsoncallback=callbackFunction"></script>
+// function callbackFunction(result){
+//     // todo
+//     console.log(result)
+// }
+// $.getJSON("http://10.232.36.110:10011?callback=?",{success: function(e) {console.log(e)}})
+function getJSON(url) {
+  var script = document.createElement('script');
+  script.crossOrigin
+  //  Access-Control-Allow-Origin script.crossOrigin 允许通过 window.onerror 去捕获错误
+  script.setAttribute('src', url);
+  document.head.appendChild(script);
+  // 在 callbackFunction 执行完后应该移除 script
+}
 
 
 // 树的遍历
