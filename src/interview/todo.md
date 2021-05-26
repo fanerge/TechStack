@@ -59,6 +59,7 @@ XML 外部实体注入 xxe
 远程命令/代码执行漏洞RCE(remote command/code execute)
 文件包含漏洞（File Inclusion）
 越权漏洞（over permission）
+点击劫持 X-Frame-Options
 
 
 
@@ -71,7 +72,8 @@ https://juejin.cn/post/6934500357091360781
 http://www.muyiy.cn/question/async/9.html
 
 
-
-
+重要：
+做过部分后端开发，有全栈思维来解决问题。
+始终保持持续学习，扩展自己的技术广度及视野，深挖前端技术深度。对WEB性能和安全有个人的理解。
 
 

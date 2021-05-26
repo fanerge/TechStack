@@ -65,6 +65,7 @@ canonical标签就是告诉搜索引擎哪个页面是权威页面。
 [google测试地址](https://search.google.com/structured-data/testing-tool/u/0/)
 
 #  other 
+
 img标签的 alt，可以指定格式。即使是用于修饰的图片也要添加空的alt。
 ##  Robots.txt
 Robots 协议是蜘蛛访问网站的开关，决定蜘蛛可以抓取哪些内容，不可以抓取哪些内容。
@@ -87,6 +88,9 @@ Robots 协议是蜘蛛访问网站的开关，决定蜘蛛可以抓取哪些内�
 
 ### 更好的方案
 SSR
+
+# 隐藏页(Cloaking)，又称障眼法、伪装技术
+为搜索引擎爬虫和用户浏览器分别提供不同版本的内容，这主要根据HTTP请求头的IP和User-Agent信息来区分。
 
 [爬虫 User-Agents 名单](https://www.baidu.com/robots.txt)
 [PhantomJS](https://phantomjs.org/)
