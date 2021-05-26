@@ -17,7 +17,8 @@ export function cloneDeep(val, hash = new WeakMap()) {
   if (constructor === Date) {
     newVal = new Date(val);
   } else if (constructor === RegExp) {
-    newVal = new RegExp(val);
+    // regexp.lastIndex
+    newVal = new RegExp(val.source, obj.flags);
   } else if (constructor === Function) {
     newVal = new Function(`return ${val.toString()}`);
   } else {
