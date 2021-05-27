@@ -13,16 +13,18 @@ export function cloneDeep(val, hash = new WeakMap()) {
   }
   // date\regexp\function 需要特殊处理
   let constructor = val.constructor;
-  let newVal;
+  let newVal = new constructor();
   if (constructor === Date) {
     newVal = new Date(val);
-  } else if (constructor === RegExp) {
-    // regexp.lastIndex
-    newVal = new RegExp(val.source, obj.flags);
-  } else if (constructor === Function) {
-    newVal = new Function(`return ${val.toString()}`);
-  } else {
-    newVal = new constructor();
+  }
+  if (constructor === RegExp) {
+    newVal = new RegExp(val.source, val.flags);
+  }
+  if (constructor === Set) {
+    newVal = new Set(val.values());
+  }
+  if (constructor === Map) {
+    newVal = new Map(val.entries());
   }
   // 设置原型（新对象可以使用其原型上的方法）
   Object.setPrototypeOf(newVal, Object.getPrototypeOf(val))
@@ -60,6 +62,8 @@ let obj = {
   num1: new Number(1),
   num: 0,
   str: '',
+  set: new Set([12, 3]),
+  map: new Map([[1, 2], [3, 4]]),
   boolean: true,
   unf: undefined,
   nul: null,
@@ -67,12 +71,12 @@ let obj = {
   obj2: obj1,
   arr: [0, 1, 2],
   [Symbol('1')]: 1,
-  date: new Date(),
+  date: new Date('Thu May 27 2020 21:33:24 GMT+0800'),
   regExp: /\d+/img,
-  // func: function ss(a, b, c) {
-  //   console.log(a + b + c)
-  // },
-  // func1: () => { }
+  func: function ss(a, b, c) {
+    console.log(a + b + c)
+  },
+  func1: () => { }
 };
 Object.defineProperty(obj, 'innumerable', {
   enumerable: false, value: '不可枚举属性'
@@ -81,7 +85,8 @@ Object.defineProperty(obj, 'innumerable', {
 obj.loop = obj    // 设置loop成循环引用的属性
 window.cloneDeep2 = cloneDeep2;
 window.obj = obj;
-// console.log(cloneDeep(obj));
+var regx2 = cloneDeep(obj)
+console.log(cloneDeep(regx2));
 //#endregion
 
 // myCall
@@ -1180,14 +1185,34 @@ function ajax(options = {}) {
     // xhr.getResponseHeader()、xhr.getAllResponseHeaders()
     // 支持的事件：onabort、onerror、onload、ontimeout、loadend(onabort、onerror、onload)
     xhr.send(data);
-
   });
 }
 //#endregion
 
 // 树的遍历
-
 // 三数之和
 // 找到所有出现两次的元素。你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？(限时5分钟)
 // ajax/promise
 // fetch
+
+// 回文链表
+//#region 
+var isPalindrome = function (head) {
+  let str = '';
+  while (head !== null) {
+    str += head.val;
+    head = head.next;
+  }
+  let len = str.length;
+  let i = 0;
+  let j = len - 1;
+  while (i < j) {
+    if (str[i] !== str[j]) {
+      return false;
+    }
+    i++;
+    j--;
+  }
+  return true;
+};
+//#endregion

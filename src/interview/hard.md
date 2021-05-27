@@ -6,7 +6,7 @@ Access-Control-Allow-Origin = '*' // 也可以指定一个域名
 Access-Control-Allow-Methods //  method
 // 允许 client 携带那些 header
 Access-Control-Allow-Headers: <header-name>[, <header-name>]* // 已逗号分割
-// 允许 client 解析那些 header（不然 client 读取对应header 为 null）
+// 允许 client 解析那些 header（不然 client 读取对应 header 为 null）
 Access-Control-Expose-Headers: Content-Length, X-Kuma-Revision
 // 携带cookie等
 Access-Control-Allow-Origin = '指定域名（只能设置一个域名）'
@@ -15,6 +15,9 @@ Access-Control-Allow-Credentials = true // 是否允许发送 Cookie
 如fetch，credentials='include'
 如xhr，withCredentials=true
 // 非简单请求（需要发预检请求 options）
+// preflight 会发送 header
+Access-Control-Request-Method
+Access-Control-Request-Headers
 // Content-type="application/json" 为非简单请求
 // 预检请求的有效期，单位为s，不然对同一个资源都还会再打到后端去做preflight
 Access-Control-Max-Age = 300
@@ -122,9 +125,8 @@ Service Worker 生命周期：
 ```
 // from disk cache
 Disk Cache 也就是存储在硬盘中的缓存
-优缺点：读取磁盘中的数据肯定比内存快，但是缓存持续性很长，容量比内存较大（使用最广泛的）。
+优缺点：读取磁盘中的数据肯定比内存慢，但是缓存持续性很长，容量比内存较大（使用最广泛的）。
 Disk Cache 会 HTTP Header 中的字段判断哪些资源需要缓存。
-
 ```
 ####  HTTP Herder 缓存相关
 优先级：Etag > last-modified > cache-control:s-maxage > cache-control:max-age > Expires
@@ -183,7 +185,6 @@ add_header Link "<URL>; rel=preload; as=TYPE; [crossorigin]";
   type="font/woff2"
 />
 ```
-
 # 私服部署自定义 hooks，使用遇到依赖多版本 React 问题
 // peerDependencies字段，就是用来供插件指定其所需要的主工具的版本，npm 3.0版开始，peerDependencies不再会默认安装。
 ```

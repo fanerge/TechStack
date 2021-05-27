@@ -149,8 +149,11 @@ Access-Control-Allow-Credentials = true // 是否允许发送 Cookie
 客户端还需要设置withCredentials
 如fetch，credentials='include'
 如xhr，withCredentials=true
-// 预检请求的有效期，单位为s，不然对同一个资源都还会再打到后端去做preflight
+// 预检请求的有效期，单位为s，不然对同一个资源都还会再打到后端去做 preflight
 Access-Control-Max-Age = 300
+// preflight 会发送 header
+Access-Control-Request-Method
+Access-Control-Request-Headers
 ```
 
 # HTTP/2的特性
