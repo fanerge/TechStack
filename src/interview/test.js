@@ -86,7 +86,7 @@ obj.loop = obj    // 设置loop成循环引用的属性
 window.cloneDeep2 = cloneDeep2;
 window.obj = obj;
 var regx2 = cloneDeep(obj)
-console.log(cloneDeep(regx2));
+// console.log(cloneDeep(regx2));
 //#endregion
 
 // myCall
@@ -1091,6 +1091,28 @@ var hasCycle = function (head) {
 };
 //#endregion
 
+// 回文链表
+//#region 
+var isPalindrome = function (head) {
+  let str = '';
+  while (head !== null) {
+    str += head.val;
+    head = head.next;
+  }
+  let len = str.length;
+  let i = 0;
+  let j = len - 1;
+  while (i < j) {
+    if (str[i] !== str[j]) {
+      return false;
+    }
+    i++;
+    j--;
+  }
+  return true;
+};
+//#endregion
+
 // 0.1+0.2 !== 0.3 IEEE756 64bit 表示数字
 //#region 
 /**
@@ -1189,30 +1211,426 @@ function ajax(options = {}) {
 }
 //#endregion
 
-// 树的遍历
-// 三数之和
-// 找到所有出现两次的元素。你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？(限时5分钟)
-// ajax/promise
-// fetch
-
-// 回文链表
+// 两数之和
 //#region 
-var isPalindrome = function (head) {
-  let str = '';
-  while (head !== null) {
-    str += head.val;
-    head = head.next;
+var twoSum = function (nums, target) {
+  // 空间换时间
+  let map = new Map();
+  for (let index = 0; index < nums.length; index++) {
+    let item = nums[index];
+    if (index === 0) {
+      map.set(item, 0)
+    } else {
+      let diff = target - item;
+      if (map.has(diff)) {
+        return [map.get(diff), index]
+      } else {
+        map.set(item, index);
+      }
+    }
   }
-  let len = str.length;
+
+  return [];
+}
+//#endregion
+
+// 三数之和
+//#region 
+var threeSum = function (nums) {
+  let list = quickSort(nums);
+  let res = [];
+  // i、j、k分别代表其下标
+  for (let i = 0; i < list.length; i++) {
+    // 需要和上次枚举的数不相同
+    if (i > 0 && list[i] === list[i - 1]) {
+      continue;
+    }
+    let k = list.length - 1;
+    for (let j = i + 1; j < list.length; j++) {
+      if (j > i + 1 && list[j] === list[j - 1]) {
+        continue;
+      }
+      // 注意 j < k 不然会导致结果重复
+      while (j < k && list[i] + list[j] + list[k] > 0) {
+        k--;
+      }
+      if (j === k) {
+        break;
+      }
+      if (list[i] + list[j] + list[k] === 0) {
+        res.push([list[i], list[j], list[k]])
+      }
+    }
+  }
+
+  // 需要去重
+  return res;
+};
+// console.log(threeSum([-1, 0, 1, 2, -1, -4]))
+//#endregion
+
+// 找到所有出现两次的元素。 其中1 ≤ a[i] ≤ n （n为数组长度）
+//#region 
+var findDuplicates = function (nums) {
+  let res = [];
+  nums.forEach((item, index) => {
+    let tempIndex = Math.abs(item) - 1;
+    if (nums[tempIndex] < 0) {
+      res.push(Math.abs(item));
+    }
+    if (nums[tempIndex] > 0) {
+      nums[tempIndex] = - nums[tempIndex]
+    }
+  });
+
+  return res;
+};
+// console.log(findDuplicates([4, 3, 2, 7, 8, 2, 3, 1]))
+//#endregion
+
+// 树的遍历
+// 先序遍历
+//#region 
+function preTree(tree, res = []) {
+  // 根左右
+  if (tree === null) return;
+  res.push(tree.val);
+  preTree(tree.left, res);
+  preTree(tree.right, res)
+}
+//#endregion
+
+// canvas
+//#region 
+// var c = document.getElementById("myCanvas");
+// var cxt = c.getContext("2d");
+// ctx.fillStyle = 'red';
+// ctx.rect(0, 0, 100, 50);    //仅仅是画出一个区域
+// ctx.fillRect(x, y, width, height); // 完成并填充区域
+// ctx.strokeRect(x, y, width, height); // 完成并对区域描边
+// ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+// ctx.stroke();
+//#endregion
+
+
+// 字符串
+// 最长回文子串
+//#region 
+// TODO
+//#endregion
+
+// 最长公共前缀
+//#region 
+var longestCommonPrefix = function (strs) {
+  if (strs.length === 0) return '';
+  if (strs.length === 1) return strs[0];
+  let prefixStr = strs[0];
+  for (let i = 1; i < strs.length; i++) {
+    prefixStr = common(prefixStr, strs[i]);
+    if (prefixStr === '') {
+      break;
+    }
+  }
+
+  return prefixStr;
+};
+
+function common(left, right) {
+  let str = '';
   let i = 0;
+  let j = 0;
+  while (i < left.length && j < right.length) {
+    if (left[i] === right[j]) {
+      str += `${left[i]}`
+      i++;
+      j++;
+    } else {
+      break;
+    }
+  }
+  return str;
+}
+var strs = ["flower", "flow", "flight"]
+// console.log(longestCommonPrefix(strs));
+//#endregion
+
+// 无重复字符的最长子串【双指针】
+//#region 
+var lengthOfLongestSubstring = function (s) {
+  if (s === null) return null;
+  if (s.length === 0) return '';
+  let maxStr = '';
+  let curStr = s[0];
+  [...s.slice(1)].forEach(item => {
+    // debugger
+    let index = curStr.indexOf(item);
+    if (index === -1) {
+      curStr = `${curStr}${item}`;
+    } else {
+      curStr = `${curStr.slice(index + 1)}${item}`
+    }
+
+    if (curStr.length > maxStr.length) {
+      maxStr = curStr;
+    }
+  });
+  return Math.max(maxStr.length, curStr.length);
+};
+var s = "abcabcbb"
+// console.log(lengthOfLongestSubstring(s));
+//#endregion
+
+
+// 数组问题
+// 俄罗斯套娃信封问题【排序+最长上升子序列】
+//#region 
+// TODO
+//#endregion
+
+// 最长连续递增序列【快慢指针】
+//#region
+var findLengthOfLCIS = function (nums) {
+  if (nums === null || nums.length === 0) return 0;
+  let maxLen = 0;
+  let curLen = 1;
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i - 1] < nums[i]) {
+      curLen++;
+    } else if (nums[i - 1] >= nums[i]) {
+      // 以nums[i] 为第一个的递增序列
+      curLen = 1;
+    }
+    maxLen = Math.max(maxLen, curLen)
+  }
+
+  return Math.max(maxLen, curLen);
+};
+// console.log(findLengthOfLCIS([1,3,5,4,7]))
+//#endregion
+
+// 最长连续序列
+//#region 
+var longestConsecutive = function (nums) {
+  if (nums === null || nums.length === 0) return 0;
+  let set = new Set(nums);
+  let maxLen = 0;
+
+  for (let num of set) {
+    let curLen = 1;
+    let curVal = num;
+    if (!set.has(num - 1)) {
+      while (set.has(curVal + 1)) {
+        curLen++;
+        curVal++;
+      }
+    }
+    maxLen = Math.max(maxLen, curLen);
+  }
+
+  return maxLen;
+};
+// console.log(longestConsecutive([100, 4, 200, 1, 3, 2]));
+//#endregion
+
+// 【面试真题】盛最多水的容器【哈希表】
+//#region 
+var maxArea = function (height) {
+  if (height === null || height.length < 2) return 0;
+  let i = 0;
+  let len = height.length;
   let j = len - 1;
+  let max = 0;
   while (i < j) {
-    if (str[i] !== str[j]) {
+    let curHeight = Math.min(height[i], height[j]);
+    let area = curHeight * (j - i)
+    max = Math.max(max, area)
+    // 移动短边才有可能获得更大面积
+    if (height[i] < height[j]) {
+      i++;
+    } else {
+      j--;
+    }
+  }
+
+  return max;
+};
+// console.log(maxArea([1, 3, 2, 5, 25, 24, 5]));
+//#endregion
+
+// 寻找两个正序数组的中位数【双指针】
+//#region 
+var findMedianSortedArrays = function (nums1, nums2) {
+  let mergeList = [];
+  let i = 0;
+  let j = 0;
+  let m = nums1.length;
+  let n = nums2.length;
+  while (i < m && j < n) {
+    // debugger;
+    if (nums1[i] <= nums2[j]) {
+      mergeList.push(nums1[i++]);
+    } else {
+      mergeList.push(nums2[j++]);
+    }
+  }
+
+  mergeList = mergeList.concat(nums1.slice(i)).concat(nums2.slice(j))
+  console.log(mergeList)
+  let len = mergeList.length;
+  if (len === 0) return 0;
+  if (len === 1) return mergeList[0];
+  if (len % 2 === 0) {
+    return (mergeList[Math.floor(len / 2) - 1] + mergeList[Math.floor(len / 2)]) / 2;
+  } else {
+    return mergeList[Math.floor(len / 2)]
+  }
+};
+// console.log(findMedianSortedArrays([1, 3], [2]));
+//#endregion
+
+// 删除有序数组中的重复项
+//#region
+var removeDuplicates = function (nums) {
+  if (nums === null || nums.length === 0) return 0;
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i - 1] === nums[i]) {
+      nums.splice(i--, 1);
+    }
+  }
+  return nums.length;
+};
+// console.log(removeDuplicates([1, 1, 2]))
+//#endregion
+
+// 和为K的子数组
+//#region 
+var subarraySum = function (nums, k) {
+  let res = 0;
+  if (nums === null || nums.length === 0) return res;
+  let pre = 0;
+  let map = new Map([[0, 1]]);
+  for (let num of nums) {
+    pre += num;
+    if (map.has(pre - k)) {
+      res += map.get(pre - k)
+    }
+    if (map.has(pre)) {
+      map.set(pre, map.get(pre) + 1);
+    } else {
+      map.set(pre, 1);
+    }
+  }
+
+  return res;
+};
+
+// console.log(subarraySum([1, -1, 0], 0));
+//#endregion
+
+
+// 跳跃游戏【贪心算法
+//#region 
+var canJump = function (nums) {
+  if (nums === null || nums.length === 0) return true;
+  let to = 0; // 只能到达的最远距离
+  for (let i = 0; i < nums.length; i++) {
+    if (i > to) {
       return false;
     }
-    i++;
-    j--;
+    to = Math.max(to, i + nums[i]);
   }
   return true;
+};
+var nums = [2, 3, 1, 1, 4];
+// console.log(canJump(nums));
+//#endregion
+
+// 二叉树
+// 二叉树的最近公共祖先
+//#region 
+var lowestCommonAncestor = function (root, p, q) {
+  let res;
+  // dfs 返回 boolean，表示p或q是否在该子树上
+  const dfs = (node, p, q) => {
+    if (node === null) return false;
+
+    let lson = dfs(node.left, p, q);
+    let rson = dfs(node.right, p, q);
+    // 两种情况下公共祖先节点都为 node
+    // 1. lson && rson 一个是lson的子节点一个是rson的子节点
+    // 2. (node.val === p.val || node.val === q.val) && (lson || rson)，node节点是pq其中节点，另一个p或q是在lsonherson的子节点
+    if (lson && rson || (node.val === p.val || node.val === q.val) && (lson || rson)) {
+      res = node;
+    }
+    return lson || rson || node.val === p.val || node.val === q.val;
+  }
+  dfs(root, p, q);
+
+  return res;
+};
+// console.log(lowestCommonAncestor([3, 5, 1, 6, 2, 0, 8, null, null, 7, 4], 5, 1));
+//#endregion
+
+// 二叉搜索树中的搜索
+//#region
+var searchBST = function (root, val) {
+  let res = null;
+  function preTrace(node) {
+    // roo left right
+    if (node === null) return;
+    // 利用二叉树的性质，leftVal < nodeVal && rightVal > nodeVal
+    if (node.val === val) {
+      res = node;
+    } else if (node.val > val) {
+      preTrace(node.left);
+    } else if (node.val < val) {
+      preTrace(node.right);
+    }
+  }
+  preTrace(root);
+  return res;
+};
+//#endregion
+
+// 删除二叉搜索树中的节点
+//#region 
+var deleteNode = function (root, key) {
+  if (!root) return null;
+  if (key < root.val) {
+    root.left = deleteNode(root.left, key);
+  } else if (key > root.val) {
+    root.right = deleteNode(root.right, key);
+  } else {
+    // 找到要删除的节点
+    // 如果被删除节点是 leaf, 直接删除
+    if (!root.left && !root.right) {
+      return null;
+    }
+    // 如果被删除节点 只有一个child, 使用仅有的 child 代替原节点
+    if (root.left && !root.right) {
+      return root.left;
+    }
+    if (root.right && !root.left) {
+      return root.right;
+    }
+    // 如果被删除节点 有两个children, 则在 right subtree中 寻找 successor, 将原节点值替换为 successor 的值, 并递归删除 successor, 将问题转化为 情况1 或 情况2.
+    if (root.left && root.right) {
+      // TODO 思考？
+      let ancestor = root;
+      let successor = root.right;
+      while (successor.left) {
+        ancestor = successor;
+        successor = successor.left;
+      }
+      root.val = successor.val;
+      if (successor == ancestor.right) {
+        ancestor.right = deleteNode(successor, successor.val);
+      } else {
+        ancestor.left = deleteNode(successor, successor.val);
+      }
+    }
+  }
+
+  return root;
 };
 //#endregion
