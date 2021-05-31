@@ -1634,3 +1634,44 @@ var deleteNode = function (root, key) {
   return root;
 };
 //#endregion
+
+// 编程题
+// TODO
+//#region 
+var list = [['热', '冷', '冰'], ['大', '中', '小'], ['重辣', '微辣'], ['重麻', '微麻']];
+function genCate(list) {
+  let res = [];
+  // 方法1 暴力枚举常规方式
+  // list[0].forEach(item0 => {
+  //   list[1].forEach(item1 => {
+  //     list[2].forEach(item2 => {
+  //       list[3].forEach(item3 => {
+  //         res.push(`${item0}+${item1}+${item2}+${item3}`);
+  //       })
+  //     })
+  //   })
+  // });
+  // 方法2 递归
+  repeat(list, res, [])
+  function repeat(list, res, vals) {
+    list[0].forEach(item => {
+      let allVals = vals.concat(item);
+      if (list.length === 1) {
+        res.push(allVals.join('+'));
+      } else {
+        repeat(list.slice(1), res, allVals);
+      }
+    })
+  }
+  // console.log(res);
+  // 方法3 循环
+  // var res = list.reduce((result, property) => {
+  //   // 循环属性的每一个值
+  //   return property.reduce((acc, value) => {
+  //     return acc.concat(result.map(ele => [].concat(ele, value)));
+  //   }, []);
+  // });
+  // return res.map(arr => arr.join('+'))
+}
+//console.log(genCate(list));
+//#endregion
