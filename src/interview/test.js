@@ -1675,6 +1675,58 @@ function genCate(list) {
 //console.log(genCate(list));
 //#endregion
 
-// 求区间问题
+// 求区间问题，给定一有序数组，求其中某重复元素的区间（也即求区间的左右边界位置）。
 // TODO
 // https://github.com/qcer/Algo-Practice/blob/master/Others/001.md
+var list = [1, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6]
+function leftIndex(ary, target) {
+  let left = 0;
+  let right = ary.length - 1;
+  while (left < right) {
+    let mid = left + Math.floor((right - left) / 2);
+    if (ary[mid] < target) {
+      left = mid + 1;
+    } else if (ary[mid] > target) {
+      right = mid - 1;
+    } else if (ary[mid] === target) {
+      right = mid - 1;
+    }
+  }
+  if (ary[left] === target) {
+    return left;
+  }
+  if (ary[left + 1] === target) {
+    return left + 1;
+  }
+  return -1;
+}
+function rightIndex(ary, target) {
+  let left = 0;
+  let right = ary.length - 1;
+  while (left < right) {
+    let mid = left + Math.floor((right - left) / 2);
+    if (ary[mid] < target) {
+      left = mid + 1;
+    } else if (ary[mid] > target) {
+      right = mid - 1;
+    } else if (ary[mid] === target) {
+      left = mid + 1;
+    }
+  }
+  if (ary[left] === target) {
+    return left;
+  }
+  if (ary[left - 1] === target) {
+    return left - 1;
+  }
+  return -1;
+}
+function solution(ary, target) {
+  let left = leftIndex(ary, target);
+  if (left === -1) {
+    return [-1, -1]
+  }
+  let right = rightIndex(ary, target);
+  return [left, right]
+}
+// console.log(solution(list, 4));
