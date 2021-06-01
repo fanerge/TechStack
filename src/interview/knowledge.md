@@ -57,5 +57,6 @@ CSS布局中的一个概念，BFC 是一个独立的布局环境，可以理解�
 1.  计算 height top 及 bottom 中的百分值，是通过包含块的 height 的值。
 2.  要计算 width, left, right, padding, margin 这些属性由包含块的 width 属性的值来计算它的百分值。
 ```
+
 # VUE、keep-alive
 
