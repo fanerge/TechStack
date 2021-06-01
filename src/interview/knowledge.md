@@ -58,5 +58,62 @@ CSS布局中的一个概念，BFC 是一个独立的布局环境，可以理解�
 2.  要计算 width, left, right, padding, margin 这些属性由包含块的 width 属性的值来计算它的百分值。
 ```
 
-# VUE、keep-alive
+#   HTTP 的 keep-alive 和 TCP 的 keep-alive
+```
+// 使用 keep-alive 复用链接，并设置复用的阈值超时时长和最大请求数。
+// HTTP1.0 需要Connection: Keep-Alive，HTTP1.1 默认开启，需要 Connection: close 关闭
+// HTTP2 Connection 和 Keep-Alive  是被忽略的；因为通过个域名只会建立一个链接并采用多路复用创建多个流，每个流来实现具体的某个请求及响应。
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=1000
+// TCP
+TCP keep-alive是一种检测TCP连接状况的保鲜机制。
+net.ipv4.tcp_keepalive_intvl = 15 // 尝试获取 ack 的时间间隔
+net.ipv4.tcp_keepalive_probes = 5 // 没有收到 ack 最大尝试次数
+net.ipv4.tcp_keepalive_time = 1800 // 检查链接状态的超时时间，HTTP 中 Keep-Alive: timeout=5 受此影响，如果HTTP timeout 大于 TCP timeout，其会被忽略
+```
+
+#   正则/环视
+```
+环视只进行子表达式的匹配，不占有字符，匹配到的内容不保存到最终的匹配结果，是零宽度的。
+向前向后可以理解为最终匹配的部分。
+// 向前肯定断言
+x(?=y)：x 被 y 跟随时匹配 x。例如，对于/Jack(?=Sprat)/，“Jack”在跟有“Sprat”的情况下才会得到匹配，但匹配结果不包含 Sprat。
+// 向前否定断言
+x(?!y)：x 没有被 y 跟随时匹配 x。例如，对于/\d+(?!\.)/，数字后没有跟随小数点的情况下才会得到匹配。
+// 向后肯定断言
+(?<=y)x：x 跟随 y 的情况下匹配 x。例如，对于/(?<=Jack)Sprat/，“Sprat”紧随“Jack”时才会得到匹配。
+// 向后否定断言
+(?<!y)x：x 不跟随 y 时匹配 x。例如，对于/(?<!-)\d+/，数字不紧随-符号的情况下才会得到匹配。
+```
+
+#   transform 后图片模糊
+```
+.preview-img:hover {
+    transform: scale(10); // 图片模糊
+    transform:translateZ(0) scale(10); // fix 图片模糊
+    filter: blur(0px);
+}
+```
+
+#   node.js模块引入机制
+```
+1.  路径分析
+    在Node中模块分为两类：一类是Node提供的模块，称为核心模块；另一类是用户编写的，称为文件模块。
+    不论是核心模块还是文件模块，require()方法对相同模块的二次加载一律采用缓存优先的策略，是第一优先级的。
+    不同之处在于核心模块的缓存检查要先于文件模块的缓存检查。
+    核心模块：核心模块的优先级仅次于缓存加载（http、fs、path）。
+    路径形式的文件模块：在分析路径是会将其转换为绝对路径并将绝对路径作为索引，将编译执行后的结果存在缓存中。
+    自定义模块：可能是一个文件或者包的形式，这类模块查找最费时间。
+        当前文件目录下的node_modules目录。
+        父目录下的node_modules目录。
+        沿路径向上逐级递归，直到根目录下的node_modules目录。
+2.  文件定位
+    Node require() 时没有制定文件后缀名时会按照.js、.json、.node的次序补足拓展名，依次尝试。
+    通过分析文件拓展名之后可能没有得到一个文件，但是得到一个目录此时Node会将目录当作一个包处理。
+    在package.json文件，取出main属性来对文件定位。如果main指向的文件没有，或者没有package.json文件,则依次查找index.js、index.json、index.node。
+3.  编译执行
+    每个文件模块都是一个Module对象（id、path、paths、filename等）
+    每个模块都有require、exports、module 3个变量，在编译的过程中，Node对获取的Javascript文件的内容进行了包装__filename、__dirname这两个变量。
+```
+
 
