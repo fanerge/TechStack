@@ -80,3 +80,7 @@ https://juejin.cn/post/6866082181455249422
 我叫***，2014年开始接触Flash动画开发随后入坑前端，在整个职业生涯中始终保持持续学习，喜欢总结及热爱分享，
 扩展自己的技术广度及视野，深挖前端技术深度（T字型发展），曾经做过php开发，有全栈思维来解决问题。
 对WEB性能和安全以及SEO有一定的实践经验和个人理解。
+
+
+
+复习：hard.md > 性能 》安全 》SEO 》test.js > knowledge.md > HTTP(HTTP2/3、TCP、UDP) > GC > webpack > react
