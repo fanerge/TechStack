@@ -1676,8 +1676,7 @@ function genCate(list) {
 //#endregion
 
 // 求区间问题，给定一有序数组，求其中某重复元素的区间（也即求区间的左右边界位置）。
-// TODO
-// https://github.com/qcer/Algo-Practice/blob/master/Others/001.md
+//#region 
 var list = [1, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6]
 function leftIndex(ary, target) {
   let left = 0;
@@ -1730,3 +1729,4 @@ function solution(ary, target) {
   return [left, right]
 }
 // console.log(solution(list, 4));
+//#endregion

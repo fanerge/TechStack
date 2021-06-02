@@ -129,4 +129,44 @@ x(?!y)：x 没有被 y 跟随时匹配 x。例如，对于/\d+(?!\.)/，数字�
 6.  如果 scripts 有 postinstall 需执行
 ```
 
+#   npm
+```
+// npm 命令简写
+npm run-script test
+npm run test
+npm test
+npm t
+// 执行多个脚本
+npm run lint && npm test // 依次执行
+npm run lint＆npm test // 并行运行，windows 中会依次执行
+// pre & post
+如 hello 命令，执行顺序为 prehello hello posthello
+// 控制输出日志登记
+npm run <script> --silent // npm run <script> -s // 静默消息(如果想减少错误日志并非防止脚本抛出错误)
+npm run <script> --if-present // 如果脚本名不存在时不想报错，可以使用 --if-present 
+// 指定输出日志等级("silent", "error", "warn", "notice", "http", "timing", "info", "verbose", "silly".)
+npm run <script> --loglevel <info>
+// 传递参数和访问环境变量
+npm run <script>---<argument>="value"
+$npm_config_argument 和 $npm_package_argument 可读取
 
+****npm 包本地调试技巧****
+// 本地 npm 模块调试，如调试 npm-test 模块
+// npm link 方式
+cd 对应npm包地址
+npm link // 项目对应的包链到你本地的全局地址
+cd 项目地址
+npm link npm-test
+// yalc 方式
+npm i yalc -g
+cd 对应npm包地址
+yalc publish // 在对应的 npm 包中发布
+yalc link // 在对应的项目中 link 对应的包
+// nodemon 自动监听更新文件
+cd 项目地址
+yalc link npm-test
+npm run start
+// 在 package.json 的 scripts 中，添加下列脚本，就可以更高npm包代码，自动发布
+"async": "npm run build && yalc push",
+"watch": "nodemon --ignore dist/ --ignore node_modules/ --watch src/ -C -e ts,tsx,scss --debug -x 'npm run async'", // 自动监听
+```
