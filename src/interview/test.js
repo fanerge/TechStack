@@ -1475,7 +1475,6 @@ var findMedianSortedArrays = function (nums1, nums2) {
   }
 
   mergeList = mergeList.concat(nums1.slice(i)).concat(nums2.slice(j))
-  console.log(mergeList)
   let len = mergeList.length;
   if (len === 0) return 0;
   if (len === 1) return mergeList[0];
