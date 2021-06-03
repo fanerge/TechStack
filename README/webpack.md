@@ -140,6 +140,7 @@ html-webpack-plugin：用于生成 HTML 的插件（自动注入 Webpack 打包�
 // 该插件的 template 属性还可以制定 html template，模板中动态的内容，可以使用 Lodash 模板语法，<%= htmlWebpackPlugin.options.title %>
 // 该插件还可以实现多页面应用，多个 HTML 文件（一个页面实例化一次 html-webpack-plugin 类 + Webpack 多入口打包）
 copy-webpack-plugin：用于复制文件的插件（不参与构建的静态文件）
+sentry-webpack-plugin // 在构建过程中把 source maps 上传到 Sentry
 ```
 
 ## 开发插件

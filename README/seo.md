@@ -33,34 +33,20 @@ canonical标签就是告诉搜索引擎哪个页面是权威页面。
 方便搜索引擎爬虫更好的爬取页面<br>
 每个文件上限url 50000<br>
 
-#   微数据结构化
+#   SEO 结构化数据
 ```
-<script type="application/ld+json">
-{
-  "@context": "http://schema.org",
-  "@type": "Store",
-  "name": "Middle of Nowhere Foods",
-  "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-14:00",
-  "openingHoursSpecification":
-  [
-    {
-      "@type": "OpeningHoursSpecification",
-      "validFrom": "2013-12-24",
-      "validThrough": "2013-12-25",
-      "opens": "09:00",
-      "closes": "11:00"
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      "validFrom": "2014-01-01",
-      "validThrough": "2014-01-01",
-      "opens": "12:00:00",
-      "closes": "14:00:00"
-    }
-  ]
-}
-</script>
+// 描述一个人
+<div itemscope itemtype="**/Person">
+  我的名字是<span itemprop="name">yzf</span>
+  大家都叫我<span itemprop="nickname">fanerge</span>
+  我的主页<a href="https://fanerge.github.io" itemprop="url">fanerge.github.io</a>
+  我是一名<span itemprop="title">前端工程师</span>
+</div>
+// itemscope 表示一个项目（一个人、物、地点等）
+// itemtype 表示项的类型
+// itemprop 对每个属性的表示
 ```
+[针对SEO优化的网页摘要和结构化数据方法(微数据)](https://www.it610.com/article/1294320874521960448.htm)
 [官网指南](https://schema.org/)
 [google测试地址](https://search.google.com/structured-data/testing-tool/u/0/)
 

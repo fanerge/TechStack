@@ -154,7 +154,7 @@ $npm_config_argument 和 $npm_package_argument 可读取
 // 本地 npm 模块调试，如调试 npm-test 模块
 // npm link 方式
 cd 对应npm包地址
-npm link // 项目对应的包链到你本地的全局地址
+npm link // 项目对应的包链接到全局 node_modules
 cd 项目地址
 npm link npm-test
 // yalc 方式
@@ -169,4 +169,13 @@ npm run start
 // 在 package.json 的 scripts 中，添加下列脚本，就可以更高npm包代码，自动发布
 "async": "npm run build && yalc push",
 "watch": "nodemon --ignore dist/ --ignore node_modules/ --watch src/ -C -e ts,tsx,scss --debug -x 'npm run async'", // 自动监听
+// nodemon
+nodemon 
+    --ignore dist/ # 忽略目录
+    --ignore node_modules/ 
+    --watch src # 观察目录
+    -C # 只在变更后执行，首次启动不执行命令
+    -e ts,html,less,scss # 监控指定后缀名的文件
+    --debug # 调试
+    -x "npm run build && cd dist/hello && yalc push" # 自定义命令
 ```
