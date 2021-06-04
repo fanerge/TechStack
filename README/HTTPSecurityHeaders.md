@@ -27,7 +27,7 @@ X-Content-Type-Options: nosniff
 这个 Header 指是否应该允许站点在 iFrame 中显示，非标准可以使用CSP frame-ancestrs 指令取代。
 ##  Access-Control-Allow-Origin
 ##  Set-Cookie
-需要添加Secure，HttpOnly
+需要添加Secure，HttpOnly，samesite
 ##  X-XSS-Protection
 这个 Header 指示浏览器停止检测到的跨站点脚本攻击的执行。它通常是低风险设置，但仍应在投入生产前进行测试。
 # 缓存相关的header
