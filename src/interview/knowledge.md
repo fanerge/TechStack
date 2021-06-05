@@ -128,5 +128,31 @@ x(?!y)：x 没有被 y 跟随时匹配 x。例如，对于/\d+(?!\.)/，数字�
 5.  解压包文件到 node_modules
 6.  如果 scripts 有 postinstall 需执行
 ```
+#   Web Components
+```
+Web Components 是通过3种技术允许您创建可重用的定制元素，达到复用的效果。
+Custom elements、Shadow DOM、HTML templates 等技术实现自定义元素。
+// Custom elements
+// 又分为Autonomous custom elements（自主的自定义元素都继承自HTMLElement）、Customized built-in elements（继承自内置元素的自定义元素）
+Custom elements（自定义元素）：一组JavaScript API，允许您定义custom elements及其行为，然后可以在您的用户界面中按照需要使用它们。
+// Shadow DOM
+Shadow DOM（影子DOM）：一组JavaScript API，用于将封装的“影子”DOM树附加到元素（与主文档DOM分开呈现）并控制其关联的功能。通过这种方式，您可以保持元素的功能私有，这样它们就可以被脚本化和样式化，而不用担心与文档的其他部分发生冲突。
+HTML templates
+HTML templates（HTML模板）： <template> 和 <slot> 元素使您可以编写不在呈现页面中显示的标记模板。然后它们可以作为自定义元素结构的基础被多次重用。
+```
+[Web Components](./webComponents.md)
+
+#   IaaS、PaaS、SaaS
+```
+// 基础设施即服务 (IaaS ： Infrastructure as a Service)
+把计算基础(服务器、网络技术、存储和数据中心空间)作为一项服务提供给客户。它也包括提供操作系统和虚拟化技术、来管理资源。消费者通过Internet可以从完善的计算机基础设施获得服务。
+// 平台即服务(PaaS：Platform as a Service）
+PaaS实际上是指将软件研发的平台作为一种服务，供应商提供超过基础设施的服务，一个作为软件开发和运行环境的整套解决方案，即以SaaS的模式提交给用户。因此，PaaS也是SaaS模式的一种应用。但是，PaaS的出现可以加快SaaS的发展，尤其是加快SaaS应用的开发速度。
+// 软件即服务 (SaaS：Software as a Service)
+是一种交付模式，其中应用作为一项服务托管，通过Internet提供给用户;帮助客户更好地管理它们的IT项目和服务、确保它们IT应用的质量和性能，监控它们的在线业务。
+```
+
+
+
 
 

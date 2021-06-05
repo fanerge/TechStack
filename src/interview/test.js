@@ -593,6 +593,22 @@ function formatMoney(num) {
   return `${frontStr}${end ? `.${end}` : ''}`
 }
 // console.log(formatMoney('13234242343453245345.123123'));
+function formatMoney1(num) {
+  let str = num.toString();
+  let [front, end] = str.split('.')
+  let frontStr = '';
+  let len = front.length;
+  [...front].reverse().forEach((item, index) => {
+    let indexAdd1 = index + 1;
+    if (indexAdd1 % 3 === 0 && indexAdd1 !== len) {
+      frontStr = `,${item}` + `${frontStr}`;
+    } else {
+      frontStr = `${item}` + `${frontStr}`;
+    }
+  });
+  return `${frontStr}${end ? `.${end}` : ''}`
+}
+// console.log(formatMoney1('323453245345.123123'));
 //#endregion
 
 // mergeSort
@@ -1024,15 +1040,52 @@ var reverseList = function (head) {
   let sentry = new ListNode();
 
   while (head) {
+    // 保留下一个节点的引用
     let rest = head.next;
+    // 保留sentry 上已有的节点
     let old = sentry.next;
+    // sentry 的首个节点的next指针指向当前节点
     sentry.next = head;
+    // 当前节点的next指针需要指向原来sentry上已有的节点
     head.next = old;
+    // 继续下一个节点处理
     head = rest;
   }
   return sentry.next;
 };
 //#endregion
+
+// K 个一组翻转链表
+//#region 
+var reverseKGroup = function (head, k) {
+  if (head === null) return head;
+  let a = head;
+  let b = head;
+  for (let i = 0; i < k; i++) {
+    if (b === null) {
+      return a;
+    }
+    b = b.next;
+  }
+
+  let newHead = reverse(a, b);
+  a.next = reverseKGroup(b, k)
+  return newHead;
+}
+function reverse(a, b) {
+  let sentry = new ListNode();
+  while (a !== b) {
+    let next = a.next;
+    let old = sentry.next;
+    sentry.next = a;
+    a.next = old;
+    a = next;
+  }
+  return sentry.next;
+}
+//#endregion
+
+
 
 // 两个有序链表合并
 //#region
@@ -1675,7 +1728,7 @@ function genCate(list) {
 //#endregion
 
 // 求区间问题，给定一有序数组，求其中某重复元素的区间（也即求区间的左右边界位置）。
-// TODO
+//#region 
 // https://github.com/qcer/Algo-Practice/blob/master/Others/001.md
 var list = [1, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6]
 function leftIndex(ary, target) {
@@ -1729,3 +1782,35 @@ function solution(ary, target) {
   return [left, right]
 }
 // console.log(solution(list, 4));
+//#endregion
+
+// 抽奖
+// 请实现抽奖函数rand，保证随机性，输入为表示对象数组，对象有属性n表示人名，w表示权重，随机返回一个中奖人名，中奖概率和w成正比
+//#region 
+let peoples = [
+  { n: "p1", w: 100 },
+  { n: "p2", w: 200 },
+  { n: "p3", w: 1 },
+];
+
+function rand1(peoples) {
+  let count = peoples.reduce((acc, item) => {
+    acc += item.w;
+    return acc;
+  }, 0)
+  let wp = 1 / count;
+  let num = Math.random(); // [0,1)
+  let init = 0;
+  let ps = peoples.map((item, index) => {
+    let temp = item.w * wp + init;
+    console.log(`第${index + 1}个用户随机数区间：${init}-${temp}`);
+    init = temp;
+    return temp
+  })
+  console.log(ps)
+  let index = ps.findIndex((item, index) => num < item);
+  return peoples[index]
+}
+// console.log(rand1(peoples))
+//#endregion
+

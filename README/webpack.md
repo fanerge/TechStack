@@ -266,6 +266,22 @@ Express 建立服务，并和客户端见一个 EventSource http 链接，有打
 客户端，收到服务器有打包更新的请求，客户端通过 ajax 请求，请求打包结果并解析。<br>
 [知乎-Webpack HMR 原理解析](https://zhuanlan.zhihu.com/p/30669007)
 
+# Scope Hosting && Magic Comments
+```
+// Scope Hosting
+webpack 3.0 新增 Scope Hosting
+require不会，ES module 会。
+在生产模式下打包后，webpack会自动优化代码，去除没必要的啰嗦的代码，再塞入打包 bundle 中
+let a = 1;
+let b = 2;
+let c = a+b;   //在webpack中会自动省略一些可以简化的代码
+console.log(c);
+//简化后的代码如下：console.log(3);
+// Magic Comments
+import(/* webpackChunkName: "my-chunk-name" */ 'module');
+```
+
+
 # Code Splitting
 
 Code Splitting 通过把项目中的资源模块按照我们设计的规则打包到不同的 bundle 中，从而降低应用的启动成本，提高响应速度。
