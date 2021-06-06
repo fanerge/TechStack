@@ -142,11 +142,20 @@ Function.prototype.myBind = function (ctx, ...args1) {
   ctx = Object(ctx);
   let that = this;
   function tempFn(...args2) {
+    let key = Symbol('key');
     // new.target
     if (this instanceof tempFn) {
-      return that.call(this, ...args1, ...args2);
+      this[key] = that;
+      let res = this[key](...args1, ...args2);
+      delete this[key];
+      return res;
+      // return that.call(this, ...args1, ...args2);
     } else {
-      return that.call(ctx, ...args1, ...args2);
+      ctx[key] = that;
+      let res = ctx[key](...args1, ...args2);
+      delete ctx[key];
+      return res;
+      // return that.call(ctx, ...args1, ...args2);
     }
   }
 
@@ -155,19 +164,18 @@ Function.prototype.myBind = function (ctx, ...args1) {
   return tempFn;
 }
 // test
-window.name = 'fanerge'
-var obj11 = { name: 'inner' }
+// window.name = 'fanerge'
+// var obj11 = { name: 'inner' }
 // myCallTest.myBind()(12, 'wanyuan')
 // myCallTest.bind(null)(12, 'wanyuan')
 
 // new 测试
 // var p1 = Person.myBind()
 // var p11 = new p1(1, 2);
-// var p2 = Person.bind({})
+// var p2 = Person.bind()
 // var p22 = new p2(1, 2)
-// console.log(p11)
-// console.log(p22)
-
+// console.log(p11 instanceof Person)
+// console.log(p22 instanceof Person)
 //#endregion
 
 // this 指向优先级
