@@ -1,31 +1,7 @@
-# 一次跨域CORS服务端配置排坑
-```
-// 简单跨域
-Access-Control-Allow-Origin = '*' // 也可以指定一个域名
-// 允许 client 使用什么方法
-Access-Control-Allow-Methods //  method
-// 允许 client 携带那些 header
-Access-Control-Allow-Headers: <header-name>[, <header-name>]* // 已逗号分割
-// 允许 client 解析那些 header（不然 client 读取对应 header 为 null）
-Access-Control-Expose-Headers: Content-Length, X-Kuma-Revision
-// 携带cookie等
-Access-Control-Allow-Origin = '指定域名（只能设置一个域名）'
-Access-Control-Allow-Credentials = true // 是否允许发送 Cookie
-客户端还需要设置withCredentials
-如fetch，credentials='include'
-如xhr，withCredentials=true
-// 非简单请求（需要发预检请求 options）
-// preflight 会发送 header
-Access-Control-Request-Method
-Access-Control-Request-Headers
-// Content-type="application/json" 为非简单请求
-// 预检请求的有效期，单位为s，不然对同一个资源都还会再打到后端去做preflight
-Access-Control-Max-Age = 300
-```
-# 一次前端项目内存泄漏排坑
+# 一次前端项目内存泄漏排坑（更合适点）
 ```
 // nuxt 内存泄露问题 & 优化
-// 商品详情页有推荐其他商品的列表，在推荐列表中点击商品，进入该推荐商品的详情页，如此多几点几次内存增加了一倍
+// 商品详情页有推荐其他商品的列表，在推荐列表中点击商品，进入该推荐商品的详情页，如此多几点几次内存增加了几倍
 // 查看 Performance 一下三个指标增加较多
 // JS heap size
 // DOM Nodes(一些DOM的事件监听没有解绑，导致游离节点一直没有释放)
@@ -85,6 +61,87 @@ mounted() {
 4.  被遗忘的定时器
 5.  Node.js 内存泄漏排查，heapdump 库产出快照，然后导入到 chrome devtool 中分析
 // https://juejin.cn/post/6926501702216450062
+```
+# CJK 输入的问题
+
+在中文输入是会频繁触发 input 事件，我们应该在待确认文本选择时才触发对应事件
+对应事件先后顺序
+compositionstart > compositionupdate > input > compositionend
+
+```
+// 解决思路
+let iscomposing = false;
+$('input').on('compositionstart', function(e){
+  // 这里就阻止 input 在中文没选择时就执行
+  iscomposing = true;
+})
+$('input').on('input', function(e){
+  if(!iscomposing) {
+    // todo
+    inputDoing()
+  }
+})
+$('input').on('compositionend', function(e){
+  // 如果输入非CJK文字，则不存在该问题，需重置为true
+  iscomposing = false;
+  // CJK被阻止了，所以这里要执行一次
+  inputDoing()
+})
+```
+# Unicode
+```
+String.prototype.length;
+该属性返回字符串中字符编码单元的数量。JavaScript 使用 UTF-16 编码，该编码使用一个 16 比特的编码单元来表示大部分常见的字符，使用两个代码单元表示不常用的字符。因此 length 返回值可能与字符串中实际的字符数量不相同。
+```
+# IEEE754
+```
+// 0.1+0.2 !== 0.3 IEEE754 64bit 表示数字
+//#region 
+/**
+ * 符号位：决定正负，0为正，1为负(1位符号位)
+ * 阶码：指数位则为阶码-1023，决定了数值的大小(11位指数位)
+ * 尾数：有效数字，决定了精度(52位尾数位)
+ * v = (-1^(符号位0/1 s)) * 1.xxxxx(尾数位 f) * 2^(指数位 e)
+ * v: 浮点数具体值
+ * s: 符号位，即正负号，0 为正，1 为负（共1位）
+ * m: 有效数，也叫尾数，可以类比科学计数法前面的有效数字（共53位，52 + 1不用存储，固定），另外还有一个小数位 f, m = 1 + f
+ * e: 指数位，即 2 的多少次方（共11位），指数位则为阶码-1023
+ * 1.进制转换和对阶运算会发生精度丢失
+ * why进制转换？计算机硬件决定，只能进行2进制运算
+ * why对阶运算？两个进行运算的浮点数必须阶码对齐（指数位数相同），才能进行尾数加减运算
+ */
+//#endregion
+```
+# 前端获取图片的信息
+```
+// 如何区分图片的类型()
+new Uint16Array(buffer)
+// 如何获取图片的尺寸（读取二进制数据的内容）
+https://github.com/image-size/image-size
+```
+# 一次跨域CORS服务端配置排坑
+```
+// 简单跨域
+Access-Control-Allow-Origin = '*' // 也可以指定一个域名
+// 允许 client 使用什么方法
+Access-Control-Allow-Methods //  method
+// 允许 client 携带那些 header
+Access-Control-Allow-Headers: <header-name>[, <header-name>]* // 已逗号分割
+// 允许 client 解析那些 header（不然 client 读取对应 header 为 null）
+Access-Control-Expose-Headers: Content-Length, X-Kuma-Revision
+// 携带cookie等
+Access-Control-Allow-Origin = '指定域名（只能设置一个域名）'
+Access-Control-Allow-Credentials = true // 是否允许发送 Cookie
+客户端还需要设置withCredentials
+如fetch，credentials='include'
+如xhr，withCredentials=true
+// 非简单请求（需要发预检请求 options）
+// preflight 会发送 header
+Access-Control-Request-Method
+Access-Control-Request-Headers
+// Content-type="application/json" 为非简单请求
+// 预检请求的有效期，单位为s，不然对同一个资源都还会再打到后端去做preflight
+Access-Control-Max-Age = 300
 ```
 # 浏览器缓存机制
 ##  缓存位置（划分）
@@ -204,32 +261,6 @@ add_header Link "<URL>; rel=preload; as=TYPE; [crossorigin]";
     "react": ">=16.8",
     "react-dom": ">=16.8",
 },
-```
-# CJK 输入的问题
-
-在中文输入是会频繁触发 input 事件，我们应该在待确认文本选择时才触发对应事件
-对应事件先后顺序
-compositionstart > compositionupdate > input > compositionend
-
-```
-// 解决思路
-let iscomposing = false;
-$('input').on('compositionstart', function(e){
-  // 这里就阻止 input 在中文没选择时就执行
-  iscomposing = true;
-})
-$('input').on('input', function(e){
-  if(!iscomposing) {
-    // todo
-    inputDoing()
-  }
-})
-$('input').on('compositionend', function(e){
-  // 如果输入非CJK文字，则不存在该问题，需重置为true
-  iscomposing = false;
-  // CJK被阻止了，所以这里要执行一次
-  inputDoing()
-})
 ```
 # Form 实现 scrollFirstError
 

@@ -209,6 +209,7 @@ function throttle(fn, ms, immediate) {
     }
   }
 }
+// TODO test, this
 function proxyThrottle(fn, ms, immediate) {
   let last = null;
   let tempFn = new Proxy(fn, {
@@ -586,6 +587,7 @@ function formatMoney(num) {
   let str = num.toString();
   // front 12345678 -> 1,235,678
   // len = 8
+  // TODO Object.is(Number('12s'), NaN )
   let [front, end] = str.split('.')
   let frontLen = front.length;
   let frontStr = [...front].reduceRight((acc, item, index) => {
@@ -910,6 +912,7 @@ function fibdp(n) {
   }
   return dp[n]
 }
+// TODO 单个变量
 // console.log(fib(5), fibdp(5));
 //#endregion
 
@@ -1017,6 +1020,7 @@ function combineValidators(funs) {
     if (typeof res === 'string') {
       return res;
     }
+    // TODO promise instanceof
     if (res && typeof res.then === 'function') {
       res.then(val => {
         res = val;
@@ -1174,23 +1178,6 @@ var isPalindrome = function (head) {
 };
 //#endregion
 
-// 0.1+0.2 !== 0.3 IEEE756 64bit 表示数字
-//#region 
-/**
- * 符号位：决定正负，0为正，1为负(1位符号位)
- * 阶码：指数位则为阶码-1023，决定了数值的大小(11位指数位)
- * 尾数：有效数字，决定了精度(52位尾数位)
- * v = (-1^(符号位0/1 s)) * 1.xxxxx(尾数位 f) * 2^(指数位 e)
- * v: 浮点数具体值
- * s: 符号位，即正负号，0 为正，1 为负（共1位）
- * m: 有效数，也叫尾数，可以类比科学计数法前面的有效数字（共53位，52 + 1不用存储，固定），另外还有一个小数位 f, m = 1 + f
- * e: 指数位，即 2 的多少次方（共11位），指数位则为阶码-1023
- * 1.进制转换和对阶运算会发生精度丢失
- * why进制转换？计算机硬件决定，只能进行2进制运算
- * why对阶运算？两个进行运算的浮点数必须阶码对齐（指数位数相同），才能进行尾数加减运算
- */
-//#endregion
-
 // JSONP 解决远程调用本地回调函数跨域的问题
 //#region 
 // Server端
@@ -1329,6 +1316,11 @@ var threeSum = function (nums) {
 };
 // console.log(threeSum([-1, 0, 1, 2, -1, -4]))
 //#endregion
+
+// N数之和
+// TODO
+// var a =[1, 2, 3, 4, 5, 6, 7, 8]
+// 从乱序且不重复数组中找出 N 个数的和为 M。
 
 // 找到所有出现两次的元素。 其中1 ≤ a[i] ≤ n （n为数组长度）
 //#region 
@@ -1821,4 +1813,3 @@ function rand1(peoples) {
 }
 // console.log(rand1(peoples))
 //#endregion
-
