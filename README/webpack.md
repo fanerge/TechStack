@@ -397,8 +397,8 @@ plugins:[
 
 
 # Webpack 性能优化
-[统计项目构建过程中在编译阶段的耗时的插件](https://github.com/stephencookdev/speed-measure-webpack-plugin)
-[准备基于产物内容的分析工具](https://www.npmjs.com/package/webpack-bundle-analyzer)
+[统计项目构建过程中在编译阶段的耗时的插件-speed-measure-webpack-plugin](https://github.com/stephencookdev/speed-measure-webpack-plugin)
+[准备基于产物内容的分析工具-webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer)
 
 ## 编译提效：如何为 Webpack 编译阶段提速？
 
