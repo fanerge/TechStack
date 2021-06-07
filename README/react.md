@@ -44,7 +44,7 @@ static getDerivedStateFromProps(props, state) {
 
 ## getSnapshotBeforeUpdate
 
-触发时机：组件更新时调用（mountd）
+触发时机：组件更新时调用（mounted）
 getSnapshotBeforeUpdate 要想发挥作用，离不开 componentDidUpdate 的配合。
 getSnapshotBeforeUpdate 的返回值会作为第三个参数给到 componentDidUpdate。
 
@@ -506,7 +506,7 @@ export default function (props) {
     const [count, setCount] = useState(0);
     // 获取 state --- count
     // 修改 state
-    segeser(newCount);
+    setCount(newCount);
     // 可以获得之前的state
     setUser(count => {
         return newCount
