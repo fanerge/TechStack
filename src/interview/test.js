@@ -142,11 +142,20 @@ Function.prototype.myBind = function (ctx, ...args1) {
   ctx = Object(ctx);
   let that = this;
   function tempFn(...args2) {
+    let key = Symbol('key');
     // new.target
     if (this instanceof tempFn) {
-      return that.call(this, ...args1, ...args2);
+      this[key] = that;
+      let res = this[key](...args1, ...args2);
+      delete this[key];
+      return res;
+      // return that.call(this, ...args1, ...args2);
     } else {
-      return that.call(ctx, ...args1, ...args2);
+      ctx[key] = that;
+      let res = ctx[key](...args1, ...args2);
+      delete ctx[key];
+      return res;
+      // return that.call(ctx, ...args1, ...args2);
     }
   }
 
@@ -155,19 +164,18 @@ Function.prototype.myBind = function (ctx, ...args1) {
   return tempFn;
 }
 // test
-window.name = 'fanerge'
-var obj11 = { name: 'inner' }
+// window.name = 'fanerge'
+// var obj11 = { name: 'inner' }
 // myCallTest.myBind()(12, 'wanyuan')
 // myCallTest.bind(null)(12, 'wanyuan')
 
 // new 测试
 // var p1 = Person.myBind()
 // var p11 = new p1(1, 2);
-// var p2 = Person.bind({})
+// var p2 = Person.bind()
 // var p22 = new p2(1, 2)
-// console.log(p11)
-// console.log(p22)
-
+// console.log(p11 instanceof Person)
+// console.log(p22 instanceof Person)
 //#endregion
 
 // this 指向优先级
@@ -201,6 +209,7 @@ function throttle(fn, ms, immediate) {
     }
   }
 }
+// TODO test, this
 function proxyThrottle(fn, ms, immediate) {
   let last = null;
   let tempFn = new Proxy(fn, {
@@ -578,6 +587,7 @@ function formatMoney(num) {
   let str = num.toString();
   // front 12345678 -> 1,235,678
   // len = 8
+  // TODO Object.is(Number('12s'), NaN )
   let [front, end] = str.split('.')
   let frontLen = front.length;
   let frontStr = [...front].reduceRight((acc, item, index) => {
@@ -593,6 +603,22 @@ function formatMoney(num) {
   return `${frontStr}${end ? `.${end}` : ''}`
 }
 // console.log(formatMoney('13234242343453245345.123123'));
+function formatMoney1(num) {
+  let str = num.toString();
+  let [front, end] = str.split('.')
+  let frontStr = '';
+  let len = front.length;
+  [...front].reverse().forEach((item, index) => {
+    let indexAdd1 = index + 1;
+    if (indexAdd1 % 3 === 0 && indexAdd1 !== len) {
+      frontStr = `,${item}` + `${frontStr}`;
+    } else {
+      frontStr = `${item}` + `${frontStr}`;
+    }
+  });
+  return `${frontStr}${end ? `.${end}` : ''}`
+}
+// console.log(formatMoney1('323453245345.123123'));
 //#endregion
 
 // mergeSort
@@ -886,6 +912,7 @@ function fibdp(n) {
   }
   return dp[n]
 }
+// TODO 单个变量
 // console.log(fib(5), fibdp(5));
 //#endregion
 
@@ -993,6 +1020,7 @@ function combineValidators(funs) {
     if (typeof res === 'string') {
       return res;
     }
+    // TODO promise instanceof
     if (res && typeof res.then === 'function') {
       res.then(val => {
         res = val;
@@ -1024,15 +1052,52 @@ var reverseList = function (head) {
   let sentry = new ListNode();
 
   while (head) {
+    // 保留下一个节点的引用
     let rest = head.next;
+    // 保留sentry 上已有的节点
     let old = sentry.next;
+    // sentry 的首个节点的next指针指向当前节点
     sentry.next = head;
+    // 当前节点的next指针需要指向原来sentry上已有的节点
     head.next = old;
+    // 继续下一个节点处理
     head = rest;
   }
   return sentry.next;
 };
 //#endregion
+
+// K 个一组翻转链表
+//#region 
+var reverseKGroup = function (head, k) {
+  if (head === null) return head;
+  let a = head;
+  let b = head;
+  for (let i = 0; i < k; i++) {
+    if (b === null) {
+      return a;
+    }
+    b = b.next;
+  }
+
+  let newHead = reverse(a, b);
+  a.next = reverseKGroup(b, k)
+  return newHead;
+}
+function reverse(a, b) {
+  let sentry = new ListNode();
+  while (a !== b) {
+    let next = a.next;
+    let old = sentry.next;
+    sentry.next = a;
+    a.next = old;
+    a = next;
+  }
+  return sentry.next;
+}
+//#endregion
+
+
 
 // 两个有序链表合并
 //#region
@@ -1111,23 +1176,6 @@ var isPalindrome = function (head) {
   }
   return true;
 };
-//#endregion
-
-// 0.1+0.2 !== 0.3 IEEE756 64bit 表示数字
-//#region 
-/**
- * 符号位：决定正负，0为正，1为负(1位符号位)
- * 阶码：指数位则为阶码-1023，决定了数值的大小(11位指数位)
- * 尾数：有效数字，决定了精度(52位尾数位)
- * v = (-1^(符号位0/1 s)) * 1.xxxxx(尾数位 f) * 2^(指数位 e)
- * v: 浮点数具体值
- * s: 符号位，即正负号，0 为正，1 为负（共1位）
- * m: 有效数，也叫尾数，可以类比科学计数法前面的有效数字（共53位，52 + 1不用存储，固定），另外还有一个小数位 f, m = 1 + f
- * e: 指数位，即 2 的多少次方（共11位），指数位则为阶码-1023
- * 1.进制转换和对阶运算会发生精度丢失
- * why进制转换？计算机硬件决定，只能进行2进制运算
- * why对阶运算？两个进行运算的浮点数必须阶码对齐（指数位数相同），才能进行尾数加减运算
- */
 //#endregion
 
 // JSONP 解决远程调用本地回调函数跨域的问题
@@ -1268,6 +1316,11 @@ var threeSum = function (nums) {
 };
 // console.log(threeSum([-1, 0, 1, 2, -1, -4]))
 //#endregion
+
+// N数之和
+// TODO
+// var a =[1, 2, 3, 4, 5, 6, 7, 8]
+// 从乱序且不重复数组中找出 N 个数的和为 M。
 
 // 找到所有出现两次的元素。 其中1 ≤ a[i] ≤ n （n为数组长度）
 //#region 
@@ -1728,4 +1781,34 @@ function solution(ary, target) {
   return [left, right]
 }
 // console.log(solution(list, 4));
+//#endregion
+
+// 抽奖
+// 请实现抽奖函数rand，保证随机性，输入为表示对象数组，对象有属性n表示人名，w表示权重，随机返回一个中奖人名，中奖概率和w成正比
+//#region 
+let peoples = [
+  { n: "p1", w: 100 },
+  { n: "p2", w: 200 },
+  { n: "p3", w: 1 },
+];
+
+function rand1(peoples) {
+  let count = peoples.reduce((acc, item) => {
+    acc += item.w;
+    return acc;
+  }, 0)
+  let wp = 1 / count;
+  let num = Math.random(); // [0,1)
+  let init = 0;
+  let ps = peoples.map((item, index) => {
+    let temp = item.w * wp + init;
+    console.log(`第${index + 1}个用户随机数区间：${init}-${temp}`);
+    init = temp;
+    return temp
+  })
+  console.log(ps)
+  let index = ps.findIndex((item, index) => num < item);
+  return peoples[index]
+}
+// console.log(rand1(peoples))
 //#endregion

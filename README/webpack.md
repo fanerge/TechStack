@@ -267,6 +267,23 @@ Express 建立服务，并和客户端见一个 EventSource http 链接，有打
 客户端，收到服务器有打包更新的请求，客户端通过 ajax 请求，请求打包结果并解析。<br>
 [知乎-Webpack HMR 原理解析](https://zhuanlan.zhihu.com/p/30669007)
 
+# Scope Hosting && Magic Comments
+```
+// Scope Hosting
+webpack 3.0 新增 Scope Hosting
+require不会，ES module 会。
+在生产模式下打包后，webpack会自动优化代码，去除没必要的啰嗦的代码，再塞入打包 bundle 中
+变量提升，可以减少一些变量声明。在生产环境下，默认开启。
+let a = 1;
+let b = 2;
+let c = a+b;   //在webpack中会自动省略一些可以简化的代码
+console.log(c);
+//简化后的代码如下：console.log(3);
+// Magic Comments
+import(/* webpackChunkName: "my-chunk-name" */ 'module');
+```
+
+
 # Code Splitting
 
 Code Splitting 通过把项目中的资源模块按照我们设计的规则打包到不同的 bundle 中，从而降低应用的启动成本，提高响应速度。
@@ -379,14 +396,16 @@ plugins:[
 }
 ```
 
-# 编译提效：如何为 Webpack 编译阶段提速？
 
-[统计项目构建过程中在编译阶段的耗时的插件](https://github.com/stephencookdev/speed-measure-webpack-plugin)
-[准备基于产物内容的分析工具](https://www.npmjs.com/package/webpack-bundle-analyzer)
+# Webpack 性能优化
+[统计项目构建过程中在编译阶段的耗时的插件-speed-measure-webpack-plugin](https://github.com/stephencookdev/speed-measure-webpack-plugin)
+[准备基于产物内容的分析工具-webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer)
 
-## 减少执行编译的模块
+## 编译提效：如何为 Webpack 编译阶段提速？
 
-### IgnorePlugin
+### 减少执行编译的模块
+
+#### IgnorePlugin
 
 如 moment 只引入本国语言包
 
@@ -398,7 +417,7 @@ new webpack.IgnorePlugin({
 })
 ```
 
-### 按需引入类库模块
+#### 按需引入类库模块
 
 如 lodash 中只引入使用的方法
 
@@ -408,7 +427,7 @@ import {cloneDeep} from 'lodash-es'
 // Tree Shaking（1.依赖包使用 ES6 模块化，如lodash-es，2.Tree Shaking 并不能减少模块编译阶段的构建时间。）
 ```
 
-### babel-plugin-import 实现组件 CSS 按需加载
+#### babel-plugin-import 实现组件 CSS 按需加载
 
 ```
 {
@@ -439,7 +458,7 @@ ReactDOM.render(<_button>xxxx</_button>);
 3.  生成引入代码：根据配置项生成代码和样式的 import 语句
 ```
 
-### DllPlugin
+#### DllPlugin
 
 将项目依赖的框架等模块单独构建打包，与普通构建流程区分开
 利用 DllPlugin 和 DllReferencePlugin 预编译资源模块 通过 DllPlugin 来对那些我们引用但是绝对不会修改(react、jquery)的 npm 包来进行预编译，再通过 DllReferencePlugin 将预编译的模块加载进来。
@@ -473,7 +492,7 @@ DllPlugin 和 DllReferencePlugin
 }
 ```
 
-### Externals
+#### Externals
 
 externals 和 DllPlugin 都是将依赖的框架等模块从构建过程中移除。
 但有以下区别
@@ -496,16 +515,16 @@ externals: {
 import $ from 'jquery';
 ```
 
-## 提升单个模块构建的速度。
+### 提升单个模块构建的速度。
 
-### include/exclude
+#### include/exclude
 
 并行构建以提升总体效率。
 include 只对符合条件的模块使用指定 Loader 进行转换处理。
 exclude 不对特定条件的模块使用该 Loader。
 如不使用 babel-loader 处理 node_modules 中的模块。
 
-### noParse
+#### noParse
 
 module.noParse 则是在上述 include/exclude 的基础上，进一步省略了使用默认 js 模块编译器进行编译的时间
 
@@ -515,19 +534,13 @@ module: {
 }
 ```
 
-### Source Map
+#### Source Map
 
 根据项目实际情况判断是否开启 Source Map。
 在开启 Source Map 的情况下，优先选择与源文件分离的类型，例如 "source-map"。
 有条件也可以配合错误监控系统，将 Source Map 的构建和使用在线下监控后台中进行，以提升普通构建部署流程的速度。
 
-### TypeScript 编译优化
-
-在使用 ts-loader 时，由于 ts-loader 默认在编译前进行类型检查，因此编译时间往往比较慢。
-transpileOnly: true，可以在编译时忽略类型检查。
-单独使用这一功能就丧失了 TS 中重要的类型检查功能，因此在许多脚手架中往往配合 ForkTsCheckerWebpackPlugin 一同使用
-
-### Resolve
+#### Resolve
 
 Webpack 中的 resolve 配置制定的是在构建时指定查找模块文件的规则。
 resolve.modules：指定查找模块的目录范围。
@@ -535,17 +548,17 @@ resolve.extensions：指定查找模块的文件类型范围。
 resolve.mainFields：指定查找模块的 package.json 中主文件的属性名。
 resolve.symlinks：指定在查找模块时是否处理软连接。
 
-## 并行构建以提升总体效率
+### 并行构建以提升总体效率
 
 HappyPack 与 thread-loader
 这两种工具的本质作用相同，都作用于模块编译的 Loader 上，用于在特定 Loader 的编译过程中，以开启多进程的方式加速编译。
 parallel-webpack
 
-# 打包提效：如何为 Webpack 打包阶段提速？
+## 打包提效：如何为 Webpack 打包阶段提速？
 
-## 以提升当前任务工作效率为目标的方案
+### 以提升当前任务工作效率为目标的方案
 
-### 面向 JS 的压缩工具
+#### 面向 JS 的压缩工具
 
 TerserWebpackPlugin、UglifyJSWebpackPlugin
 
@@ -556,13 +569,13 @@ Parallel 选项：并发选项在大多数情况下能够提升该插件的工�
 terserOptions 选项：即 Terser 工具中的 minify 选项集合。
 ```
 
-### 面向 CSS 的压缩工具
+#### 面向 CSS 的压缩工具
 
 OptimizeCSSAssetsPlugin（在 Create-React-App 中使用）、OptimizeCSSNanoPlugin（在 VUE-CLI 中使用），以及 CSSMinimizerWebpackPlugin（2020 年 Webpack 社区新发布的 CSS 压缩插件）
 
-## 以提升后续环节工作效率为目标的方案
+### 以提升后续环节工作效率为目标的方案
 
-### Split Chunks
+#### Split Chunks
 
 Split Chunks（分包）是指在 Chunk 生成之后，将原先以入口点来划分的 Chunks 根据一定的规则（例如异步引入或分离公共依赖等原则），分离出子 Chunk 的过程。
 Split Chunks 有诸多优点，例如有利于缓存命中、有利于运行时的持久化文件缓存等。
@@ -579,7 +592,7 @@ optimization: {
 }
 ```
 
-### Tree Shaking
+#### Tree Shaking
 
 Tree Shaking（摇树）是指在构建打包过程中，移除那些引入但未被使用的无效代码（Dead-code elimination）。
 因为 ES6 模块的依赖关系是确定的，因此可以进行不依赖运行时的静态分析，而 CommonJS 类型的模块则不能。
@@ -628,7 +641,7 @@ module: {
   },
 ```
 
-### sideEffects
+#### sideEffects
 
 Tree-shaking 只能移除没有用到的代码成员，而想要完整移除没有用到的模块，那就需要开启 sideEffects 特性了。
 sideEffects 表明模块是否有副作用。
@@ -643,13 +656,13 @@ optimization: {
 }
 ```
 
-# 缓存优化：那些基于缓存的优化方案?
+## 缓存优化：那些基于缓存的优化方案?
 
-## 编译阶段的缓存优化
+### 编译阶段的缓存优化
 
 编译过程的耗时点主要在使用不同加载器（Loader）来编译模块的过程。下面我们来分别看下几个典型 Loader 中的缓存处理：
 
-### Babel-loader
+#### Babel-loader
 
 Babel-loader 是绝大部分项目中会使用到的 JS/JSX/TS 编译器。在 Babel-loader 中，与缓存相关的设置主要有：
 
@@ -659,7 +672,8 @@ cacheIdentifier：用于计算缓存标识符。默认使用 Babel 相关依赖�
 cacheCompression：默认为 true，将缓存内容压缩为 gz 包以减小缓存目录的体积。在设为 false 的情况下将跳过压缩和解压的过程，从而提升这一阶段的速度。
 ```
 
-### Cache-loader
+
+#### Cache-loader
 
 需要将 cache-loader 添加到对构建效率影响较大的 Loader（如 babel-loader 等）之前，如下面的代码所示：
 
@@ -672,29 +686,43 @@ rules: [
 ],
 ```
 
-## 优化打包阶段的缓存优化
+####  HardSourceWebpackPlugin
+HardSourceWebpackPlugin 为模块提供中间缓存，加速构建打包过程。
+```
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+...
+module.exports = merge(baseWebpackConfig, {
+  plugins: [
+  	...
+    // 缓存 加速二次构建速度
+    new HardSourceWebpackPlugin(options),
+  ]
+})
+```
 
-### 生成 ChunkAsset 时的缓存优化
+### 优化打包阶段的缓存优化
+
+#### 生成 ChunkAsset 时的缓存优化
 
 在 Webpack 4 中，生成 ChunkAsset 过程中的缓存优化是受限制的：只有在 watch 模式下，且配置中开启 cache 时（development 模式下自动开启）才能在这一阶段执行缓存的逻辑，Webpack 5 无此问题。
 
-### 代码压缩时的缓存优化
+#### 代码压缩时的缓存优化
 
 对于 JS 的压缩，TerserWebpackPlugin 和 UglifyJSPlugin 都是支持缓存设置的。而对于 CSS 的压缩，目前最新发布的 CSSMinimizerWebpackPlugin 支持且默认开启缓存，其他的插件如 OptimizeCSSAssetsPlugin 和 OptimizeCSSNanoPlugin 目前还不支持使用缓存。
 
-# 增量构建：Webpack 中的增量构建
+## 增量构建：Webpack 中的增量构建
 
-## 增量构建的影响因素
+### 增量构建的影响因素
 
-### watch 配置
+#### watch 配置
 
 在使用 devServer 的情况下，该选项会默认开启增量构建，生产环境下只开启 watch 配置后的再次构建并不能实现增量构建。
 
-### cache 配置
+#### cache 配置
 
 启用 watch 和 cache 配置
 
-### 生产环境下使用增量构建的阻碍
+#### 生产环境下使用增量构建的阻碍
 
 基于内存的缓存数据注定无法运用到生产环境中。要想在生产环境下提升构建速度，首要条件是将缓存写入到文件系统中。只有将文件系统中的缓存数据持久化，才能脱离对保持进程的依赖，你只需要在每次构建时将缓存数据读取到内存中进行处理即可。
 Webpack 4 中的 cache 配置只支持基于内存的缓存，并不支持文件系统的缓存，Webpack 5 中正式支持基于文件系统的持久化缓存（Persistent Cache）。

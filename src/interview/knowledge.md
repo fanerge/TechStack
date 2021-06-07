@@ -19,7 +19,7 @@ Object.isFrozen(obj)
 进程（Process），正在执行的应用程序，是软件的执行副本，分配计算资源（CPU）、内存资源和文件资源。
 线程，轻量级进程，只分配计算资源（CPU），线程运行的本质其实就是函数的执行。
 早期的 OS 设计中没有线程，3 种资源都分配给进程，多个进程通过分时技术交替执行（单核），进程之间通过管道技术、消息队列、共享内存等进行通信。
-如浏览器，运行时看作一个进程（现代浏览器都是多进程）。但是浏览器内部需要图形渲染、需要网络、需要响应用户操作，这些行为不可以互相阻塞，必须同时进行，这样就设计成线程。
+如浏览器，打开浏览器会开启一个主进程，大多数情况下会为每个标签页开启一个进程。但是浏览器内部需要需要网络请求、响应用户交互等操作，这些行为不可以互相阻塞，必须同时进行，这样就设计成线程。
 现代操作系统都是直接调度线程，不会调度进程。
 ```
 #   块格式化上下文（Block Formatting Context，BFC）
@@ -34,7 +34,7 @@ CSS布局中的一个概念，BFC 是一个独立的布局环境，可以理解�
 5.  表格单元格（元素的 display 为 table-cell，HTML表格单元格默认为该值）
 6.  overflow 计算值(Computed)不为 visible 的块元素
 // BFC的应用
-1.  使用overflow: auto清除浮动
+1.  使用overflow: 不为 visible 清除浮动
 2.  margin合并
 ```
 #   包含块(containing block)
@@ -100,15 +100,14 @@ x(?!y)：x 没有被 y 跟随时匹配 x。例如，对于/\d+(?!\.)/，数字�
 1.  路径分析
     在Node中模块分为两类：一类是Node提供的模块，称为核心模块；另一类是用户编写的，称为文件模块。
     不论是核心模块还是文件模块，require()方法对相同模块的二次加载一律采用缓存优先的策略，是第一优先级的。
-    不同之处在于核心模块的缓存检查要先于文件模块的缓存检查。
     核心模块：核心模块的优先级仅次于缓存加载（http、fs、path）。
     路径形式的文件模块：在分析路径是会将其转换为绝对路径并将绝对路径作为索引，将编译执行后的结果存在缓存中。
     自定义模块：可能是一个文件或者包的形式，这类模块查找最费时间。
         当前文件目录下的node_modules目录。
         父目录下的node_modules目录。
         沿路径向上逐级递归，直到根目录下的node_modules目录。
-2.  文件定位
-    Node require() 时没有指定文件后缀名时会按照.js、.json、.node的次序补足拓展名，依次尝试。
+2.  文件定位(区分文件和目录)
+    Node require() 时没有制定文件后缀名时会按照.js、.json、.node的次序补足拓展名，依次尝试。
     通过分析文件拓展名之后可能没有得到一个文件，但是得到一个目录此时Node会将目录当作一个包处理。
     在package.json文件，取出main属性来对文件定位。如果main指向的文件没有，或者没有package.json文件,则依次查找index.js、index.json、index.node。
 3.  编译执行
@@ -128,6 +127,32 @@ x(?!y)：x 没有被 y 跟随时匹配 x。例如，对于/\d+(?!\.)/，数字�
 5.  解压包文件到 node_modules
 6.  如果 scripts 有 postinstall 需执行
 ```
+#   Web Components
+```
+Web Components 是通过3种技术允许您创建可重用的定制元素，达到复用的效果。
+Custom elements、Shadow DOM、HTML templates 等技术实现自定义元素。
+// Custom elements
+// 又分为Autonomous custom elements（自主的自定义元素都继承自HTMLElement）、Customized built-in elements（继承自内置元素的自定义元素）
+Custom elements（自定义元素）：一组JavaScript API，允许您定义custom elements及其行为，然后可以在您的用户界面中按照需要使用它们。
+// Shadow DOM
+Shadow DOM（影子DOM）：一组JavaScript API，用于将封装的“影子”DOM树附加到元素（与主文档DOM分开呈现）并控制其关联的功能。通过这种方式，您可以保持元素的功能私有，这样它们就可以被脚本化和样式化，而不用担心与文档的其他部分发生冲突。
+HTML templates
+HTML templates（HTML模板）： <template> 和 <slot> 元素使您可以编写不在呈现页面中显示的标记模板。然后它们可以作为自定义元素结构的基础被多次重用。
+```
+[Web Components](./webComponents.md)
+
+#   IaaS、PaaS、SaaS
+```
+// 基础设施即服务 (IaaS ： Infrastructure as a Service)
+把计算基础(服务器、网络技术、存储和数据中心空间)作为一项服务提供给客户。它也包括提供操作系统和虚拟化技术、来管理资源。消费者通过Internet可以从完善的计算机基础设施获得服务。
+// 平台即服务(PaaS：Platform as a Service）
+PaaS实际上是指将软件研发的平台作为一种服务，供应商提供超过基础设施的服务，一个作为软件开发和运行环境的整套解决方案，即以SaaS的模式提交给用户。因此，PaaS也是SaaS模式的一种应用。但是，PaaS的出现可以加快SaaS的发展，尤其是加快SaaS应用的开发速度。
+// 软件即服务 (SaaS：Software as a Service)
+是一种交付模式，其中应用作为一项服务托管，通过Internet提供给用户;帮助客户更好地管理它们的IT项目和服务、确保它们IT应用的质量和性能，监控它们的在线业务。
+```
+
+
+
 
 #   npm
 ```
