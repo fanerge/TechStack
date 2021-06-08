@@ -22,7 +22,7 @@ import {
   fmoney,
   rmoney,
   toCamelCase,
-} from "./modules/utils.ts";
+} from "./modules/utils";
 import {
   instance_of,
   myCall,
@@ -162,6 +162,7 @@ function handle(e: any) {
   // console.log(Math.random());
   // console.log(e);
 }
+
 window.addEventListener("scroll", throttle(handle, 3000));
 // let test = fmoney(10000);
 // // let test2 = rmoney(test);
@@ -325,3 +326,17 @@ window.addEventListener("scroll", throttle(handle, 3000));
 
 // const obj1: any = cloneOther(obj);
 // console.log(obj1);
+
+
+interface UserInfo {
+  name: string;
+  age: number
+}
+
+var urs: UserInfo = {
+  name: '',
+  age: 1,
+}
+
+const arrayNumber: number[] = [1, 2, 3, 4];
+const greaterThan2: number = arrayNumber.find(num => num > 6);
