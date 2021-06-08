@@ -11,7 +11,7 @@
 // delta 列表示两个快照净差值 
 // 导致内存泄漏代码
 // 1.dom 移除时，没有把对应事件给移除
-V.directive('report', {
+Vue.directive('report', {
   bind(el) {
     if (option.onload) {
       el.addEventListener('load', option.onload);

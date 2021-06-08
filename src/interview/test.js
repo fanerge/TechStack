@@ -1321,8 +1321,14 @@ var threeSum = function (nums) {
 
 // N数之和
 // TODO
-// var a =[1, 2, 3, 4, 5, 6, 7, 8]
 // 从乱序且不重复数组中找出 N 个数的和为 M。
+var arr =[1, 2, 3, 4, 5, 6, 7, 8]
+function getSum(arr, N, M) {
+
+  function backTrack(selectedArr) {
+    // 
+  }
+}
 
 // 找到所有出现两次的元素。 其中1 ≤ a[i] ≤ n （n为数组长度）
 //#region 

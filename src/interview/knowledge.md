@@ -74,6 +74,8 @@ net.ipv4.tcp_keepalive_time = 1800 // 检查链接状态的超时时间，HTTP 
 
 #   正则/环视
 ```
+非捕获括号/分组
+(?:x)：匹配 'x' 但是不记住匹配项，/(?:foo){1,2}/ 
 环视只进行子表达式的匹配，不占有字符，匹配到的内容不保存到最终的匹配结果，是零宽度的。
 向前向后可以理解为最终匹配的部分。
 // 向前肯定断言
@@ -150,10 +152,6 @@ PaaS实际上是指将软件研发的平台作为一种服务，供应商提供�
 // 软件即服务 (SaaS：Software as a Service)
 是一种交付模式，其中应用作为一项服务托管，通过Internet提供给用户;帮助客户更好地管理它们的IT项目和服务、确保它们IT应用的质量和性能，监控它们的在线业务。
 ```
-
-
-
-
 #   npm
 ```
 // npm 命令简写
@@ -191,7 +189,7 @@ yalc link // 在对应的项目中 link 对应的包
 cd 项目地址
 yalc link npm-test
 npm run start
-// 在 package.json 的 scripts 中，添加下列脚本，就可以更高npm包代码，自动发布
+// 在包的 package.json 的 scripts 中，添加下列脚本，就可以 watch npm 包代码，自动发布
 "async": "npm run build && yalc push",
 "watch": "nodemon --ignore dist/ --ignore node_modules/ --watch src/ -C -e ts,tsx,scss --debug -x 'npm run async'", // 自动监听
 // nodemon
@@ -215,6 +213,11 @@ const io = new IntersectionObserver(ioes => {
         }
         // unobserve()方法命令IntersectionObserver停止对一个元素的观察。
         el.onload = el.onerror = () => io.unobserve(el)
+    }, {
+        // TODO
+        root: 所监听对象的具体祖先元素(element)，null 则为视口。
+        rootMargin: 计算交叉时添加到根(root)边界盒的矩形偏移量， 可以有效的缩小或扩大根的判定范围从而满足计算需要。
+        thresholds: 一个包含阈值的列表, 按升序排列, 列表中的每个阈值都是监听对象的交叉区域与边界区域的比率。当监听对象的任何阈值被越过时，都会生成一个通知。
     });
 });
 function init() {
@@ -228,12 +231,21 @@ init()
 ### 图片预加载
 ```
 // 以 next.js 为例（轮播中预加载其他banner）
-// fix，本应该使用 prefetch 更合理，但经过实验 prefetch 加载 img chrome 中未生效（forefox神效），所以使用 preload
+// fix，本应该使用 prefetch 更合理，但经过实验 prefetch 加载 img chrome 中未生效（firefox生效），所以使用 preload
 import Head from 'next/head'
 <Head>
   {lists.map(item => <link rel="preload" as="image" href={item.url} >)}
 </Head>
 ```
-
+#  正向代理与反向代理
+```
+// 正向代理
+隐藏了真实的请求客户端，服务端不知道真实的客户端是谁，客户端请求的服务都由代理服务器代替来请求
+如：虚拟专用网络(VPN)、翻墙等
+// 反向代理
+反向代理恰好跟正向代理相反，反向代理隐藏了真实的服务端。
+如：负载均衡
+总结：正向代理代理的对象是客户端，反向代理代理的对象是服务端。
+``` 
 
 
