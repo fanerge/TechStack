@@ -339,4 +339,4 @@ var urs: UserInfo = {
 }
 
 const arrayNumber: number[] = [1, 2, 3, 4];
-const greaterThan2: number = arrayNumber.find(num => num > 6);
+const greaterThan2: number = <number>arrayNumber.find(num => num > 2);
