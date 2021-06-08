@@ -189,7 +189,7 @@ yalc link // 在对应的项目中 link 对应的包
 cd 项目地址
 yalc link npm-test
 npm run start
-// 在 package.json 的 scripts 中，添加下列脚本，就可以更高npm包代码，自动发布
+// 在包的 package.json 的 scripts 中，添加下列脚本，就可以 watch npm 包代码，自动发布
 "async": "npm run build && yalc push",
 "watch": "nodemon --ignore dist/ --ignore node_modules/ --watch src/ -C -e ts,tsx,scss --debug -x 'npm run async'", // 自动监听
 // nodemon
@@ -215,6 +215,9 @@ const io = new IntersectionObserver(ioes => {
         el.onload = el.onerror = () => io.unobserve(el)
     }, {
         // TODO
+        root: 所监听对象的具体祖先元素(element)，null 则为视口。
+        rootMargin: 计算交叉时添加到根(root)边界盒的矩形偏移量， 可以有效的缩小或扩大根的判定范围从而满足计算需要。
+        thresholds: 一个包含阈值的列表, 按升序排列, 列表中的每个阈值都是监听对象的交叉区域与边界区域的比率。当监听对象的任何阈值被越过时，都会生成一个通知。
     });
 });
 function init() {
@@ -228,7 +231,7 @@ init()
 ### 图片预加载
 ```
 // 以 next.js 为例（轮播中预加载其他banner）
-// fix，本应该使用 prefetch 更合理，但经过实验 prefetch 加载 img chrome 中未生效（forefox神效），所以使用 preload
+// fix，本应该使用 prefetch 更合理，但经过实验 prefetch 加载 img chrome 中未生效（firefox生效），所以使用 preload
 import Head from 'next/head'
 <Head>
   {lists.map(item => <link rel="preload" as="image" href={item.url} >)}

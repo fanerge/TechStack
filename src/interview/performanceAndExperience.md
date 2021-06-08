@@ -20,9 +20,9 @@ chrome devtools > more tools > layers 可以查看到合成器产生的原因及
 // script 合理使用 async && defer
 // css 解析规则 从右向左 ，尽量选择器不要超过4级
 // throttle、debounce 减少高频函数执行频率
-// 图片懒加载 IntersectionObserver 来实现是否视口可见来动态加载
+// 图片懒加载 IntersectionObserver 来实现是否在视口可见来动态加载
 // WebSocket 代替轮询
-// Web Workers 进行技术 通过 postMessage 来发送数据
+// Web Workers 技术做一些复杂计算，通过 postMessage 来发送数据
 // 图片使用试探性 webp，先判断浏览器是否支持 webp，如css中使用，需动态添加 class 来应用webp图片作为背景
 // 使用事件委托，vue中绑定事件没有使用事件委托如果太多子项目都绑定事件需委托处理
 // 服务端支持，http2 协议升级 新特性 hpack、多路复用、push cache
