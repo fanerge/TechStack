@@ -206,3 +206,36 @@ nodemon
     --debug # 调试
     -x "npm run build && cd dist/hello && yalc push" # 自定义命令
 ```
+#   图片懒加载
+```
+const io = new IntersectionObserver(ioes => {
+    ioes.forEach(ioe => {
+        let el = ioe.target;
+        if(el && ioe.intersectionRatio > 0) {
+            let realSrc = el.dataset.src // data-src
+            el.src = realSrc;    
+        }
+        // unobserve()方法命令IntersectionObserver停止对一个元素的观察。
+        el.onload = el.onerror = () => io.unobserve(el)
+    });
+});
+function init() {
+    let imgs = document.querySelectorAll('.lazy-img');
+    [...imgs].forEach((el) => {
+        io.observe(el);
+    });
+}
+init()
+```
+### 图片预加载
+```
+// 以 next.js 为例（轮播中预加载其他banner）
+// fix，本应该使用 prefetch 更合理，但经过实验 prefetch 加载 img chrome 中未生效（forefox神效），所以使用 preload
+import Head from 'next/head'
+<Head>
+  {lists.map(item => <link rel="preload" as="image" href={item.url} >)}
+</Head>
+```
+
+
+
