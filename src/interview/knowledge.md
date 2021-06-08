@@ -152,10 +152,6 @@ PaaS实际上是指将软件研发的平台作为一种服务，供应商提供�
 // 软件即服务 (SaaS：Software as a Service)
 是一种交付模式，其中应用作为一项服务托管，通过Internet提供给用户;帮助客户更好地管理它们的IT项目和服务、确保它们IT应用的质量和性能，监控它们的在线业务。
 ```
-
-
-
-
 #   npm
 ```
 // npm 命令简写
@@ -217,6 +213,8 @@ const io = new IntersectionObserver(ioes => {
         }
         // unobserve()方法命令IntersectionObserver停止对一个元素的观察。
         el.onload = el.onerror = () => io.unobserve(el)
+    }, {
+        // TODO
     });
 });
 function init() {
@@ -236,6 +234,15 @@ import Head from 'next/head'
   {lists.map(item => <link rel="preload" as="image" href={item.url} >)}
 </Head>
 ```
-
+#  正向代理与反向代理
+```
+// 正向代理
+隐藏了真实的请求客户端，服务端不知道真实的客户端是谁，客户端请求的服务都由代理服务器代替来请求
+如：虚拟专用网络(VPN)、翻墙等
+// 反向代理
+反向代理恰好跟正向代理相反，反向代理隐藏了真实的服务端。
+如：负载均衡
+总结：正向代理代理的对象是客户端，反向代理代理的对象是服务端。
+``` 
 
 
