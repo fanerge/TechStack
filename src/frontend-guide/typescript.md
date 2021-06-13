@@ -124,9 +124,11 @@ interface DynamicLanguage extends ProgramLanguage, TypeSafeLanguage {
   rank: number; // 定义新属性
 }
 // Type 类型别名
-/** 联合 */
+/** 联合类型 */
+// 表示变量、参数的类型不是单一原子类型，而可能是多种不同的类型的组合。
 type MixedType = string | number;
-/** 交叉 */
+/** 交叉类型，可以理解为求并集 */
+// 把多个类型合并成一个类型，合并后的类型将拥有所有成员类型的特性。
 type IntersectionType = { id: number; name: string; } 
   & { age: number; name: string };
 /** 提取接口属性类型 */
@@ -137,7 +139,6 @@ type AgeType = ProgramLanguage['age'];
 interface Language {
   id: number;
 }
-
 interface Language {
   name: string;
 }
@@ -145,4 +146,108 @@ let lang: Language = {
   id: 1, // ok
   name: 'name' // ok
 }
+// 合并联合类型，即求联合类型的交集，如果没有交集则为 never
+type UnionA = 'px' | 'em' | 'rem' | '%';
+type UnionB = 'vh' | 'em' | 'rem' | 'pt';
+type IntersectionUnion = UnionA & UnionB; // 'em' | 'rem'
+// 联合、交叉组合
+ |、& 操作符的优先级类似 JavaScript 的逻辑或 ||、逻辑与 &&
+// 类型缩减
+type BorderColor = 'black' | 'red' | 'green' | 'yellow' | 'blue' | string; // 类型缩减成 string
+type BorderColor = 'black' | 'red' | 'green' | 'yellow' | 'blue' | string & {}; // 字面类型都被保留（IDE提示显示注解的字符串字面量）
+```
+# 枚举类型
+```
+// 数字类型
+enum Day {
+  SUNDAY = 1, // 默认开始为 0
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY
+}
+// 字符串类型  
+enum Day {
+  SUNDAY = 'SUNDAY',
+  MONDAY = 'MONDAY',
+  ...
+}
+// 异构枚举（Heterogeneous enums），异构枚举也被认为是很“鸡肋”的类型
+ enum Day {
+  SUNDAY = 'SUNDAY',
+  MONDAY = 2,
+  ...
+}
+// 常量成员和计算（值）成员
+enum FileAccess {
+  // 常量成员
+  None,
+  Read = 1 << 1,
+  Write = 1 << 2,
+  ReadWrite = Read | Write,
+  // 计算成员
+  G = "123".length,
+}
+// 常量枚举（const enums）
+我们可以通过添加 const 修饰符定义常量枚举，常量枚举定义转译为 JavaScript 之后会被移除，并在使用常量枚举成员的地方被替换为相应的内联值。
+  const enum Day {
+    SUNDAY,
+    MONDAY
+  }
+  const work = (d: Day) => {
+    switch (d) {
+      case Day.SUNDAY: // 0
+        return 'take a rest';
+      case Day.MONDAY: // 1
+        return 'work hard';
+    }
+  }
+}
+// 外部枚举（Ambient enums）
+在 TypeScript 中，我们可以通过 declare 描述一个在其他地方已经定义过的变量
+declare let $: any;
+$('#id').addClass('show'); // ok
+```
+# 泛型
+```
+// 定义(用于函数和类)
+泛型指的是类型参数化，即将原来某种具体的类型进行参数化。和定义函数参数一样，我们可以给泛型定义若干个类型参数，并在调用时给泛型传入明确的类型参数。
+// 泛型类型参数
+泛型最常用的场景是用来约束函数参数的类型，我们可以给函数定义若干个被调用时才会传入明确类型的参数。
+通过尖括号 <> 语法给函数定义一个泛型参数 P，并指定 param 参数的类型为 P 
+function reflect<P>(param: P):P {
+  return param;
+}
+泛型不仅可以约束函数整个参数的类型，还可以约束参数属性、成员的类型
+function reflectArray<P>(param: P[]) {
+  return param;
+}
+const reflectArr = reflectArray([1, '1']); // reflectArr 是 (string | number)[]
+给函数定义任何个数的泛型入参
+function reflectExtraParams<P, Q>(p1: P, p2: Q): [P, Q] {
+  return [p1, p2];
+}
+// 泛型类
+class Memory<S> {
+  store: S;
+  constructor(store: S) {
+    this.store = store;
+  }
+  set(store: S) {
+    this.store = store;
+  }
+  get() {
+    return this.store;
+  }
+}
+const numMemory = new Memory<number>(1); // <number> 可缺省
+const getNumMemory = numMemory.get(); // 类型是 number
+// 泛型类
+function reflectSpecified<P extends number | string | boolean>(param: P):P {
+  return param;
+}
+reflectSpecified('string'); // ok
+reflectSpecified(null); // ts(2345) 'null' 不能赋予类型 'number | string | boolean'
 ```

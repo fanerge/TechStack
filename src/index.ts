@@ -338,5 +338,12 @@ var urs: UserInfo = {
   age: 1,
 }
 
-const arrayNumber: number[] = [1, 2, 3, 4];
-const greaterThan2: number = <number>arrayNumber.find(num => num > 2);
+
+
+
+function reflectArray<P>(param: P[]) {
+  return param;
+}
+const reflectArr = reflectArray([1, '1']); // reflectArr 是 (string | number)[]
+// const dog = new Dog('Q');
+// dog.bark(); // => 'Woof! Woof!'//
