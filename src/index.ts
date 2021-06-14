@@ -340,10 +340,9 @@ var urs: UserInfo = {
 
 
 
+let fun1 = <T>(p1: T): 1 => 1;
+let fun2 = <T>(p2: T): number => 2;
+fun2 = fun1; // ok？
 
-function reflectArray<P>(param: P[]) {
-  return param;
-}
-const reflectArr = reflectArray([1, '1']); // reflectArr 是 (string | number)[]
 // const dog = new Dog('Q');
 // dog.bark(); // => 'Woof! Woof!'//

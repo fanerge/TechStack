@@ -244,10 +244,96 @@ class Memory<S> {
 }
 const numMemory = new Memory<number>(1); // <number> 可缺省
 const getNumMemory = numMemory.get(); // 类型是 number
-// 泛型类
+// 泛型约束
 function reflectSpecified<P extends number | string | boolean>(param: P):P {
   return param;
 }
 reflectSpecified('string'); // ok
 reflectSpecified(null); // ts(2345) 'null' 不能赋予类型 'number | string | boolean'
+```
+# 类型守卫
+```
+// 类型守卫的作用在于触发类型缩小。实际上，它还可以用来区分类型集合中的不同成员。
+常用的类型守卫包括switch、字面量恒等、typeof、instanceof、in 和自定义类型守卫这几种。
+const convertToUpperCase = (strOrArray) => {
+  // 类型守卫
+  if (typeof strOrArray === 'string') {
+    return strOrArray.toUpperCase();
+  } else if (Array.isArray(strOrArray)) {
+    return strOrArray.map(item => item.toUpperCase());
+  }
+}
+```
+# 类型兼容
+```
+// 判断一个类型是否可以赋值给其他类型？
+// 子类型，所有的子类型与它的父类型都兼容
+const one = 1;
+let mixedNum: 1 | 2 | 3 = one; // ok
+// 结构类型，类型兼容性的另一准则是结构类型，即如果两个类型的结构一致，则它们是互相兼容的。
+interface I1 {
+  name: string;
+}
+interface I2 {
+  name: string;
+}
+let O1: I1;
+let O2: I2;
+O1 = O2; // ok
+// 可继承和可实现，决定了接口类型和类是否可以通过 extends 继承另外一个接口类型或者类，以及类是否可以通过 implements 实现接口。
+interface I1 {
+  name: number;
+}
+interface I2 extends I1 { // ts(2430)
+  name: string; // error，name 不能重置为 string
+}
+class C3 implements I1 {
+  name = ''; // error，name 不能重置为 string
+}
+// 泛型，泛型类型、泛型类的兼容性实际指的是将它们实例化为一个确切的类型后的兼容性。
+let fun1 = <T>(p1: T): 1 => 1;
+let fun2 = <T>(p2: T): number => 2;
+fun2 = fun1; // ok
+// 变型，TypeScript 中的变型指的是根据类型之间的子类型关系推断基于它们构造的更复杂类型之间的子类型关系。
+比如根据 Dog 类型是 Animal 类型子类型这样的关系，我们可以推断数组类型 Dog[] 和 Animal[] 、函数类型 () => Dog 和 () => Animal 之间的子类型关系。
+// 变型-协变，协变也就是说如果 Dog 是 Animal 的子类型，则 F(Dog) 是 F(Animal) 的子类型，这意味着在构造的复杂类型中保持了一致的子类型关系
+type isChild<Child, Par> = Child extends Par ? true : false;
+interface Animal {
+  name: string;
+}
+interface Dog extends Animal {
+  woof: () => void;
+}
+type Covariance<T> = T;
+type isCovariant = isChild<Covariance<Dog>, Covariance<Animal>>; // true
+// 变型-逆变，逆变也就是说如果 Dog 是 Animal 的子类型，则 F(Dog) 是 F(Animal) 的父类型，这与协变正好反过来。
+type Contravariance<T> = (param: T) => void;
+type isNotContravariance = isChild<Contravariance<Dog>, Contravariance<Animal>>; // false;
+type isContravariance = isChild<Contravariance<Animal>, Contravariance<Dog>>; // true;
+// 变型-双向协变，双向协变也就是说如果 Dog 是 Animal 的子类型，则 F(Dog) 是 F(Animal) 的子类型，也是父类型，既是协变也是逆变。
+
+// 变型-不变，不变即只要是不完全一样的类型，它们一定是不兼容的。也就是说即便 Dog 是 Animal 的子类型，如果 F(Dog) 不是 F(Animal) 的子类型，那么 F(Animal) 也不是 F(Dog) 的子类型。
+interface Cat extends Animal {
+  miao: () => void; 
+}
+const cat: Cat = {
+  name: 'Cat',
+  miao: () => void 0,
+};
+const dog: Dog = {
+  name: 'Dog',
+  woof: () => void 0,
+};
+let dogs: Dog[] = [dog];
+animals = dogs; // ok
+animals.push(cat); // ok
+// 函数类型兼容性
+返回值，返回值类型是协变的，所以在参数类型兼容的情况下，函数的子类型关系与返回值子类型关系一致。
+参数类型，参数类型是逆变的，所以在参数个数相同、返回值类型兼容的情况下，函数子类型关系与参数子类型关系是反过来的（逆变）。
+参数个数，在索引位置相同的参数和返回值类型兼容的前提下，函数兼容性取决于参数个数，参数个数少的兼容个数多。
+let lessParams = (one: number) => void 0;
+let moreParams = (one: number, two: string) => void 0;
+lessParams = moreParams; // ts(2322)
+moreParams = lessParams; // ok
+可选和剩余参数，可选参数可以兼容剩余参数、不可选参数。
 ```
