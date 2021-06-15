@@ -82,7 +82,7 @@ $('input').on('input', function(e){
   }
 })
 $('input').on('compositionend', function(e){
-  // 如果输入非CJK文字，则不存在该问题，需重置为true
+  // 如果输入非CJK文字，则不存在该问题，需重置为 false
   iscomposing = false;
   // CJK被阻止了，所以这里要执行一次
   inputDoing()
