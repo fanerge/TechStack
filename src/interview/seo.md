@@ -3,7 +3,7 @@
 提高网站的自然排名
 增加网页的收录
 
-#   标签香港优化
+#   标签相关优化
 ##  title
 ```
 <title>{网页title}</title>
@@ -80,9 +80,7 @@ www.***.com/goods/xxxx?…
 [官网指南](https://schema.org/)
 [google测试地址](https://search.google.com/structured-data/testing-tool/u/0/)
 
-#  other 
-
-img标签的 alt，可以指定格式。即使是用于修饰的图片也要添加空的alt。
+#  other
 ##  Robots.txt
 ```
 存放于网站根目录
@@ -93,11 +91,25 @@ Robots 协议是蜘蛛访问网站的开关，决定蜘蛛可以抓取哪些内�
 如：
 # first group
 User-agent: Baiduspider
+User-agent: Googlebot
+User-agent: MSNBot
+User-agent: Baiduspider-image
+User-agent: YoudaoBot
+User-agent: Sogou web spider
+User-agent: Sogou inst spider
+User-agent: Sogou spider2
+User-agent: Sogou blog
+User-agent: Sogou News Spider
+User-agent: Sogou Orion spider
+User-agent: ChinasoSpider
+User-agent: Sosospider
+User-agent: yisouspider
+User-agent: EasouSpider
 Disallow: /api/ api接口
 Disallow: /preview/ 商家预览
 Allow: link
 ...
-# second group
+# other group
 User-agent: *
 Disallow: /
 
