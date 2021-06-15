@@ -1,4 +1,9 @@
-#   meta标签相关的SEO
+# SEO的作用
+越靠前搜索结果关注度越高
+提高网站的自然排名
+增加网页的收录
+
+#   标签香港优化
 ##  title
 ```
 <title>{网页title}</title>
@@ -8,27 +13,52 @@
 ```
 <meta name="description" content="应用相关的描述"/>
 ```
-建议：150～160字符（75～80 个中文字），目前已经不太重要了。
+建议：150～160字符（75～80 个中文字），目前已经不太重要了，各页面间不要重复！
 ##  keyword
 ```
-<meta name="description" content="应用相关的描述"/>
+<meta name="keywords" content="**,***,***,***"/>
 ```
 建议：3-5个为宜，英文“,”号做分隔符，目前已经不太重要了。
-##  H1/H2
-1.  h1和h2标签各至多只有一个
-2.  h1标签为文本节点，不要包含其他标签
-3.  必要时可以和网页title保持一致
 
-##  canonical
-canonical标签就是告诉搜索引擎哪个页面是权威页面。
+##  meta:robots
 ```
-<link rel="canonical" href="对应页面的权威地址（一般为PC页面）" />
+<meta name="robots" content="index,follow,archive">
+INDEX	允许抓取当前页面
+NOINDEX	不许抓取当前页面
+FOLLOW	允许从当前页面的链接向下爬行
+NOFOLLOW	不许从当前页面的链接向下爬行
+ARCHIVE	允许生成快照
+NOARCHIVE	不许生成快照
+```
+##  canonical
+当站内存在多个内容相同或相似的页面时，可以使用该标签来指向其中一个作为规范页面。
+如多语言时指定某个语言为主站，PC 站点和 Mobile 站点，一般 PC 内容相对丰富
+不只是主路由不同，即便是 http 协议不同（http/https）、查询字符串的微小差异，搜索引擎都会视为完全不同的页面/链接，导致页面权重分散。
+```
+www.***.com/goods/xxxx
+www.***.com/goods/xxxx?…
+www.***.com/goods/xxxx?…
+<link rel="canonical" href="www.***.com/goods/xxxx" />
 ```
 ##  alternate
 ```
-<link rel="alternate" media="only screen and (max-width：640px)" href="一般为PC页面对应的移动端页面" >
+// 在pc页面中放置
+<link rel="alternate" media="only screen and (max-width：640px)" href="一般为PC页面对应的移动端URL" >
+// 在mobile页面中放置
+<link rel="alternate" href="PC站点URL" >
 ```
+##  H1/H2
+```
+1.  h1和h2标签各至多只有一个
+2.  h1标签为文本节点，不要包含其他标签
+3.  必要时可以和网页title保持一致
+```
+## img标签
+尽量为img标签添加alt属性（对可访问性）
+装饰性图片可不添加
 
+##  标签伪元素
+如 before、after 使用CSS content 属性的文本不能被爬取
 #   sitemap
 方便搜索引擎爬虫更好的爬取页面<br>
 每个文件上限url 50000<br>
@@ -54,7 +84,25 @@ canonical标签就是告诉搜索引擎哪个页面是权威页面。
 
 img标签的 alt，可以指定格式。即使是用于修饰的图片也要添加空的alt。
 ##  Robots.txt
+```
+存放于网站根目录
 Robots 协议是蜘蛛访问网站的开关，决定蜘蛛可以抓取哪些内容，不可以抓取哪些内容。
+因为一些系统中的URL是大小写敏感的，所以robots.txt的文件名应统一为小写。
+更好地做定向SEO优化，重点曝光有价值的链接给爬虫
+将敏感文件保护起来，避免爬虫爬取收录
+如：
+# first group
+User-agent: Baiduspider
+Disallow: /api/ api接口
+Disallow: /preview/ 商家预览
+Allow: link
+...
+# second group
+User-agent: *
+Disallow: /
+
+Sitemap: 网站地图 告诉爬虫这个页面是网站地图
+```
 ##  编码方式
 1.  语义化标签HTML代码，重要的HTML放前面（爬去顺序自上而下）
 2.  少使用 ifrmae ，搜索引擎不会抓取iframe中的内容
