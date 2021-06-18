@@ -337,3 +337,143 @@ lessParams = moreParams; // ts(2322)
 moreParams = lessParams; // ok
 可选和剩余参数，可选参数可以兼容剩余参数、不可选参数。
 ```
+# 增强类型系统
+```
+TypeScript 增强类型系统解决遇到某些库没有提供类型声明、库的版本和类型声明不一致、没有注入全局变量类型等各种问题。
+// declare 变量可申明全局的变量、函数、类、枚举类型
+// 使用 declare关键字时，我们不需要编写声明的变量、函数、类的具体实现（因为变量、函数、类在其他库中已经实现了），只需要声明其类型即可
+// 声明全局的变量
+declare var val1: string;
+declare let val2: number;
+declare const val3: boolean;
+// 声明函数
+declare function toString(x: number): string;
+const x = toString(1); // => string
+// 声明类
+declare class Person {
+  public name: string;
+  private age: number;
+  constructor(name: string);
+  getAge(): number;
+}
+const person = new Person('Mike');
+person.name; // => string
+person.getAge(); // => number
+// 声明枚举
+declare enum Direction {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+const directions = [Direction.Up, Direction.Down, Direction.Left, Direction.Right];
+// declare 模块
+// lodash.d.ts
+declare module 'lodash' {
+  export function first<T extends unknown>(array: T[]): T;
+}
+// index.ts
+import { first } from 'lodash';
+first([1, 2, 3]); // => number;
+// declare 文件
+这里标记的图片文件的默认导出的类型是 string ，通过 import 使用图片资源时，TypeScript 会将导入的图片识别为 string 类型，因此也就可以把 import 的图片赋值给  的 src 属性，因为它们的类型都是 string，是匹配的。
+declare module '*.jpg' {
+  const src: string;
+  export default src;
+}
+declare module '*.png' {
+  const src: string;
+  export default src;
+}
+// declare namespace
+在 TypeScript 中，可以编写以 .d.ts 为后缀的声明文件来增强（补齐）类型系统。
+declare namespace $ {
+  const version: number;
+  function ajax(settings?: any): void;
+}
+$.version; // => number
+$.ajax();
+const x: A.B.C 这个声明，这里的类型 C 就是在 A.B 命名空间下的。
+// 声明文件
+在 TypeScript 中，以 .d.ts 为后缀的文件为声明文件。
+// 使用声明文件
+安装 TypeScript 依赖后，一般我们会顺带安装一个 lib.d.ts 声明文件，这个文件包含了 JavaScript 运行时以及 DOM 中各种全局变量的声明
+/ typescript/lib/lib.d.ts
+/// <reference no-default-lib="true"/>
+/// <reference lib="es5" />
+/// <reference lib="dom" />
+/// <reference lib="webworker.importscripts" />
+/// <reference lib="scripthost" />
+no-default-lib="true" 表示这个文件是一个默认库。
+lib="..." 表示引用内部的库类型声明。
+Definitely Typed是最流行性的高质量 TypeScript 声明文件类库
+
+// 通过类型合并、扩充类型定义的技巧临时解决
+类型合并，在 TypeScript 中，相同的接口、命名空间会依据一定的规则进行合并。
+存在两个属性相同而类型不同的接口，ts 会报错，如果连个函数则可以，函数的重载
+interface Person {
+  name: string;
+}
+interface Person {
+  age: number;
+}
+// 相当于
+interface Person {
+  name: string;
+  age: number;
+}
+// 函数的重载（后面声明的接口具有更高的优先级）
+interface Obj {
+    identity(val: any): any;
+}
+interface Obj {
+    identity(val: number): number;
+}
+interface Obj {
+    identity(val: boolean): boolean;
+}
+// 相当于
+interface Obj {
+  identity(val: boolean): boolean;
+  identity(val: number): number;
+  identity(val: any): any;
+}
+// 合并 namespace
+合并 namespace 与合并接口类似，命名空间的合并也会合并其导出成员的属性。不同的是，非导出成员仅在原命名空间内可见。
+namespace Person {
+  const age = 18;
+  export function getAge() {
+    return age;
+  }
+}
+namespace Person {
+  export function getMyAge() {
+    return age; // TS2304: Cannot find name 'age'.
+  }
+}
+// 扩充模块
+// person.ts
+export class Person {}
+// index.ts
+import { Person } from './person';
+declare module './person' {
+  interface Person {
+    greet: () => void;
+  }
+}
+Person.prototype.greet = () => {
+  console.log('Hi!');
+};
+// 扩充全局
+全局模块指的是不需要通过 import 导入即可使用的模块，如全局的 window、document 等。
+declare global {
+  interface Array<T extends unknown> {
+    getLen(): number;
+  }
+}
+Array.prototype.getLen = function () {
+  return this.length;
+};
+```
+[DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+[查找三方库对应的类型声明](https://www.typescriptlang.org/dt/search)
