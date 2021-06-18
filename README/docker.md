@@ -278,6 +278,7 @@ docker system prune -f
 ### 容器的生命周期
 
 ```
+docker ps -a // 列举容器
 // created：初建状态
 docker create [OPTIONS] IMAGE [COMMAND] [ARG...]
 docker create -it --name=busybox busybox // 容器处于停止状态
