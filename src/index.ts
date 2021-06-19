@@ -339,10 +339,15 @@ var urs: UserInfo = {
 }
 
 
+interface Person {
+  name: string;
+  age?: number;
+  weight?: number;
+}
 
-let fun1 = <T>(p1: T): 1 => 1;
-let fun2 = <T>(p2: T): number => 2;
-fun2 = fun1; // ok？
-
+function tess(num: number): number {
+  return num;
+}
+type tt = ReturnType<() => string>
 // const dog = new Dog('Q');
 // dog.bark(); // => 'Woof! Woof!'//

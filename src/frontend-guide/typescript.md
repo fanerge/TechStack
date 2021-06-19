@@ -477,3 +477,130 @@ Array.prototype.getLen = function () {
 ```
 [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 [查找三方库对应的类型声明](https://www.typescriptlang.org/dt/search)
+
+# 官方工具类型
+TypeScript 官方提供的全局工具类型。
+工具类型划分为操作接口类型、联合类型、函数类型、字符串类型这 4 个方向.
+```
+// 操作接口类型
+interface Person {
+  name: string;
+  age?: number;
+  weight?: number;
+}
+Partial
+Partial 工具类型可以将一个类型的所有属性变为可选的，且该工具类型返回的类型是给定类型的所有子集.
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+type PartialPerson = Partial<Person>;
+// 相当于
+interface PartialPerson {
+  name?: string;
+  age?: number;
+  weight?: number;
+}
+Required
+与 Partial 工具类型相反，Required 工具类型可以将给定类型的所有属性变为必填的
+type RequiredPerson = Required<Person>;
+// 相当于
+interface RequiredPerson {
+  name: string;
+  age: number;
+  weight: number;
+}
+Readonly
+Readonly 工具类型可以将给定类型的所有属性设为只读，这意味着给定类型的属性不可以被重新赋值
+type ReadonlyPerson = Readonly<Person>;
+// 相当于
+interface ReadonlyPerson {
+  readonly name: string;
+  readonly age?: number;
+  readonly weight?: number;
+}
+Pick
+Pick 工具类型可以从给定的类型中选取出指定的键值，然后组成一个新的类型
+type NewPerson = Pick<Person, 'name' | 'age'>;
+// 相当于
+interface NewPerson {
+  name: string;
+  age?: number;
+}
+Omit
+与 Pick 类型相反，Omit 工具类型的功能是返回去除指定的键值之后返回的新类型
+type NewPerson = Omit<Person, 'weight'>;
+// 相当于
+interface NewPerson {
+  name: string;
+  age?: number;
+}
+
+// 联合类型
+Exclude
+Exclude 的作用就是从联合类型中去除指定的类型
+type T = Exclude<'a' | 'b' | 'c', 'a'>; // => 'b' | 'c'
+type NewPerson = Omit<Person, 'weight'>;
+// 相当于
+type NewPerson = Pick<Person, Exclude<keyof Person, 'weight'>>;
+Extract
+Extract 类型的作用与 Exclude 正好相反，Extract 主要用来从联合类型中提取指定的类型，类似于操作接口类型中的 Pick 类型。
+type T = Extract<'a' | 'b' | 'c', 'a'>; // => 'a'
+Intersect(自定义)
+type Intersect<T, U> = {
+  [K in Extract<keyof T, keyof U>]: T[K];
+};
+NonNullable
+NonNullable 的作用是从联合类型中去除 null 或者 undefined 的类型。
+type NonNullable<T> = Exclude<T, null | undefined>;
+type T = NonNullable<string | number | undefined | null>; // => string | number
+Record
+Record 的作用是生成接口类型，然后我们使用传入的泛型参数分别作为接口类型的属性和值。
+type MenuKey = 'home' | 'about' | 'more';
+interface Menu {
+  label: string;
+  hidden?: boolean;
+}
+const menus: Record<MenuKey, Menu> = {
+  about: { label: '关于' },
+  home: { label: '主页' },
+  more: { label: '更多', hidden: true },
+};
+
+// 函数类型
+ConstructorParameters
+ConstructorParameters 可以用来获取构造函数的构造参数，而 ConstructorParameters 类型的实现则需要使用 infer 关键字推断构造参数的类型。
+class Person {
+  constructor(name: string, age?: number) {}
+}
+type T = ConstructorParameters<typeof Person>; // [name: string, age?: number]
+Parameters
+Parameters 的作用与 ConstructorParameters 类似，Parameters 可以用来获取函数的参数并返回序对
+type T0 = Parameters<() => void>; // []
+type T1 = Parameters<(x: number, y?: string) => void>; // [x: number, y?: string]
+ReturnType
+ReturnType 的作用是用来获取函数的返回类型
+type T0 = ReturnType<() => void>; // => void
+type T1 = ReturnType<() => string>; // => string
+ThisParameterType
+ThisParameterType 可以用来获取函数的 this 参数类型。
+ThisType
+ThisType 的作用是可以在对象字面量中指定 this 的类型。
+OmitThisParameter
+OmitThisParameter 工具类型主要用来去除函数类型中的 this 类型。如果传入的函数类型没有显式声明 this 类型，那么返回的仍是原来的函数类型。
+
+// 字符串类型
+模板字符串
+TypeScript 也提供了 Uppercase、Lowercase、Capitalize、Uncapitalize这 4 种内置的操作字符串的类型
+// 转换字符串字面量到大写字母
+type Uppercase<S extends string> = intrinsic;
+// 转换字符串字面量到小写字母
+type Lowercase<S extends string> = intrinsic;
+// 转换字符串字面量的第一个字母为大写字母
+type Capitalize<S extends string> = intrinsic;
+// 转换字符串字面量的第一个字母为小写字母
+type Uncapitalize<S extends string> = intrinsic;
+type T0 = Uppercase<'Hello'>; // => 'HELLO'
+type T1 = Lowercase<T0>; // => 'hello'
+type T2 = Capitalize<T1>; // => 'Hello'
+type T3 = Uncapitalize<T2>; // => 'hello'
+```
