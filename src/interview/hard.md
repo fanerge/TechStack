@@ -298,3 +298,5 @@ PS：若文件引用的模块值改变，require 引入的模块值不会改变�
 ##  ES6 模块可以在 import 引用语句前使用模块，CommonJS 则需要先引用后使用
 ##  import/export 只能在模块顶层使用，不能在函数、判断语句等代码块之中引用；require/exports 可以
 
+
+
