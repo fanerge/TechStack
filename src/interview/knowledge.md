@@ -249,7 +249,7 @@ import Head from 'next/head'
 总结：正向代理代理的对象是客户端，反向代理代理的对象是服务端。
 ``` 
 
-#   padding 和 margin 的 left 和 right 不是基于 containing block 的 height 来计算百分比呢？
+#   为什么 padding 和 margin 的 left 和 right 不是基于 containing block 的 height 来计算百分比呢？
 ```
 这个问题我困惑了很久，为什么 padding及margin 的left和right 不是基于 containing block 的height 来计算百分比呢？
 直到之前看到一篇 CSS 文章，大致意思是：containing block 的 height 是被它内部的元素给挤出来的，
