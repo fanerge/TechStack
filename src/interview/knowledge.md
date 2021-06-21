@@ -252,5 +252,8 @@ import Head from 'next/head'
 #   padding 和 margin 的 left 和 right 不是基于 containing block 的 height 来计算百分比呢？
 ```
 这个问题我困惑了很久，为什么 padding及margin 的left和right 不是基于 containing block 的height 来计算百分比呢？
-直到看到一篇 CSS 文章，大致意思是：containing block 的 height 是被它内部的元素给挤出来的，如果该元素的 padding 和 margin 的 left 和 right 是基于 containing block 的 height，那将形成相互依赖（浏览器需要无限循环，去适配这两个 height），所以 CSS 规范最终决定元素的 padding 及 margin 的 left 和 right 基于 containing block 的width 来计算百分比的。
+直到之前看到一篇 CSS 文章，大致意思是：containing block 的 height 是被它内部的元素给挤出来的，
+如果该元素的 padding 和 margin 的 left 和 right 是基于 containing block 的 height，
+那将形成相互依赖（浏览器需要无限循环，去适配这两个 height），
+所以 CSS 规范最终决定元素的 padding 及 margin 的 left 和 right 基于 containing block 的width 来计算百分比的。
 ```
