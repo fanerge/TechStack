@@ -140,6 +140,7 @@ void changName(SendPort port){
 	print("Myname is $name in isloate"); // 打印当前线程中的 name
 }
 ```
+![](../../img/flutter/event-loop.png)
 ##  规范
 ```
 // 注释文档生成
@@ -212,6 +213,7 @@ dispose ，永久移除组件，并释放组件资源。
 触发组件多次 build ，这个阶段有可能是因为 didChangeDependencies、setState 或者 didUpdateWidget 而引发的组件重新 build ，在组件运行过程中会多次被触发，这也是优化过程中需要着重需要注意的点；
 最后是组件销毁阶段，deactivate 和 dispose。
 ```
+![](../../img/flutter/lifycircle.png)
 ##  基础组建介绍
 由于无状态组件在执行过程中只有一个 build 阶段，在执行期间只会执行一个 build 函数，没有其他生命周期函数，因此在执行速度和效率方面比有状态组件更好。
 ```
@@ -226,6 +228,16 @@ Container，布局组件，容器组件，这点有点类似于前端中的 body
 Expanded，可以按比例“扩伸” Row、Column 和 Flex 子组件所占用的空间 ，这点就是前端所介绍的 flex 布局设计；
 Padding，可填充空白区域组件，这点和前端的 padding 功能基本一致；
 ClipRRect，圆角组件，可以让子组件有圆形边角。
+// 单个子元素的布局组件和多个子元素的布局组件
+// Single-child
+Align 比较好理解，Align 组件的位置左、右、上、下、左上、右下、左下、右上，这两者一般配合 Container 来使用。
+Padding 是一个可以设置上下和左右填充的组件，在布局设计中也非常常见。
+Expanded 是一个可伸缩的容器，可以根据子组件的大小进行动态伸缩，这个需要配合 Row 组件的 flex 布局使用，其次也可以作为动态列表的父组件，避免列表超出界面，引起布局问题。
+Container 是比较常用的，类似一个容器，可以设置容器的大小，然后将子元素包裹在容器中，该组件在超出容器后，会容易引起布局问题。
+// Multi-child
+Row 是横排展示子组件。
+Column 是竖排展示子组件。
+Stack 是层叠展示子组件。
 ```
 [内置组建介绍](https://flutterchina.club/widgets/)
 ##  状态管理
@@ -248,20 +260,163 @@ InheritedWidget 核心原理和状态提升原理一致，只需要在根节点�
 如果需要的 Action 越多，StoreConnector 的层级就越深，你就会陷入深深的代码嵌套中。
 ```
 [Provider 方式](https://github.com/love-flutter/flutter-column/tree/master/07/Provider/lib)
+# 项目实战
+##  路由设计
+router.dart 文件，该文件的作用是实现 App 内的一个路由管理和跳转。
+```
+// Scheme
+Scheme 是一种 App 内跳转协议，通过 Scheme 协议在 APP 内实现一些页面的互相跳转。
+[scheme]://[host?]/[path]?[query?] // 不仅 App 内部实现可跳转，还可以适用于外部拉起 App 指定页面的功能
 
+// 内部跳转
+tyfapp://userPageIndex?userId=1001
+web_view_page.dart 使用第三方库，在遇到 http 或者 https 的协议时，使用该页面去打开
+1.  在 router.dart / project_router.dart 导入相应页面组件
+2.  在 main.dart 中组册路由: ProjectRouter().registerRouter(),
 
+PS: 判断当前是否有打开页面，如果打开了页面则替换和刷新旧页面，如果没有则打开新的页面。
 
+// 外部跳转
+该功能的实现，需要使用 uni_links 第三方库来协助完成外部页面的 Scheme，在 pubspec.yaml 中增加依赖，然后更新本地库文件。
+由于 Android 和 iOS 在配置上会有点区别，因此这里分别来介绍。
+1.  基础的配置
+2.  使用 uni_links 来实现 Scheme 的监听。
+Android 流程
+android/app/src/main/AndroidManifest.xml
+<intent-filter>
+    <action android:name="android.intent.action.VIEW"/>
+    <category android:name="android.intent.category.DEFAULT"/>
+    <category android:name="android.intent.category.BROWSABLE"/>
+    <data android:scheme="tyfapp"/> // here
+</intent-filter>
+iOS 流程
+ios/Runner/info.plist
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleURLName</key>
+    <string>Two You</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>tyfapp</string> // here
+    </array>
+  </dict>
+</array>
+问题
+当需要被拉起的 App 没有被安装时，这个链接就不会生效；
+在大部分 App 内 Scheme 是被禁用的，因此在用户体验的时候会非常差；
+注册的 Scheme 相同导致冲突；
+Andorid 和 iOS 都提供了一套解决方案，在 Android 叫作 App link / Deep links ，在 iOS 叫作 Universal Links / Custom URL schemes。
+```
+[更好的外部唤起 app，不管是否有安装](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=251#/detail/pc?id=3527)
+##  导航栏定制
+三种导航栏功能：底部导航栏、顶部导航栏和侧边导航栏。
+[参考](./entrance_bottom_bar.dart)
 
+##  列表样式
+ListView，我的
+[参考](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=251#/detail/pc?id=3529)
+
+##  下拉刷新上拉加载
+下拉刷新：RefreshIndicator
+上拉加载更多：ListView.separated 中的 controller 属性
+[参考](https://kaiwu.lagou.com/course/courseInfo.htm?courseId=251#/detail/pc?id=3530)
+
+##  服务通信
+常见的 APP 网络传输协议序列化方式，XML 、JSON 和 Protocol Buffer。
+```
+// JSON
+import 'dart:convert';  // 数据转化类的原生库
+import 'package:dio/dio.dart'; // 网络请求库 
+import 'package:two_you_friend/util/tools/json_config.dart'; // 工具库
+```
+
+##  打包发布
+```
+// Android
+路径 android/app/src/main/AndroidMainfest.xml 文件
+android:label，为应用展示在手机中的名字，这里我们修改为 Two You；
+android:icon，为应用展示在手机中的图标，可以修改图片的名字，具体图标文件存储在 android/app/src/main/res 中。
+其次需要增加网络访问权限，在 manifest（application 配置下面）中增加下面四行配置
+<uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
+<uses-permission android:name="android.permission.INTERNET" /> 
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> 
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> 
+// iOS
+路径 ios/Runner/info.plist
+// name
+<key>CFBundleName</key>  
+<string>Two You</string> 
+// icon 需要根据不同的机型做不同的配置
+图标的配置在 ios/Runner/Assets.xcassets/AppIcon.appiconset/Content.json
+```
+[Android 请参考这里](https://developer.android.com/guide/topics/manifest/manifest-intro.html)
+[iOS 请参考这里](https://pub.dev/packages/flutter_permissions)
+
+##  Flutter 本地存储
+```
+Flutter 本地存储功能包含三种：shared_preferences、path_provider 文件存储以及 sqflite。
+// path_provider 三方库
+// 如果需要可以放共享 model 中
+```
+[path_provider](./local_storage.dart)
+
+##  安全保障
+sentry 上报 异常 
+```
+该功能的实现会应用到 FlutterError 和 runZonedGuarded 两个知识点。
+在 Flutter 中可以通过 FlutterError 来捕获到运行期间的错误，包括构建期间、布局期间和绘制期间。
+runZonedGuarded 则是使用 Zone.fork 创建一片新的区域去运行代码逻辑，也就是 runApp，当遇到错误时会执行其回调函数 onError，其次如果在项目使用了 Zone.current.handleUncaughtError 也会将错误抛出执行 onError 逻辑。
+// 引入工具 sentry
+void main() {
+  AppSentry.runWithCatchError(MyApp());
+}
+```
+[sentry 上报异常代码](./app_sentry.dart)
+##  原生通信：应用原生平台交互扩充 Flutter 基础能力
+Flutter 是一个跨平台 UI 库，因此不支持原生系统的功能
+```
+系统通知；
+系统感应、相机、电量、LBS、声音、语音识别；
+分享、打开其他 App 或者打开自身 App；
+设备信息、本地存储。
+
+在 Flutter 中存在三种与原生平台进行交互的方法： MethodChannel 、BasicMessageChannel 和 EventChannel 。
+这三者在底层是没有区别的，都是基于 binaryMessenger 来实现。
+
+MethodChannel ，该方法需要创建一个消息通道句柄，然后再利用其中的 invokeMethod 来调用原生平台，原生平台根据传递的方法和参数，执行并获得具体的异步响应结果。该方法支持两个参数，一个是方法名，一个是方法参数，因此更适合去调用原生客户端的函数方法；
+BasicMessageChannel ，该方法需要创建一个消息通道句柄，然后再利用其中的 send 方法发送数据给到原生平台.原生平台接收到数据后，可以针对接收数据响应返回，也可以在接收数据后，不做任何返回。因此该方法更适合向原生平台传递数据，而不是功能调用；
+EventChannel ，该方法是数据流传递，适用于大文件或者数据流媒体等的应用。发送方不会有响应，但是它会通过调用 MethodChannel 来通知原生平台，比如开始监听数据接收会发送 listen ，取消了数据接收会发送 cancel。
+```
+![与原生通信](../../img/flutter/notive_msg.png)
+
+##  性能优化：掌握 Flutter 的性能分析和监控
 
 # 其他
 ```
 lib 目录
-pages // 页面级
+pages // 页面级（如 user 目录，detail.dart 、 edit.dart）
 widgets // comps // 组件(common \ home 等等)
-model // 定义公共状态及操作状态的方法
+model // 定义公共状态及操作状态的方法（Provider 方式状态管理）
 util // struct 数据结构
+inherited_widget // 如果使用 InheritedWidget 则需要/状态管理
 main.dart // app 配置
+router.dart // 路由
+api // 服务接口
+styles // 公共样式
 
 // 增加依赖后安装
+flutter clean
 flutter pub upgrade
+```
+![目录结构](../../img/flutter/dir.png)
+```
+入口文件，main.dart 核心入口文件；
+pages 作为具体的页面结构，可以通过 main.dart 直接加载，大部分还是通过 router.dart 进行跳转，pages 可以按照业务功能划分文件夹；
+pages 下是各个组件组建而成，组件部分可以按照通用、基础和业务来划分；
+组件中包含了样式、交互和数据三个部分，因此分别需要 styles 和 model 文件夹；
+model 大部分数据来自服务端，因此需要一个 api 文件夹来与服务端交互；
+类型校验部分贯穿整个项目，在 pages 、widgets 、 model 和 api 中都可能会被应用到。
 ```
