@@ -212,6 +212,42 @@ dispose ，永久移除组件，并释放组件资源。
 触发组件多次 build ，这个阶段有可能是因为 didChangeDependencies、setState 或者 didUpdateWidget 而引发的组件重新 build ，在组件运行过程中会多次被触发，这也是优化过程中需要着重需要注意的点；
 最后是组件销毁阶段，deactivate 和 dispose。
 ```
+##  基础组建介绍
+由于无状态组件在执行过程中只有一个 build 阶段，在执行期间只会执行一个 build 函数，没有其他生命周期函数，因此在执行速度和效率方面比有状态组件更好。
+```
+// Flutter 中基础组件介绍
+Text，文本显示组件，里面包含了文本类相关的样式以及排版相关的配置信息；
+Image，图片显示组件，里面包含了图片的来源设置，以及图片的配置；
+Icon，Icon 库，里面是 Flutter 原生支持的一些小的 icon ；
+FlatButton，包含点击动作的组件；
+Row，布局组件，在水平方向上依次排列组件；
+Column，布局组件，在垂直方向上依次排列组件；
+Container，布局组件，容器组件，这点有点类似于前端中的 body ；
+Expanded，可以按比例“扩伸” Row、Column 和 Flex 子组件所占用的空间 ，这点就是前端所介绍的 flex 布局设计；
+Padding，可填充空白区域组件，这点和前端的 padding 功能基本一致；
+ClipRRect，圆角组件，可以让子组件有圆形边角。
+```
+[内置组建介绍](https://flutterchina.club/widgets/)
+##  状态管理
+状态管理技术不少于 10 种，介绍其中比较核心的三个，第一个是原生所使用的 InheritedWidget ；第二个是相对前端同学比较熟悉的 Redux 技术；最后一个则是我们推荐使用的技术 Provider 。
+```
+// Provider（跨页面）
+1.  创建状态管理类 name_model ，创建对应的状态 name 以及其修改 name 的方法 changeName；
+2.  在 name_game 中增加 provider 的支持，并将相应需要共享的组件使用 provider 进行封装，监听数据变化；
+3.  在子组件中获取 provider 的 name 数据以及 changeName 方法，在相应的点击部分触发 changeName 事件。
+
+// InheritedWidget（只能在单个页面内使用）
+InheritedWidget 核心原理和状态提升原理一致，只需要在根节点声明即可
+1.  首先创建一个根结点为一个有状态组件 name_game；
+2.  name_game 为一个有状态类，状态属性为 name，并带有 changName 的状态修改方法；
+3.  创建一个状态管理类组件 NameInheritedWidget ；
+4.  创建 NameInheritedWidget 的三个子组件，分别为 welcome（显示欢迎 name ）、random_name（显示 name ，并且有点击切换随机 name 操作）和 other_widgets 。
+
+// Redux
+层层传递这个 store ，从而会显得代码非常臃肿。
+如果需要的 Action 越多，StoreConnector 的层级就越深，你就会陷入深深的代码嵌套中。
+```
+[Provider 方式](https://github.com/love-flutter/flutter-column/tree/master/07/Provider/lib)
 
 
 
@@ -221,10 +257,10 @@ dispose ，永久移除组件，并释放组件资源。
 ```
 lib 目录
 pages // 页面级
-comps // 组件
+widgets // comps // 组件(common \ home 等等)
+model // 定义公共状态及操作状态的方法
+util // struct 数据结构
 main.dart // app 配置
-
-
 
 // 增加依赖后安装
 flutter pub upgrade
