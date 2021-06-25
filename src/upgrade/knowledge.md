@@ -258,7 +258,7 @@ import Head from 'next/head'
 所以 CSS 规范最终决定元素的 padding 及 margin 的 left 和 right 基于 containing block 的width 来计算百分比的。
 ```
 
-#   setTimeout 和 setInterval 产生的 timerId 是共享一个 timerId pool，并且会一次增加
+#   setTimeout 和 setInterval 产生的 timerId 是共享一个 timerId pool，并且会逐渐增加
 但最好别这样使用
 ```
 let timer1 = setInterval(() => {console.log(timer1)}, 100);
