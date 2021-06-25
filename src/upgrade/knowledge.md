@@ -263,6 +263,7 @@ import Head from 'next/head'
 ```
 let timer1 = setInterval(() => {console.log(timer1)}, 100);
 let timer2 = setTimeout(() => {
+    // clearInterval、clearTimeout可以相互清理
     clearTimeout(timer1);
 }, 1000)
 console.log(timer1, timer2)
