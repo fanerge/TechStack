@@ -410,6 +410,7 @@ styles // 公共样式
 // 增加依赖后安装
 flutter clean
 flutter pub upgrade
+flutter get package
 ```
 ![目录结构](../../img/flutter/dir.png)
 ```
