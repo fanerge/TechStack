@@ -411,6 +411,8 @@ styles // 公共样式
 flutter clean
 flutter pub upgrade
 flutter get package
+flutter pub add package // 添加依赖
+flutter packages get // 更新依赖
 ```
 ![目录结构](../../img/flutter/dir.png)
 ```

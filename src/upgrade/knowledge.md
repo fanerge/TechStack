@@ -268,3 +268,15 @@ let timer2 = setTimeout(() => {
 }, 1000)
 console.log(timer1, timer2)
 ```
+
+#   JWT和传统token
+```
+// 基于传统的token认证
+用户登录，服务端给返回token，并将token保存在服务端。
+以后用户再来访问时，需要携带token。服务端获取token后，再去数据库取token
+// jwt(json web token)
+用户登陆，服务端给用户返回一个token（服务端不保存）。
+以后用户再来访问需要携带token，服务端获取token后，再做token的校验
+优势：相较于传统的token，它无需在服务端保存token
+```
+
