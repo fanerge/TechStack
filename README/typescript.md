@@ -44,7 +44,7 @@ String.prototype.padZero = function () :string {}
 
 # 泛型
 ##  泛型函数
-泛型（Generics）是指在定义函数、接口或者类的时候，不预先指定其类型，而是在使用是手动指定其类型的一种特性。
+泛型（Generics）是指在定义函数、接口或者类的时候，不预先指定其类型，而是在使用时手动指定其类型的一种特性。
 如：我们需要创建一个函数， 这个函数会返回任何它传入的值。
 ```
 function identity<T>(arg: T): T {
@@ -54,7 +54,7 @@ identity<number>(3);
 identity<string>('3');
 ```
 ##  泛型约束
-在泛型函数内部使用类型变量时， 由于事先并不知道它是那种类型， 所以不能随意操作它的属性和方法：
+在泛型函数内部使用类型变量时，由于事先并不知道它是那种类型， 所以不能随意操作它的属性和方法：
 ```
 function loggingIdentity<T>(arg: T): T {
   console.log(arg.length); // 可能没有length属性报错
@@ -84,7 +84,7 @@ myGenericNumber.zeroValue = 0;
 myGenericNumber.add = function(x, y) { return x + y; };
 ```
 
-# typs 和 interface
+# types 和 interface
 ##  相同点
 都可以描述一个对象或者函数
 ```
