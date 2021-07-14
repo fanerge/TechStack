@@ -20,16 +20,18 @@ zj.bb.com
 # 项目架构
 新建项目时需要考虑的基础设施，如 flutter 开发 app
 ```
+APP启动页面
+APP功能及更新概览页
 state：公共状态管理及分发（Provide 类似于 context）
 router：路由配置及路由跳转（router 配置，navigator ）
 ajax：与服务端交互请求方法封装及 request 和 response 拦截（统一异常处理 401、403、500等）
 auth：鉴权，是否登录，从 response 中提取 set-cookie 中和权限有关的 cookie 在 request 再次发送
-component：组件划分，page compoents、common page
+component：组件划分，page components、common components
 util：公共方法提取，时间格式化、各种表单验证
 types：各种接口，组件 props 及 服务端 response
-App下载以及唤起用web页面进行App下载
+App下载以及唤起用web页面进行App下载 url_launcher
 版本检测及更新
-第三方App以及浏览器唤起Tabe App
+第三方App以及浏览器唤起Tabe App uni_links
 App崩溃监控及错误上报
 Flutter与WebView之间的通讯机制
 测试版本分发（蒲公英）
