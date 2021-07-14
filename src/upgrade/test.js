@@ -3339,3 +3339,39 @@ function findParent(dom, path = '') {
 
 // 获取页面所有的 tagname
 // [...new Set([...document.querySelectorAll('*')].map(item => item.tagName.toLowerCase()))]
+
+// 控制动画间隔
+let start = null;
+function animate(interval = 1000) {
+  requestAnimationFrame(function demo(t) {
+    if(!start) {
+      start = t;
+    }
+    if(t-start >= interval) {
+      console.log('1s');
+      start = t;
+    }
+    requestAnimationFrame(demo)
+  });
+}
+
+function Animate() {
+  this.lastTime = null;
+  this.timerId = null;
+}
+Animate.prototype.start = function(fn, interval = 1000) {
+  let {lastTime} = this;
+  this.timerId = requestAnimationFrame(function demo(t) {
+    if(!lastTime) {
+      lastTime = t;
+    }
+    if(t-lastTime >= interval) {
+      fn();
+      lastTime = t;
+    }
+    requestAnimationFrame(demo)
+  });
+} 
+Animate.prototype.stop = function() {
+  cancelAnimationFrame(this.timerId)
+} 
