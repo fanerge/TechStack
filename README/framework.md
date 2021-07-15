@@ -13,7 +13,7 @@
 [根据 user-agent 异步加载, 懒加载, polyfill 的优化](https://polyfill.io/v3/url-builder/)
 
 # shell
-
+基于 Node.js 写 shell 的库 zx
 ## shellCheck
 
 [shellCheck](https://www.shellcheck.net/)
