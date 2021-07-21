@@ -15,7 +15,6 @@ require("./algorithm/template.js");
 require("./algorithm/floodfill");
 require("./utils/promise");
 require("./test");
-require("./interview/javascript");
 // 栈
 // const stack: Stack = new Stack();
 // stack.push(1);
@@ -107,19 +106,24 @@ function hotPotato(nameList, num) {
 var body = document.querySelector("body");
 var fragment = document.createDocumentFragment();
 var browsers = ["--------"];
+function handle(e) {
+    console.log(123);
+}
 browsers.forEach(function (browser) {
     var h2 = document.createElement("h2");
     h2.textContent = browser;
+
+
     fragment.appendChild(h2);
+
 });
+
+const weakMap = new WeakMap();
+var click = document.createElement('div');
+click.textContent = 'click'
+weakMap.set(click, handle);
+click.addEventListener('click', weakMap.get(click), false);
+body.appendChild(click);
+
 body.appendChild(fragment);
-// 防抖节流
-function handle(e) {
-    // console.log(Math.random());
-    // console.log(e);
-}
-window.addEventListener("scroll", utils_1.throttle(handle, 3000));
-var urs = {
-    name: '',
-    age: 1
-};
+
