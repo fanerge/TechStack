@@ -6,27 +6,34 @@ export function isComplexType(type) {
   return typeof type === 'object' && type !== null || typeof type === 'function';
 };
 export function cloneDeep(val, hash = new WeakMap()) {
+  // simple
   if (!isComplexType(val)) {
     return val;
+  }
+  let constructor = val.constructor;
+  // Date
+  if(val instanceof Date) {
+    return new Date(val);
+  }
+  // RegExp
+  if(val instanceof RegExp) {
+    return new RegExp(val.source, val.flags);
+  }
+  // 包装类型单独处理
+  if([Number, String, Boolean].includes(constructor)) {
+    return new constructor(val);
   }
   // loop ref
   if (hash.has(val)) {
     return hash.get(val);
   }
-  // date\regexp\function 需要特殊处理
-  let constructor = val.constructor;
+  
   let newVal = new constructor();
-  if (constructor === Date) {
-    newVal = new Date(val);
-  }
-  if (constructor === RegExp) {
-    newVal = new RegExp(val.source, val.flags);
-  }
   if (constructor === Set) {
-    newVal = new Set(val.values());
+    newVal = new Set(cloneDeep([...val.values()], hash));
   }
   if (constructor === Map) {
-    newVal = new Map(val.entries());
+    newVal = new Map(cloneDeep([...val.entries()], hash));
   }
   // 设置原型（新对象可以使用其原型上的方法）
   Object.setPrototypeOf(newVal, Object.getPrototypeOf(val))
@@ -61,11 +68,12 @@ Object.setPrototypeOf(obj1, {
   }
 });
 let obj = {
+  bigI: 12n,
   num1: new Number(1),
   num: 0,
-  str: '',
+  str: '12',
   set: new Set([12, 3]),
-  map: new Map([[1, 2], [3, 4]]),
+  map: new Map([[{name: 'yzf'}, {name: 'yzf'}], [3, {name: 'yzf'}]]),
   boolean: true,
   unf: undefined,
   nul: null,
@@ -73,22 +81,22 @@ let obj = {
   obj2: obj1,
   arr: [0, 1, 2],
   [Symbol('1')]: 1,
+  [Symbol('2')]: Symbol('2'),
   date: new Date('Thu May 27 2020 21:33:24 GMT+0800'),
   regExp: /\d+/img,
-  func: function ss(a, b, c) {
-    console.log(a + b + c)
-  },
-  func1: () => { }
 };
 Object.defineProperty(obj, 'innumerable', {
-  enumerable: false, value: '不可枚举属性'
+  enumerable: false, 
+  value: '不可枚举属性',
+  configurable: true,
 }
 );
 obj.loop = obj    // 设置loop成循环引用的属性
 window.cloneDeep2 = cloneDeep2;
 window.obj = obj;
-var regx2 = cloneDeep(obj)
-// console.log(cloneDeep(regx2));
+console.log(obj);
+var objss = cloneDeep(obj);
+console.log(obj, objss);
 //#endregion
 
 // myCall
@@ -574,10 +582,10 @@ var lru = new LRUCache(3);
 
 // flatArray
 //#region
-function flatArray(ary, res = [], n = 1) {
+function flatArray4(ary, res = [], n = 1) {
   ary.forEach(item => {
     if (Array.isArray(item) && n > 0) {
-      flatArray(item, res, n - 1);
+      flatArray4(item, res, n - 1);
     } else {
       res.push(item);
     }
@@ -585,7 +593,7 @@ function flatArray(ary, res = [], n = 1) {
 
   return res;
 }
-function flatArray1(ary) {
+function flatArray3(ary) {
   for (let i = 0; i < ary.length; i++) {
     if (Array.isArray(ary[i])) {
       ary.splice(i, 1, ...ary[i]);
@@ -726,7 +734,7 @@ class Xhrhook {
 
 // lensProp
 //#region 
-function lensProp(obj = {}, path = '') {
+function lensProp1(obj = {}, path = '') {
   if (typeof obj !== 'object' || obj === null) {
     obj = {}
   }
@@ -773,7 +781,7 @@ var obj6 = {
 
 // formatMoney
 //#region 
-function formatMoney(num) {
+function formatMoney4(num) {
   let str = num.toString();
   // front 12345678 -> 1,235,678
   // len = 8
@@ -793,7 +801,7 @@ function formatMoney(num) {
   return `${frontStr}${end ? `.${end}` : ''}`
 }
 // console.log(formatMoney('13234242343453245345.123123'));
-function formatMoney1(num) {
+function formatMoney5(num) {
   let str = num.toString();
   let [front, end] = str.split('.')
   let frontStr = '';
@@ -821,9 +829,9 @@ function mergeSort(ary) {
   let left = ary.slice(0, mid);
   let right = ary.slice(mid)
 
-  return mergeSortHelper(mergeSort(left), mergeSort(right));
+  return mergeSortHelper6(mergeSort(left), mergeSort(right));
 }
-function mergeSortHelper(left, right) {
+function mergeSortHelper6(left, right) {
   let res = [];
   while (left.length > 0 && right.length > 0) {
     let left0 = left[0];
@@ -885,7 +893,7 @@ let str = renderTemplate(`<p style="color: red;"><b>我是{{name }}</b>，年龄
 let pending = 'pending';
 let resolved = 'resolved';
 let rejected = 'rejected';
-function MyPromise(constructor) {
+function MyPromise3(constructor) {
   let that = this;
   this.status = pending;
   this.value = undefined;
@@ -919,7 +927,7 @@ function MyPromise(constructor) {
     reject(e);
   }
 }
-MyPromise.prototype.then = function (onResolved, onRejected) {
+MyPromise3.prototype.then = function (onResolved, onRejected) {
   if (this.status === resolved) {
     onResolved(this.value)
     return;
@@ -939,7 +947,7 @@ MyPromise.prototype.then = function (onResolved, onRejected) {
   }
 }
 
-new MyPromise((resolve, reject) => {
+new MyPromise3((resolve, reject) => {
   // resolve(1);
   setTimeout(() => {
     // reject(1)
@@ -2628,7 +2636,7 @@ MyPromise.all = (promises) =>
 // quickSort
 // 找一个基准点，比基准点小的放一个数组，比基准点大的放另一个数组。
 // [1, 3, 2, 9, 6, 5, 1, 0, -2, 10]
-function quickSortHelper(ary) {
+function quickSortHelper2(ary) {
   const { floor, random } = Math;
   if (ary.length <= 1) return ary;
   // 随机找一个基准点
@@ -2647,36 +2655,10 @@ function quickSortHelper(ary) {
     }
   });
 
-  return [...quickSortHelper(smaller), pointValue, ...quickSortHelper(bigger)];
+  return [...quickSortHelper2(smaller), pointValue, ...quickSortHelper2(bigger)];
 }
-function quickSort(ary) {
-  return quickSortHelper(ary);
-}
-
-// mergeSort
-// 将数组一分为2逐个比较
-// [1, 3, 2, 9, 6, 5, 1, 0, -2, 10]
-function mergeSortHelper(left, right) {
-  let res = [];
-  while (left.length && right.length) {
-    let left0 = left[0];
-    let right0 = right[0];
-    if (left0 <= right0) {
-      res.push(left.shift());
-    } else {
-      res.push(right.shift());
-    }
-  }
-
-  return res.concat(left).concat(right);
-}
-function mergeSort(ary) {
-  if (ary.length <= 1) return ary;
-  let mid = Math.floor(ary.length / 2);
-  return mergeSortHelper(
-    mergeSort(ary.slice(0, mid)),
-    mergeSort(ary.slice(mid))
-  );
+function quickSort2(ary) {
+  return quickSortHelper2(ary);
 }
 
 // heapSort
@@ -3205,41 +3187,6 @@ function currencyFormatChinese(currencyDigits) {
   outputCharacters = CN_SYMBOL + outputCharacters;
   return outputCharacters;
 }
-
-
-// 将数组转化为树
-function array2Tree(ary) {
-  let map = new Map()
-  // 转化为以 id 为key item 为 value 的对象
-  /**
-   * {
-   *  0: {id: 0, pid: -1},
-   *  1: {id: 1, pid: 0},
-   *  2: {id: 2, pid: 0}
-   * }
-   */
-  ary.forEach(item => map.set(item.id, item));
-
-  let tree = null;
-  ary.forEach((item) => {
-    if (map.has(item.pid)) {
-      let parentNode = map.get(item.pid);
-      if (!Array.isArray(parentNode.children)) {
-        parentNode.children = []
-      }
-      if (!parentNode.children.some(o => o.id === item.id)) {
-        parentNode.children.push(map.get(item.id));
-      }
-    } else {
-      // root
-      tree = item;
-    }
-  });
-
-  return tree;
-}
-// var ssss = [{id: 0, pid: -1}, {id: 1, pid: 0}, {id: 2, pid: 0}, {id: 3, pid: 1}, {id: 4, pid: 2}, {id: 5, pid: 4}];
-// console.log(array2Tree(ssss))
 
 // 从树中找出父路径
 function findParentId(tree) {

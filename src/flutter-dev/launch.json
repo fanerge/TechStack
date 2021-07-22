@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "tabeapp (st)",
+        "request": "launch",
+        "type": "dart",
+        "flutterMode": "debug",
+        "args": ["--dart-define", "ENV=st"]
+      },
+      {
+        "name": "tabeapp (ga)",
+        "request": "launch",
+        "type": "dart",
+        "flutterMode": "debug",
+      },
+      {
+        "name": "tabeapp (profile mode - st)",
+        "request": "launch",
+        "type": "dart",
+        "flutterMode": "profile",
+        "args": ["--dart-define", "ENV=st"]
+      },
+      {
+        "name": "tabeapp (profile mode)",
+        "request": "launch",
+        "type": "dart",
+        "flutterMode": "profile"
+      },
+    ]
+  }

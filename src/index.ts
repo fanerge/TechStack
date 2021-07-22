@@ -1,48 +1,49 @@
-import result from "./modules/array";
-import Stack, { divideBy2, baseConverter } from "./modules/stack";
-import Queue, { PriorityQueue } from "./modules/queue";
-import LinkedList, { Node } from "./modules/linkedList";
-import Sets from "./modules/Set";
-import Dictionary from "./modules/dictionary";
-import HashTable from "./modules/hashTable";
-import HashTable1 from "./modules/hashTable1";
-// import BinarySearchTree from './modules/binarySearchTree';
-import Graph from "./modules/graph";
-// import { cloneLoop } from './utils/deepClone';
-import { cloneOther } from "./utils/other";
-import './style.css'
-import {
-  checkType,
-  deepClone,
-  curry,
-  compose,
-  pipe,
-  debounce,
-  throttle,
-  fmoney,
-  rmoney,
-  toCamelCase,
-} from "./modules/utils";
-import {
-  instance_of,
-  myCall,
-  myApply,
-  myBind,
-  objectFactory,
-  objectCreate,
-} from "./modules/theory";
-require("./modules/sort");
-require("./modules/fp");
-// 剑指offer刷题
-require("./utils/offer");
-require("./modules/utils.js");
-require("./utils/sort.js");
-require("./algorithm/binarySearch.js");
-require("./algorithm/dp.js");
-require("./algorithm/template.js");
-import "./algorithm/floodfill";
-import "./utils/promise"
-import "./test"
+// import result from "./modules/array";
+// import Stack, { divideBy2, baseConverter } from "./modules/stack";
+// import Queue, { PriorityQueue } from "./modules/queue";
+// import LinkedList, { Node } from "./modules/linkedList";
+// import Sets from "./modules/Set";
+// import Dictionary from "./modules/dictionary";
+// import HashTable from "./modules/hashTable";
+// import HashTable1 from "./modules/hashTable1";
+// // import BinarySearchTree from './modules/binarySearchTree';
+// import Graph from "./modules/graph";
+// // import { cloneLoop } from './utils/deepClone';
+// import { cloneOther } from "./utils/other";
+// import './style.css'
+// import {
+//   checkType,
+//   deepClone,
+//   curry,
+//   compose,
+//   pipe,
+//   debounce,
+//   throttle,
+//   fmoney,
+//   rmoney,
+//   toCamelCase,
+// } from "./modules/utils";
+// import {
+//   instance_of,
+//   myCall,
+//   myApply,
+//   myBind,
+//   objectFactory,
+//   objectCreate,
+// } from "./modules/theory";
+// require("./modules/sort");
+// require("./modules/fp");
+// // 剑指offer刷题
+// require("./utils/offer");
+// require("./modules/utils.js");
+// require("./utils/sort.js");
+// require("./algorithm/binarySearch.js");
+// require("./algorithm/dp.js");
+// require("./algorithm/template.js");
+// import "./algorithm/floodfill";
+// import "./utils/promise"
+// import "./test"
+import "./upgrade/javascript"
 
 // 栈
 // const stack: Stack = new Stack();
@@ -71,23 +72,23 @@ import "./test"
 // const test = queue.toString();
 
 // 循环队列——击鼓传花
-function hotPotato(nameList: string[], num: number) {
-  let queue = new Queue();
+// function hotPotato(nameList: string[], num: number) {
+//   let queue = new Queue();
 
-  for (let i = 0; i < nameList.length; i++) {
-    queue.enqueue(nameList[i]);
-  }
+//   for (let i = 0; i < nameList.length; i++) {
+//     queue.enqueue(nameList[i]);
+//   }
 
-  let eliminated = "";
-  while (queue.size() > 1) {
-    for (let i = 0; i < num; i++) {
-      queue.enqueue(queue.dequeue());
-    }
-    eliminated = queue.dequeue();
-    console.log(eliminated + "在击鼓传花游戏中被淘汰。");
-  }
-  return queue.dequeue();
-}
+//   let eliminated = "";
+//   while (queue.size() > 1) {
+//     for (let i = 0; i < num; i++) {
+//       queue.enqueue(queue.dequeue());
+//     }
+//     eliminated = queue.dequeue();
+//     console.log(eliminated + "在击鼓传花游戏中被淘汰。");
+//   }
+//   return queue.dequeue();
+// }
 // let names = ['John','Jack','Camila','Ingrid','Carl'];
 // let winner = hotPotato(names, 8);
 // console.log('The winner is: ' + winner);
@@ -154,15 +155,6 @@ browsers.forEach(function (browser) {
   h2.textContent = browser;
   fragment.appendChild(h2);
 });
-function handle() {
-    console.log(123);
-}
-const weakMap = new WeakMap();
-var click = document.createElement('div');
-click.textContent = 'click'
-weakMap.set(click, handle);
-click.addEventListener('click', weakMap.get(click), false);
 
 body.appendChild(fragment);
-body.appendChild(click);
-// 防抖节流
+
