@@ -280,3 +280,29 @@ console.log(timer1, timer2)
 优势：相较于传统的token，它无需在服务端保存token
 ```
 
+#   Decorator
+装饰器主要用于:装饰类及装饰方法或属性
+```
+class Math {
+  @log
+  add(a, b) {
+    return a + b;
+  }
+}
+
+function log(target, name, descriptor) {
+  var oldValue = descriptor.value;
+
+  descriptor.value = function(...args) {
+    console.log(`Calling ${name} with`, args);
+    return oldValue.apply(this, args);
+  };
+
+  return descriptor;
+}
+
+const math = new Math();
+
+// Calling add with [2, 4]
+math.add(2, 4);
+```
