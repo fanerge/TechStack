@@ -298,5 +298,70 @@ PS：若文件引用的模块值改变，require 引入的模块值不会改变�
 ##  ES6 模块可以在 import 引用语句前使用模块，CommonJS 则需要先引用后使用
 ##  import/export 只能在模块顶层使用，不能在函数、判断语句等代码块之中引用；require/exports 可以
 
+# WeakMap 的用法
+// WeakMaps 保持了对键名所引用的对象的弱引用（也就是说对象只被WeakMap作为键名时可以被GC回收）
+// 因为 key 时弱引用所以不可枚举的，也就没有keys、values、entries、clear 等方法，也没有 size 属性
+强应用
+```
+// 允许手动执行垃圾回收机制
+node --expose-gc
 
-  
+global.gc();
+// 返回 Nodejs 的内存占用情况，单位是 bytes
+process.memoryUsage(); // heapUsed: 4640360 ≈ 4.4M
+
+let map = new Map();
+let key = new Array(5 * 1024 * 1024);
+map.set(key, 1);
+global.gc();
+process.memoryUsage(); // heapUsed: 46751472 注意这里大约是 44.6M
+
+key = null;
+global.gc();
+process.memoryUsage(); // heapUsed: 46754648 ≈ 44.6M
+
+// 这句话其实是无用的，因为 key 已经是 null 了
+map.delete(key);
+global.gc();
+process.memoryUsage(); // heapUsed: 46755856 ≈ 44.6M
+```
+弱应用
+```
+node --expose-gc
+
+global.gc();
+process.memoryUsage(); // heapUsed: 4638992 ≈ 4.4M
+
+const wm = new WeakMap();
+let key = new Array(5 * 1024 * 1024);
+wm.set(key, 1);
+global.gc();
+process.memoryUsage(); // heapUsed: 46776176 ≈ 44.6M
+
+key = null;
+global.gc();
+process.memoryUsage(); // heapUsed: 4800792 ≈ 4.6M
+```
+
+# WeakRef && FinalizationRegistry
+WeakRef对象允许您保留对另一个对象的弱引用，而不会阻止被弱引用对象被GC回收。
+FinalizationRegistry 对象可以让你在对象被垃圾回收时执行回调。
+```
+// WeakRef 使用
+var obj1 = {name: 'yzf'}
+const ref = new WeakRef(obj1);
+// 如果该 obj1 对象已被GC回收则返回 undefined
+if(ref.deref()) {
+  console.log('还没有被回收');
+}else{
+  console.log('已经被回收');
+}
+
+// FinalizationRegistry 使用
+var obj = {name: 'yzf'};
+var registry = new FinalizationRegistry(heldValue => {
+  console.log('gc', heldValue);
+});
+registry.register(obj, 'obj111');
+registry.unregister(obj);
+```
